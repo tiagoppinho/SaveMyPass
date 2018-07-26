@@ -1,10 +1,6 @@
 nbproject/private/
 build/
-nbbuild/
 dist/
-nbdist/
-.nb-gradle/
-target/
 test/
 src/pck/Encryptor.java
 src/pck/PasswordGenerator.java
