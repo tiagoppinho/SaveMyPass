@@ -137,10 +137,8 @@ public class Dashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SaveMyPass - Dashboard");
-        setMaximumSize(new java.awt.Dimension(909, 637));
         setMinimumSize(new java.awt.Dimension(909, 637));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(909, 637));
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -209,9 +207,9 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("Password Safer");
+        jLabel8.setText("Password Manager");
         sidePanel.add(jLabel8);
-        jLabel8.setBounds(110, 50, 88, 15);
+        jLabel8.setBounds(88, 50, 110, 15);
 
         btnAllCards.setBackground(new java.awt.Color(51, 144, 255));
         btnAllCards.setName("0"); // NOI18N
