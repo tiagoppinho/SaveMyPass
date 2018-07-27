@@ -5,3 +5,4 @@ test/
 src/pck/Encryptor.java
 manifest.mf
 db/
+src/pck/DatabaseHelper.java
