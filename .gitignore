@@ -3,5 +3,5 @@ build/
 dist/
 test/
 src/pck/Encryptor.java
-src/pck/PasswordGenerator.java
 manifest.mf
+db/
