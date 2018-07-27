@@ -57,7 +57,7 @@ public class AddNew extends javax.swing.JFrame {
         btnCancel = new javax.swing.JLabel();
         btnAdd = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SaveMyPass - New Card");
         setMinimumSize(new java.awt.Dimension(379, 348));
         setUndecorated(true);
