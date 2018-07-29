@@ -65,7 +65,7 @@ public class NewPIN extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         txtConfirmationMasterPin = new javax.swing.JPasswordField();
         btnNextOrFinish = new javax.swing.JLabel();
-        gotoLogin = new javax.swing.JLabel();
+        backToLogin = new javax.swing.JLabel();
         separator = new javax.swing.JLabel();
         changePINPanel = new javax.swing.JPanel();
         txtNewMasterPin = new javax.swing.JPasswordField();
@@ -76,6 +76,7 @@ public class NewPIN extends javax.swing.JFrame {
         separator2 = new javax.swing.JLabel();
         title3 = new javax.swing.JLabel();
         txtCurrentPin = new javax.swing.JPasswordField();
+        gotoLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SaveMyPass - New PIN");
@@ -423,19 +424,19 @@ public class NewPIN extends javax.swing.JFrame {
             }
         });
 
-        gotoLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        gotoLogin.setForeground(new java.awt.Color(51, 153, 255));
-        gotoLogin.setText("Back to login");
-        gotoLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        gotoLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+        backToLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        backToLogin.setForeground(new java.awt.Color(51, 153, 255));
+        backToLogin.setText("Back to login");
+        backToLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        backToLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                gotoLoginMouseEntered(evt);
+                backToLoginMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                gotoLoginMouseExited(evt);
+                backToLoginMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                gotoLoginMousePressed(evt);
+                backToLoginMousePressed(evt);
             }
         });
 
@@ -456,7 +457,7 @@ public class NewPIN extends javax.swing.JFrame {
                                 .addComponent(btnNextOrFinish, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(mainPanelLayout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(gotoLogin)))
+                                .addComponent(backToLogin)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                         .addGap(0, 101, Short.MAX_VALUE)
@@ -486,7 +487,7 @@ public class NewPIN extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(btnNextOrFinish, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(gotoLogin)
+                .addComponent(backToLogin)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -579,14 +580,32 @@ public class NewPIN extends javax.swing.JFrame {
             }
         });
 
+        gotoLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        gotoLogin.setForeground(new java.awt.Color(51, 153, 255));
+        gotoLogin.setText("Go to login");
+        gotoLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        gotoLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                gotoLoginMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gotoLoginMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                gotoLoginMousePressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout changePINPanelLayout = new javax.swing.GroupLayout(changePINPanel);
         changePINPanel.setLayout(changePINPanelLayout);
         changePINPanelLayout.setHorizontalGroup(
             changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(changePINPanelLayout.createSequentialGroup()
-                .addContainerGap(104, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                        .addComponent(gotoLogin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                         .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(151, 151, 151))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
@@ -605,26 +624,33 @@ public class NewPIN extends javax.swing.JFrame {
         );
         changePINPanelLayout.setVerticalGroup(
             changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+            .addGroup(changePINPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(separator2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
-                .addComponent(title3)
-                .addGap(6, 6, 6)
-                .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(title2)
-                .addGap(6, 6, 6)
-                .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel11)
-                .addGap(6, 6, 6)
-                .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                        .addComponent(separator2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                        .addGap(0, 14, Short.MAX_VALUE)
+                        .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                                .addComponent(title3)
+                                .addGap(6, 6, 6)
+                                .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(title2)
+                                .addGap(6, 6, 6)
+                                .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel11)
+                                .addGap(6, 6, 6)
+                                .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(17, 17, 17))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                                .addComponent(gotoLogin)
+                                .addContainerGap())))))
         );
 
         getContentPane().add(changePINPanel);
@@ -636,6 +662,7 @@ public class NewPIN extends javax.swing.JFrame {
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
+        Customization.underlineText(backToLogin);
         Customization.underlineText(gotoLogin);
         KeyboardHandler.applyVirtualKeyboardButtonsProperties(keyboardButtons);
         KeyboardHandler.generateNewNumbersForKeyboard(keyboardButtons);
@@ -646,7 +673,7 @@ public class NewPIN extends javax.swing.JFrame {
             btnNextOrFinish.setText("Next");
             this.setTitle("SaveMyPass - First-time setup");
             this.setSize(Constants.NEW_PIN_DEFAULT_SIZE_FIRST_TIME);
-            gotoLogin.setVisible(false);
+            backToLogin.setVisible(false);
         }else if(index == 2){
             mainPanel.setVisible(false);
             changePINPanel.setVisible(true);
@@ -685,15 +712,11 @@ public class NewPIN extends javax.swing.JFrame {
     private void btnMainCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMainCloseMousePressed
         if(index != 2)
             System.exit(0);
-        else
-            this.dispose();
     }//GEN-LAST:event_btnMainCloseMousePressed
 
     private void btnSecondaryCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSecondaryCloseMousePressed
         if(index != 2)
             System.exit(0);
-        else
-            this.dispose();
     }//GEN-LAST:event_btnSecondaryCloseMousePressed
 
     private void mainPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainPanelMousePressed
@@ -746,17 +769,17 @@ public class NewPIN extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNextOrFinishMousePressed
 
-    private void gotoLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMousePressed
+    private void backToLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToLoginMousePressed
         goToLogin();
-    }//GEN-LAST:event_gotoLoginMousePressed
+    }//GEN-LAST:event_backToLoginMousePressed
 
-    private void gotoLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseEntered
-        gotoLogin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_gotoLoginMouseEntered
+    private void backToLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToLoginMouseEntered
+        backToLogin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
+    }//GEN-LAST:event_backToLoginMouseEntered
 
-    private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseExited
-        gotoLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_gotoLoginMouseExited
+    private void backToLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToLoginMouseExited
+        backToLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
+    }//GEN-LAST:event_backToLoginMouseExited
 
     private void txtNewMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNewMasterPinMousePressed
         if(txtCurrentPin.getPassword().length == 6)
@@ -787,6 +810,18 @@ public class NewPIN extends javax.swing.JFrame {
     private void btnFinishNewPinMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMouseEntered
         btnFinishNewPin.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }//GEN-LAST:event_btnFinishNewPinMouseEntered
+
+    private void gotoLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseEntered
+        gotoLogin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
+    }//GEN-LAST:event_gotoLoginMouseEntered
+
+    private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseExited
+        gotoLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
+    }//GEN-LAST:event_gotoLoginMouseExited
+
+    private void gotoLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMousePressed
+        goToLogin();
+    }//GEN-LAST:event_gotoLoginMousePressed
     
     //If the virtual keyboard is closed, opens it.
     //Sets different sizes on opening, depending on the index.
@@ -915,6 +950,7 @@ public class NewPIN extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel backToLogin;
     private javax.swing.JLabel btnClear;
     private javax.swing.JLabel btnCloseKeyboard;
     private javax.swing.JLabel btnFinishNewPin;
