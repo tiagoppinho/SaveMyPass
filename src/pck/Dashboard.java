@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    //DO not change this, "Settings" MUST be the last item.
     private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
     
@@ -980,14 +979,25 @@ public class Dashboard extends javax.swing.JFrame {
         addNewItem(1);
     }//GEN-LAST:event_btnAddNewNoteMousePressed
         
-    //Sends the user to Login frame.
+    /**
+     * Sends the user to Login frame.
+     */
     private void logout() {
         Login login = new Login();
         login.setState(this.getState());
         this.dispose();
     }
     
-    //Pops up the add new Frame.
+    /**
+     * Pops up the Add New frame.
+     * @param index Integer between 0 and 3.
+     * <br>
+     * 0 - Forgot Pin.
+     * <br>
+     * 1 - First Time Setup.
+     * <br>
+     * 2 - Change Master Pin.
+     */
     private void addNewItem(int index) {
         try{
             AddNew newCard = new AddNew(index, this);
@@ -1015,46 +1025,34 @@ public class Dashboard extends javax.swing.JFrame {
             model.moveRow(model.getRowCount() - 1, model.getRowCount() - 1, 0);
     }
     
-    //Returns the "All Cards" table model.
+    /**
+     * Returns the "All Cards" table model.
+     * @return DefaultTableModel
+     */
     public static DefaultTableModel getAllCardsTableModel() {
         return  (DefaultTableModel) allCardsTable.getModel();
     }
     
-    //Returns the "Notes" table model.
+    /**
+     * Returns the "Notes" table model.
+     * @return DefaultTableModel
+     */
     public static DefaultTableModel getNotesTableModel() {
         return (DefaultTableModel) notesTable.getModel();
     }
-    /*
-    public static void checkForNewTableValues(int index){
-        //0 - All Cards.
-        //1 - Notes.
-        if(index == 0){
-            if(getAllCardsTableModel().getRowCount() > 0 && !scrollPaneAllCardsTable.isVisible()){
-                scrollPaneAllCardsTable.setVisible(true);
-                noCardsInfo.setVisible(false);
-            }else{
-                scrollPaneAllCardsTable.setVisible(false);
-                noCardsInfo.setVisible(true);
-            } 
-        } else if(index == 1){
-            if(getNotesTableModel().getRowCount() > 0 && !notesTable.getParent().isVisible()){
-                notesTable.getParent().setVisible(true);
-                noNotesInfo.setVisible(false);
-            }else{
-                notesTable.getParent().setVisible(false);
-                noNotesInfo.setVisible(true);
-            }
-        }
-    }
-    */
     
-    //Sets the save settings button visible.
+    /**
+     * Sets the save settings button visible.
+     */
     private void activateSaveSettingsButton() {
         if(!btnSaveSettings.isVisible())
             btnSaveSettings.setVisible(true);
     }
     
-    //Handles the mouse entered event of the side panel buttons.
+    /**
+     * Handles the mouse entered event of the side panel buttons.
+     * @param evt MouseEvent
+     */
     private void sidePanelButtonMouseEntered(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
         
@@ -1062,7 +1060,10 @@ public class Dashboard extends javax.swing.JFrame {
             button.setBackground(Constants.SIDE_PANEL_BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
     
-    //Handles the mouse exited event of the side panel buttons.
+    /**
+     * Handles the mouse exited event of the side panel buttons.
+     * @param evt MouseEvent
+     */
     private void sidePanelButtonMouseExited(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
         
@@ -1070,7 +1071,10 @@ public class Dashboard extends javax.swing.JFrame {
             button.setBackground(Constants.SIDE_PANEL_BUTTONS_DEFAULT_COLOR);
     }
     
-    //Handles the mouse pressed event of the side panel buttons.
+    /**
+     * Handles the mouse pressed event of the side panel buttons.
+     * @param evt MouseEvent
+     */
     private void sidePanelButtonMousePressed(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
         

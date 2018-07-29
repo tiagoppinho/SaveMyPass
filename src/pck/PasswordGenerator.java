@@ -22,6 +22,11 @@ public class PasswordGenerator {
         resetBooleans();
     }
     
+    /**
+     * Generates a random secure password.
+     * @param size Password size.
+     * @return String
+     */
     public String generateRandomPassword(int size/*, boolean[] check*/){
         String fullChars = UPPERCASE + LOWERCASE + NUMBERS + SPECIAL_CHARACTERS;
         String generatedPassword = "";

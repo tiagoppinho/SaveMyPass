@@ -560,7 +560,9 @@ public class Login extends javax.swing.JFrame {
         forgotPin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
     }//GEN-LAST:event_forgotPinMouseExited
     
-    //If the virtual keyboard is closed, opens it.
+    /**
+     * If the virtual keyboard is closed, opens it.
+     */
     private void openVirtualKeyboard() {
         if(!isKeyboardOpen) {
             this.setSize(Constants.LOGIN_SIZE_WITH_KEYBOARD);
@@ -571,7 +573,9 @@ public class Login extends javax.swing.JFrame {
         }
     }
     
-    //If the virtual keyboard is opened, closes it.
+    /**
+     * If the virtual keyboard is opened, closes it.
+     */
     private void closeVirtualKeyboard() {
         if(isKeyboardOpen) {
             this.setSize(Constants.LOGIN_DEFAULT_SIZE);
@@ -581,7 +585,10 @@ public class Login extends javax.swing.JFrame {
         }
     }
     
-    //Handles the mouse pressed event of keyboard buttons.
+    /**
+     * Handles the mouse pressed event of keyboard buttons.
+     * @param evt MouseEvent
+     */
     private void keyboardButtonsMousePressed(java.awt.event.MouseEvent evt) {
         JLabel button = (JLabel) evt.getComponent();
         String buttonNumber = button.getText();
@@ -597,13 +604,19 @@ public class Login extends javax.swing.JFrame {
             closeVirtualKeyboard();
     }
     
-    //Adds the new number entered to the pin field.
+    /**
+     * Adds the new number entered by the virtual keyboard to the pin field.
+     * @param number Number to be added (String).
+     */
     private void addNumberToPin(String number) {
         String currentPin = getCurrentPin();
         txtPin.setText(currentPin + number);
     }
     
-    //Gets the current pin from the pin field and returns it as a string.
+    /**
+     * Gets the current pin from the pin field and returns it as a string.
+     * @return String
+     */
     private String getCurrentPin() {
         return String.valueOf(txtPin.getPassword());
     }

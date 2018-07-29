@@ -842,8 +842,10 @@ public class NewPIN extends javax.swing.JFrame {
         goToLogin();
     }//GEN-LAST:event_gotoLoginMousePressed
     
-    //If the virtual keyboard is closed, opens it.
-    //Sets different sizes on opening, depending on the index.
+    /**
+     * If the virtual keyboard is closed, opens it.
+     * Sets different window sizes on opening, depending on the index.
+     */
     private void openVirtualKeyboard() {
         if(!isKeyboardOpen) {
             isKeyboardOpen = true;
@@ -864,8 +866,10 @@ public class NewPIN extends javax.swing.JFrame {
         }
     }
     
-    //If the virtual keyboard is opened, closes it.
-    //Sets different sizes on closing, depending on the index.
+    /**
+     * If the virtual keyboard is opened, closes it.
+     * Sets different window sizes on closing, depending on the index.
+     */
     private void closeVirtualKeyboard() {
         if(isKeyboardOpen) {
             isKeyboardOpen = false;
@@ -884,7 +888,11 @@ public class NewPIN extends javax.swing.JFrame {
         }
     }
     
-    //Handles the mouse pressed event of the keyboard buttons.
+    /**
+     * Handles the mouse pressed event of the keyboard buttons.
+     * Acts differently according to the index.
+     * @param evt MouseEvent
+     */
     private void keyboardButtonsMousePressed(java.awt.event.MouseEvent evt) {
         JLabel button = (JLabel) evt.getComponent();
         String buttonNumber = button.getText();
@@ -924,18 +932,29 @@ public class NewPIN extends javax.swing.JFrame {
         }
     }
     
-    //Adds the new number entered by the virtual keyboard to the given pin field.
+    /**
+     * Adds the new number entered by the virtual keyboard to the given pin field.
+     * @param number Number to be added to the pin field.
+     * @param passwordField Pin field to receive the number.
+     */
     private void addNumberToPin(String number, JPasswordField passwordField) {
         String currentPin = getCurrentPin(passwordField);
         passwordField.setText(currentPin + number);
     }
     
-    //Gets the current pin of a given pin field and returns it as a string.
+    /**
+     * Gets the current pin of a given pin field and returns it as a string.
+     * @param passwordField Pin field to get the current pin.
+     * @return String
+     */
     private String getCurrentPin(JPasswordField passwordField) {
         return String.valueOf(passwordField.getPassword()).trim();
     }
     
-    //Clears both pin fields.
+    /**
+     * Sets the pin fields text as null.
+     * Acts in different pin fields according to the index.
+     */
     private void clearPinFields() {
         if(index == 2){
             txtCurrentPin.setText(null);
@@ -948,7 +967,7 @@ public class NewPIN extends javax.swing.JFrame {
     }
     
     /**
-     * Sends the user to login Frame.
+     * Sends the user to Login Frame.
      */
     private void goToLogin() {
         new Login();
