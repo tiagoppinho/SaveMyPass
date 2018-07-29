@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
@@ -919,9 +920,16 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChangeMasterPinMouseExited
 
     private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMousePressed
-        NewPIN changePin = new NewPIN(2);
-        changePin.setVisible(true);
-        changePin.requestFocusInWindow();
+        int confirm = JOptionPane.showConfirmDialog(null, "If you proceed you'll be logged out." +
+                                                " Are you sure you want to proceed?", 
+                                                "Change master PIN", JOptionPane.YES_NO_OPTION,
+                                                JOptionPane.WARNING_MESSAGE);
+        if(confirm == JOptionPane.YES_OPTION){
+            NewPIN changePin = new NewPIN(2);
+            changePin.setVisible(true);
+            changePin.requestFocusInWindow();
+            this.dispose();
+        }
     }//GEN-LAST:event_btnChangeMasterPinMousePressed
 
     private void btnSaveSettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveSettingsMousePressed
@@ -933,7 +941,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveSettingsMousePressed
 
     private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allCardsTableMousePressed
-        System.out.println(allCardsTable.getSelectedColumn());
+        //System.out.println(allCardsTable.getSelectedColumn());
     }//GEN-LAST:event_allCardsTableMousePressed
 
     private void buttonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonsMouseEntered
