@@ -710,13 +710,11 @@ public class NewPIN extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNextOrFinishMouseExited
 
     private void btnMainCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMainCloseMousePressed
-        if(index != 2)
-            System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_btnMainCloseMousePressed
 
     private void btnSecondaryCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSecondaryCloseMousePressed
-        if(index != 2)
-            System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_btnSecondaryCloseMousePressed
 
     private void mainPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainPanelMousePressed
@@ -736,23 +734,22 @@ public class NewPIN extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMasterPinMousePressed
 
     private void txtConfirmationMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtConfirmationMasterPinMousePressed
-        if(txtMasterPin.getPassword().length == 6)
+        if(getCurrentPin(txtMasterPin).length() == 6)
             openVirtualKeyboard();
     }//GEN-LAST:event_txtConfirmationMasterPinMousePressed
 
     private void btnNextOrFinishMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextOrFinishMousePressed
-        String pin = String.valueOf(txtMasterPin.getPassword()).trim();
-        String confirmationPin = String.valueOf(txtConfirmationMasterPin.getPassword()).trim();
+        String pin = getCurrentPin(txtMasterPin);
+        String confirmationPin = getCurrentPin(txtConfirmationMasterPin);
         
         if(pin.isEmpty() || confirmationPin.isEmpty())
-            JOptionPane.showMessageDialog(null, "Please fill both PIN fields.", "Empty PIN field(s)!", JOptionPane.WARNING_MESSAGE);
+            displayMessage("Please fill both PIN fields.", "Empty PIN field(s)!");
         else if(!pin.equals(confirmationPin)) {
-            //If they don't match (pin and confirmationPin).
-            JOptionPane.showMessageDialog(null, "The PINs don't match.", "Invalid!", JOptionPane.WARNING_MESSAGE);
+            //If pin and confirmationPin don't match.
+            displayMessage("The PINs don't match.", "Invalid!");
             clearPinFields();
-            txtMasterPin.requestFocusInWindow();
-        } else if(index != 1) {
-            //If user forgot his pin or user is changing his pin.
+        } else if(index == 0) {
+            //If user forgot his pin.
             //Send data to database (update pin).
             //Proceed to login.
             goToLogin();
@@ -782,12 +779,12 @@ public class NewPIN extends javax.swing.JFrame {
     }//GEN-LAST:event_backToLoginMouseExited
 
     private void txtNewMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNewMasterPinMousePressed
-        if(txtCurrentPin.getPassword().length == 6)
+        if(getCurrentPin(txtCurrentPin).length() == 6)
             openVirtualKeyboard();
     }//GEN-LAST:event_txtNewMasterPinMousePressed
 
     private void txtConfirmationNewMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtConfirmationNewMasterPinMousePressed
-        if(txtNewMasterPin.getPassword().length == 6)
+        if(getCurrentPin(txtNewMasterPin).length() == 6)
             openVirtualKeyboard();
     }//GEN-LAST:event_txtConfirmationNewMasterPinMousePressed
 
@@ -800,7 +797,29 @@ public class NewPIN extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCurrentPinMousePressed
 
     private void btnFinishNewPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMousePressed
-        // TODO add your handling code here:
+        String currentPin = getCurrentPin(txtCurrentPin);
+        String newMasterPin = getCurrentPin(txtNewMasterPin);
+        String confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin);
+        //TEST.
+        String databaseCurrentPin = "123456";
+        
+        if(currentPin.isEmpty() || newMasterPin.isEmpty() || confirmationNewMasterPin.isEmpty())
+            displayMessage("Please fill all PIN fields.", "Empty PIN field(s)!");
+        else if(!currentPin.equals(databaseCurrentPin)) {
+            //If the current pin doesn't match the database.
+            displayMessage("The current pin is wrong.", "Invalid!");
+            clearPinFields();
+        } else if(!newMasterPin.equals(confirmationNewMasterPin)) {
+            //If new master pin doesn't match the confirmation.
+            displayMessage("The new pins don't match.", "Invalid!");
+        } else {
+            /*
+                => send data to database;
+                => update pin;
+                => proceed to login.
+            */
+            goToLogin();
+        }
     }//GEN-LAST:event_btnFinishNewPinMousePressed
 
     private void btnFinishNewPinMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMouseExited
@@ -869,18 +888,36 @@ public class NewPIN extends javax.swing.JFrame {
     private void keyboardButtonsMousePressed(java.awt.event.MouseEvent evt) {
         JLabel button = (JLabel) evt.getComponent();
         String buttonNumber = button.getText();
-        int pinCurrentLength = txtMasterPin.getPassword().length;
-        int confirmPinCurrentLength = txtConfirmationMasterPin.getPassword().length;
         
         //Checks if the next number can fit into the 6-digit pin.
         //Passes to the next field when the previous is full.
+        //Closes virtual keyboard when every field is full.
         if(index != 2){
+            int pinCurrentLength = getCurrentPin(txtMasterPin).length();
+            int confirmPinCurrentLength = getCurrentPin(txtConfirmationMasterPin).length();
+            
             if(pinCurrentLength + 1 <= 6)
                 addNumberToPin(buttonNumber, txtMasterPin);
             else if(confirmPinCurrentLength + 1 < 6)
                 addNumberToPin(buttonNumber, txtConfirmationMasterPin);
             else if(confirmPinCurrentLength + 1 == 6) {
                 addNumberToPin(buttonNumber, txtConfirmationMasterPin);
+                closeVirtualKeyboard();
+            } else
+                closeVirtualKeyboard();
+        } else{
+            int currentPinFieldLength = getCurrentPin(txtCurrentPin).length();
+            int newPinFieldLength = getCurrentPin(txtNewMasterPin).length();
+            int confirmNewPinFieldLength = getCurrentPin(txtConfirmationNewMasterPin).length();
+            
+            if(currentPinFieldLength + 1 <= 6)
+                addNumberToPin(buttonNumber, txtCurrentPin);
+            else if(newPinFieldLength + 1 <= 6)
+                addNumberToPin(buttonNumber, txtNewMasterPin);
+            else if(confirmNewPinFieldLength + 1 < 6) {
+                addNumberToPin(buttonNumber, txtConfirmationNewMasterPin);
+            } else if(confirmNewPinFieldLength + 1 == 6) {
+                addNumberToPin(buttonNumber, txtConfirmationNewMasterPin);
                 closeVirtualKeyboard();
             } else
                 closeVirtualKeyboard();
@@ -895,23 +932,39 @@ public class NewPIN extends javax.swing.JFrame {
     
     //Gets the current pin of a given pin field and returns it as a string.
     private String getCurrentPin(JPasswordField passwordField) {
-        return String.valueOf(passwordField.getPassword());
+        return String.valueOf(passwordField.getPassword()).trim();
     }
     
     //Clears both pin fields.
     private void clearPinFields() {
         if(index == 2){
-            
+            txtCurrentPin.setText(null);
+            txtNewMasterPin.setText(null);
+            txtConfirmationNewMasterPin.setText(null);
         }else{
             txtMasterPin.setText(null);
             txtConfirmationMasterPin.setText(null);
         }
     }
     
-    //Sends user to Login frame.
+    /**
+     * Sends the user to login Frame.
+     */
     private void goToLogin() {
         new Login();
         this.dispose();
+    }
+    
+    /**
+     * Displays a warning message to the user.
+     * @param message Message to be displayed.
+     * @param title Title of the message dialog.
+     */
+    private void displayMessage(String message, String title){
+        JOptionPane.showMessageDialog(null, 
+                                    message, 
+                                    title, 
+                                    JOptionPane.WARNING_MESSAGE);
     }
     
     /**
