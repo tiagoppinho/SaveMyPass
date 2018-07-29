@@ -5,4 +5,6 @@ test/
 src/pck/Encryptor.java
 manifest.mf
 db/
-src/pck/DatabaseHelper.java
+src/pck/DatabaseHandler.java
+src/pck/img/Star_30px_gold.png
+src/pck/img/Star_Filled_30px_gold.png
