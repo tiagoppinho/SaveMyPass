@@ -30,6 +30,12 @@ public class Dashboard extends javax.swing.JFrame {
     //All cards table model.
     private final DefaultTableModel customModelAllCards = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
+            /*switch(columnIndex){
+                case 1:
+                    return ImageIcon.class;
+                default:
+                    return String.class;
+            } */
             return String.class;
         }
     };
@@ -474,25 +480,15 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsPanel.setBounds(240, 160, 670, 480);
 
         favouritesPanel.setBackground(new java.awt.Color(255, 255, 255));
+        favouritesPanel.setLayout(null);
 
-        jLabel5.setText("Favourites");
-
-        javax.swing.GroupLayout favouritesPanelLayout = new javax.swing.GroupLayout(favouritesPanel);
-        favouritesPanel.setLayout(favouritesPanelLayout);
-        favouritesPanelLayout.setHorizontalGroup(
-            favouritesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(favouritesPanelLayout.createSequentialGroup()
-                .addGap(172, 172, 172)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(330, Short.MAX_VALUE))
-        );
-        favouritesPanelLayout.setVerticalGroup(
-            favouritesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(favouritesPanelLayout.createSequentialGroup()
-                .addGap(84, 84, 84)
-                .addComponent(jLabel5)
-                .addContainerGap(382, Short.MAX_VALUE))
-        );
+        jLabel5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(51, 153, 255));
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("Coming soon...");
+        jLabel5.setToolTipText("");
+        favouritesPanel.add(jLabel5);
+        jLabel5.setBounds(0, -2, 670, 310);
 
         getContentPane().add(favouritesPanel);
         favouritesPanel.setBounds(240, 160, 670, 480);
@@ -846,7 +842,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
         //Sets empty colum names (headers).
-        String tableHeaders[] = {""};
+        String tableHeaders[] = {""/*, ""*/};
         customModelAllCards.setColumnIdentifiers(tableHeaders);
         customModelNotes.setColumnIdentifiers(tableHeaders);
         allCardsTable.setDefaultEditor(Object.class, null);
@@ -855,14 +851,13 @@ public class Dashboard extends javax.swing.JFrame {
         notesTable.setRowHeight(55);
         allCardsTable.setModel(customModelAllCards);
         notesTable.setModel(customModelNotes);
-        //ImageIcon img = new ImageIcon("img/Hide_24px.png");
-        //allCardsTable.setValueAt(img, 0, 1);
+        //allCardsTable.getColumnModel().getColumn(0).setMinWidth(620);
         
         //Values should be given by the database.
         //TEST porpuses only.
         String titlesAllCards[] = {"Gmail", "Outlook", "Icons 8"};
         String usernames[] = {"tiagoppinho@gmail.com", "tiagoppinho@outlook.pt", "tiagoppinho"};
-        String titlesNotes[] = {/*"Nota1", "Nota2", "Nota3"*/};
+        String titlesNotes[] = {"Nota1", "Nota2", "Nota3"};
         String infoNotes[] = {"Nota1 parte do texto (60 caracters)", "Nota2 parte do texto (60 caracters)", "Nota3 parte do texto (60 caracters)"};
                 
         /* --------------------------------------------- TESTING AREA -------------------------------------------------- */
@@ -938,7 +933,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveSettingsMousePressed
 
     private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allCardsTableMousePressed
-        System.out.println(allCardsTable.getSelectedRow());
+        System.out.println(allCardsTable.getSelectedColumn());
     }//GEN-LAST:event_allCardsTableMousePressed
 
     private void buttonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonsMouseEntered
@@ -993,7 +988,7 @@ public class Dashboard extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }
-    
+       
     /**
      * Adds new styled data to a table model and sends the new row of data to the top.
      * @param model - table model to add data.
@@ -1005,8 +1000,9 @@ public class Dashboard extends javax.swing.JFrame {
         sb.append(data[0]);
         sb.append("</b></font><br><br>");
         sb.append(data[1]).append("</html>");
-        String finalData = sb.toString();
-        model.addRow(new Object[]{finalData});
+        String finalData = sb.toString();/*
+        ImageIcon img = new ImageIcon(new Dashboard().getClass().getResource("img/Star_Filled_30px_gold.png"));*/
+        model.addRow(new Object[]{finalData/*, img*/});
         if(model.getRowCount() > 1)
             model.moveRow(model.getRowCount() - 1, model.getRowCount() - 1, 0);
     }
