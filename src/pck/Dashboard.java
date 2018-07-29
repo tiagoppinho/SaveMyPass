@@ -999,8 +999,8 @@ public class Dashboard extends javax.swing.JFrame {
        
     /**
      * Adds new styled data to a table model and sends the new row of data to the top.
-     * @param model - table model to add data.
-     * @param data  - data to be added.
+     * @param model Table model to add data.
+     * @param data Data to be added.
      */
     public static void addNewTableRow(DefaultTableModel model, String[] data) {
         StringBuilder sb = new StringBuilder();
@@ -1097,7 +1097,7 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Activates a new side panel button with a given component (button), based on it's number.
      * Applies the respective properties of an active side panel button.
-     * @param button - given button to set as active.
+     * @param button Given button to set as active.
      */
     private void activateNewSidePanelButton(Component button) {
         int buttonNumber = Integer.valueOf(button.getName());

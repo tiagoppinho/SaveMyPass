@@ -18,7 +18,7 @@ public class Customization {
     
     /**
      * Applies underlined text font to a JLabel.
-     * @param jLabel - JLabel where the underlined text font will be applied.
+     * @param jLabel JLabel where the underlined text font will be applied.
      */
     public static void underlineText(JLabel jLabel) {
         Font font = jLabel.getFont();
@@ -29,8 +29,8 @@ public class Customization {
     
     /**
      * Applies draggability events to an undecorated Frame.
-     * @param jPanel - Panel responsible for the events needed to move the Frame.
-     * @param jFrame - The Frame that's going to be moved.
+     * @param jPanel Panel responsible for the events needed to move the Frame.
+     * @param jFrame The Frame that's going to be moved.
      */
     public static void applyDraggability(JPanel jPanel, JFrame jFrame) {
         jPanel.addMouseListener(new java.awt.event.MouseAdapter() {

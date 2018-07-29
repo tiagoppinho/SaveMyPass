@@ -13,7 +13,7 @@ public class KeyboardHandler {
     
     /**
      * Applies properties to the virtual keyboard buttons received.
-     * @param keyboardButtons - array of keyboard buttons to apply properties.
+     * @param keyboardButtons Array of keyboard buttons to apply properties.
      */
     public static void applyVirtualKeyboardButtonsProperties(JLabel[] keyboardButtons) {
         for(JLabel keyboardButton : keyboardButtons) {
@@ -42,7 +42,7 @@ public class KeyboardHandler {
     
     /**
      * Generates new random numbers between 0 and 9 to the virtual keyboard buttons.
-     * @param keyboardButtons - array of keyboard buttons to receive new numbers.
+     * @param keyboardButtons Array of keyboard buttons to receive new numbers.
      */
     public static void generateNewNumbersForKeyboard(JLabel[] keyboardButtons) {
         ArrayList<Integer> numbers = new ArrayList<>();   
