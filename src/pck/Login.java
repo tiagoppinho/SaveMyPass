@@ -1,5 +1,9 @@
 package pck;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -27,9 +31,22 @@ public class Login extends javax.swing.JFrame {
     
     //First time executing?
     private boolean isFirstTime() {
-        //TEST only.
-        //Will work as supposed as soon as database is connected to project.
-        return false;
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            connection.setAutoCommit(false);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
+            
+            if(resultSet.next())
+                return false;
+            
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -507,19 +524,20 @@ public class Login extends javax.swing.JFrame {
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         String pin = getCurrentPin();
         String pinValueFromDatabase = "123456"; //Example for testing.
-        if(pin.equals(pinValueFromDatabase)) {
+        
+        if(!pin.equals(pinValueFromDatabase)) {
+            //Wrong PIN.
+            JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
+            txtPin.setText(null);
+        }else if(pin.isEmpty()) {
+            //Pin field is empty.
+            JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
+        }else{
             //Session started, user is logged in.
             Dashboard dashboard = new Dashboard();
             dashboard.setVisible(true);
             this.dispose();
-        } else if(pin.isEmpty()) {
-            //Pin field is empty.
-            JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
-        }else{
-            //Wrong PIN.
-            JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
-            txtPin.setText(null);
-        }
+        }        
     }//GEN-LAST:event_btnLoginMousePressed
 
     private void closeKeyboardMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeKeyboardMousePressed
