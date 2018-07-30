@@ -2,7 +2,9 @@ package pck;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  *
@@ -12,6 +14,10 @@ public class DatabaseHandler {
     
     private static final String CONNECTION_PATH = "jdbc:sqlite:db/passwordmanager.sqlite";
     
+    /**
+     * Gets the database connection and returns it.
+     * @return Connection
+     */
     public static Connection getConnection(){
         try {
             Class.forName("org.sqlite.JDBC");
