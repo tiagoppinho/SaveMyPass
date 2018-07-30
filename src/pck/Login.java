@@ -29,7 +29,10 @@ public class Login extends javax.swing.JFrame {
         }
     }
     
-    //First time executing?
+    /**
+     * Checks if it's the first time using the app, based on database data.
+     * @return Boolean
+     */
     private boolean isFirstTime() {
         Connection connection = DatabaseHandler.getConnection();
         try{
