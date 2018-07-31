@@ -526,9 +526,8 @@ public class Login extends javax.swing.JFrame {
 
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         String pin = getCurrentPin();
-        String pinValueFromDatabase = "123456"; //Example for testing.
         
-        if(!pin.equals(pinValueFromDatabase)) {
+        if(!pin.equals(DatabaseHandler.getDatabaseCurrentPin())) {
             //Wrong PIN.
             JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
             txtPin.setText(null);
