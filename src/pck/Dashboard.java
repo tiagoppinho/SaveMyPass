@@ -924,7 +924,7 @@ public class Dashboard extends javax.swing.JFrame {
                                                 "Change master PIN", JOptionPane.YES_NO_OPTION,
                                                 JOptionPane.WARNING_MESSAGE);
         if(confirm == JOptionPane.YES_OPTION){
-            NewPIN changePin = new NewPIN(2);
+            NewPin changePin = new NewPin(2);
             changePin.setVisible(true);
             changePin.requestFocusInWindow();
             this.dispose();

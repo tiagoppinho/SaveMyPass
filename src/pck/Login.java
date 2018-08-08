@@ -24,7 +24,7 @@ public class Login extends javax.swing.JFrame {
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
             this.setVisible(true);
         } else {
-            NewPIN firstTimeSetup = new NewPIN(1);
+            NewPin firstTimeSetup = new NewPin(1);
             firstTimeSetup.setVisible(true);
         }
     }
@@ -551,7 +551,7 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtPinMousePressed
 
     private void forgotPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotPinMousePressed
-        ForgotPIN forgot = new ForgotPIN();
+        ForgotPin forgot = new ForgotPin();
         forgot.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_forgotPinMousePressed
