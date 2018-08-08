@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * @author Tiago Pinho
  */
 public class Login extends javax.swing.JFrame {
-
+    
     //Virtual keyboard handler.
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
@@ -527,13 +527,13 @@ public class Login extends javax.swing.JFrame {
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         String pin = getCurrentPin();
         
-        if(!pin.equals(DatabaseHandler.getDatabaseCurrentPin())) {
+        if(pin.isEmpty()) {
+            //Pin field is empty.
+            JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
+        }else if(!pin.equals(new PinHandler().getCurrentPin())) {
             //Wrong PIN.
             JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
             txtPin.setText(null);
-        }else if(pin.isEmpty()) {
-            //Pin field is empty.
-            JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
         }else{
             //Session started, user is logged in.
             Dashboard dashboard = new Dashboard();
