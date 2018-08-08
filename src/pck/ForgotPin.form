@@ -8,9 +8,6 @@
       <Dimension value="[377, 430]"/>
     </Property>
     <Property name="undecorated" type="boolean" value="true"/>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[377, 430]"/>
-    </Property>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
@@ -324,13 +321,11 @@
         <Component class="javax.swing.JTextField" name="txtSecondSecurityQuestion">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="Second security question"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtFirstSecurityQuestion">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="First security question"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="gotoLogin">
