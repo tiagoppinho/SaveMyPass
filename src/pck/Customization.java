@@ -5,6 +5,7 @@ import java.awt.font.TextAttribute;
 import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -56,5 +57,17 @@ public class Customization {
         int x = evt.getXOnScreen();
         int y = evt.getYOnScreen();
         jFrame.setLocation(x - xx, y - xy);
+    }
+    
+    /**
+     * Displays a warning message to the user.
+     * @param message Message to be displayed.
+     * @param title Title of the message dialog.
+     */
+    public static void displayWarningMessage(String message, String title){
+        JOptionPane.showMessageDialog(null, 
+                                    message, 
+                                    title, 
+                                    JOptionPane.WARNING_MESSAGE);
     }
 }
