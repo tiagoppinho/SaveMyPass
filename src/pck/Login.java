@@ -40,7 +40,6 @@ public class Login extends javax.swing.JFrame {
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
         try{
-            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
             
