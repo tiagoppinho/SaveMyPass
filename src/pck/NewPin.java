@@ -1,5 +1,12 @@
 package pck;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -8,7 +15,7 @@ import javax.swing.JPasswordField;
  *
  * @author Tiago Pinho
  */
-public class NewPIN extends javax.swing.JFrame {
+public class NewPin extends javax.swing.JFrame {
 
     private int index = 0;
     
@@ -16,7 +23,12 @@ public class NewPIN extends javax.swing.JFrame {
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
     
-    public NewPIN() {
+    private String currentMasterPin = null;
+    
+    private Connection connection = null;
+    
+    public NewPin() {
+        this.connection = DatabaseHandler.getConnection();
         initComponents();
         this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
@@ -26,8 +38,9 @@ public class NewPIN extends javax.swing.JFrame {
     //0 - Forgot PIN
     //1 - First Time
     //2 - Change PIN
-    public NewPIN(int index) {
+    public NewPin(int index) {
         this.index = index;
+        this.connection = DatabaseHandler.getConnection();
         initComponents();
         this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
@@ -678,6 +691,7 @@ public class NewPIN extends javax.swing.JFrame {
             mainPanel.setVisible(false);
             changePINPanel.setVisible(true);
             this.setTitle("SaveMyPass - Change PIN");
+            loadCurrentPin();
         }
         
         //Adds the event listener of clicking on the virtual keyboard buttons.
@@ -710,10 +724,22 @@ public class NewPIN extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNextOrFinishMouseExited
 
     private void btnMainCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMainCloseMousePressed
+        try {
+            if(!connection.isClosed())
+                connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         System.exit(0);
     }//GEN-LAST:event_btnMainCloseMousePressed
 
     private void btnSecondaryCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSecondaryCloseMousePressed
+        try {
+            if(!connection.isClosed())
+                connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         System.exit(0);
     }//GEN-LAST:event_btnSecondaryCloseMousePressed
 
@@ -741,26 +767,24 @@ public class NewPIN extends javax.swing.JFrame {
     private void btnNextOrFinishMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextOrFinishMousePressed
         String pin = getCurrentPin(txtMasterPin);
         String confirmationPin = getCurrentPin(txtConfirmationMasterPin);
+        String salt = "test";
         
         if(pin.isEmpty() || confirmationPin.isEmpty())
-            displayMessage("Please fill both PIN fields.", "Empty PIN field(s)!");
+            Customization.displayWarningMessage("Please fill both PIN fields.", "Empty PIN field(s)!");
         else if(!pin.equals(confirmationPin)) {
             //If pin and confirmationPin don't match.
-            displayMessage("The PINs don't match.", "Invalid!");
+            Customization.displayWarningMessage("The PINs don't match.", "Invalid!");
             clearPinFields();
         } else if(index == 0) {
             //If user forgot his pin.
-            //Send data to database (update pin).
+            
+            updatePinOnDatabase(pin, salt);
+            
             //Proceed to login.
             goToLogin();
         } else {
             //If it's the first time setup.
-            //Continue with the setup (go to Recover Methods Setup).
-            //Send the pin to the setup frame.
-            // DON'T  put the pin in the database already.
-            
-            //RecoverMethodsSetup firstTimeSetup = new RecoverMethodsSetup(pin);
-            RecoverMethodsSetup firstTimeSetup = new RecoverMethodsSetup();
+            RecoverMethodsSetup firstTimeSetup = new RecoverMethodsSetup(pin);
             firstTimeSetup.setVisible(true);
             this.dispose();
         }
@@ -800,24 +824,26 @@ public class NewPIN extends javax.swing.JFrame {
         String currentPin = getCurrentPin(txtCurrentPin);
         String newMasterPin = getCurrentPin(txtNewMasterPin);
         String confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin);
-        //TEST.
-        String databaseCurrentPin = "123456";
         
+        //TEST.
+        String salt = "test";
+                
         if(currentPin.isEmpty() || newMasterPin.isEmpty() || confirmationNewMasterPin.isEmpty())
-            displayMessage("Please fill all PIN fields.", "Empty PIN field(s)!");
-        else if(!currentPin.equals(databaseCurrentPin)) {
+            Customization.displayWarningMessage("Please fill all PIN fields.", "Empty PIN field(s)!");
+        else if(!currentPin.equals(currentMasterPin)) {
             //If the current pin doesn't match the database.
-            displayMessage("The current pin is wrong.", "Invalid!");
+            Customization.displayWarningMessage("The current pin is wrong.", "Invalid!");
             clearPinFields();
         } else if(!newMasterPin.equals(confirmationNewMasterPin)) {
             //If new master pin doesn't match the confirmation.
-            displayMessage("The new pins don't match.", "Invalid!");
+            Customization.displayWarningMessage("The new pins don't match.", "Invalid!");
+            clearPinFields();
         } else {
-            /*
-                => send data to database;
-                => update pin;
-                => proceed to login.
-            */
+            //Send data to database.
+            
+            updatePinOnDatabase(newMasterPin, salt);
+            
+            //Proceed to login.
             goToLogin();
         }
     }//GEN-LAST:event_btnFinishNewPinMousePressed
@@ -974,16 +1000,30 @@ public class NewPIN extends javax.swing.JFrame {
         this.dispose();
     }
     
-    /**
-     * Displays a warning message to the user.
-     * @param message Message to be displayed.
-     * @param title Title of the message dialog.
-     */
-    private void displayMessage(String message, String title){
-        JOptionPane.showMessageDialog(null, 
-                                    message, 
-                                    title, 
-                                    JOptionPane.WARNING_MESSAGE);
+    private void updatePinOnDatabase(String pin, String salt){
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE User SET pin = ?, salt = ?");
+            statement.setString(1, pin);
+            statement.setString(2, salt);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void loadCurrentPin(){
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
+            resultSet.next();
+            this.currentMasterPin = resultSet.getString("pin");
+            resultSet.close();
+            statement.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
     
     /**
@@ -1003,20 +1043,21 @@ public class NewPIN extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new NewPIN().setVisible(true);
+                new NewPin().setVisible(true);
             }
         });
     }
