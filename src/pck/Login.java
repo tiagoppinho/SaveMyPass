@@ -16,9 +16,14 @@ public class Login extends javax.swing.JFrame {
     //Virtual keyboard handler.
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
+    
+    private String masterPin;
+    
+    private boolean isFirstTime = false;
       
     public Login() {
-        if(!isFirstTime()) {
+        load();
+        if(!isFirstTime) {
             initComponents();
             this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
@@ -30,18 +35,20 @@ public class Login extends javax.swing.JFrame {
     }
     
     /**
-     * Checks if it's the first time using the app, based on database data.
-     * @return Boolean
+     * Loads the Login data and checks if it's the first time using the app, based on the available database data.
      */
-    private boolean isFirstTime() {
+    private void load() {
         Connection connection = DatabaseHandler.getConnection();
         try{
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
             
-            if(resultSet.next())
-                return false;
+            if(!resultSet.next())
+                this.isFirstTime = true;
+            else{
+                this.masterPin = resultSet.getString("pin");
+            }
             
             resultSet.close();
             statement.close();
@@ -49,7 +56,6 @@ public class Login extends javax.swing.JFrame {
         }catch(SQLException ex){
             ex.printStackTrace();
         }
-        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -530,7 +536,7 @@ public class Login extends javax.swing.JFrame {
         if(pin.isEmpty()) {
             //Pin field is empty.
             JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
-        }else if(!pin.equals(new PinHandler().getCurrentPin())) {
+        }else if(!pin.equals(masterPin)) {
             //Wrong PIN.
             JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
             txtPin.setText(null);
