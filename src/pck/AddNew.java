@@ -95,7 +95,7 @@ public class AddNew extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 128, 255));
-        jLabel2.setText("Card Name");
+        jLabel2.setText("Card Name / Service");
 
         txtCardName.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
 
@@ -387,7 +387,8 @@ public class AddNew extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
-        String generatedPassword = PasswordGenerator.generateRandomPassword(20);
+        //Test value - 20 - 64.
+        String generatedPassword = new PasswordGenerator().generateRandomPassword(50);
         txtPassword.setText(generatedPassword);
     }//GEN-LAST:event_generatePasswordMousePressed
 
