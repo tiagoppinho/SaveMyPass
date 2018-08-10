@@ -282,7 +282,7 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
         String salt = "test";
         
         if(firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
-            JOptionPane.showMessageDialog(null, "Please fill both answers.", "Empty answer(s)!", JOptionPane.WARNING_MESSAGE);
+            Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
         else if(!pin.isEmpty()){
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
