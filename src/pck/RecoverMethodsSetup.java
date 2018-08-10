@@ -1,5 +1,8 @@
 package pck;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 
@@ -276,13 +279,29 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
         String secondSecurityQuestion = String.valueOf(securityQuestion2.getSelectedItem()).trim();
         String firstSecurityAnswer = securityAnswer1.getText().trim();
         String secondSecurityAnswer = securityAnswer2.getText().trim();
+        String salt = "test";
         
         if(firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
             JOptionPane.showMessageDialog(null, "Please fill both answers.", "Empty answer(s)!", JOptionPane.WARNING_MESSAGE);
-        else {
+        else if(!pin.isEmpty()){
             //Send data to database.
-            //Send pin to database.
-            //Set firstTime field as false in database.
+            Connection connection = DatabaseHandler.getConnection();
+            try{
+                connection.setAutoCommit(false);
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
+                statement.setString(1, pin);
+                statement.setString(2, salt);
+                statement.setString(3, firstSecurityQuestion);
+                statement.setString(4, firstSecurityAnswer);
+                statement.setString(5, secondSecurityQuestion);
+                statement.setString(6, secondSecurityAnswer);
+                statement.executeUpdate();
+                connection.commit();
+                statement.close();
+                connection.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }
             //Proceed to login.
             new Login();
             this.dispose();
