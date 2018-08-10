@@ -534,10 +534,10 @@ public class Login extends javax.swing.JFrame {
         
         if(pin.isEmpty()) {
             //Pin field is empty.
-            JOptionPane.showMessageDialog(null, "PIN field is empty.", "Empty PIN!", JOptionPane.WARNING_MESSAGE);
+            Customization.displayWarningMessage("PIN field is empty.", "Empty PIN!");
         }else if(!pin.equals(masterPin)) {
             //Wrong PIN.
-            JOptionPane.showMessageDialog(null, "Wrong PIN. Try again!", "Invalid PIN!", JOptionPane.WARNING_MESSAGE);
+            Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
             txtPin.setText(null);
         }else{
             //Session started, user is logged in.
