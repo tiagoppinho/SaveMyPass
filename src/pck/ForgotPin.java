@@ -1,15 +1,41 @@
 package pck;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Tiago Pinho
  */
-public class ForgotPIN extends javax.swing.JFrame {
-
-    public ForgotPIN() {
+public class ForgotPin extends javax.swing.JFrame {
+    
+    private String firstAnswer;
+    private String secondAnswer;
+    
+    public ForgotPin() {
         initComponents();
+        load();
+    }
+    
+    private void load(){
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
+            resultSet.next();
+            txtFirstSecurityQuestion.setText(resultSet.getString("firstSecurity"));
+            this.firstAnswer = resultSet.getString("firstAnswer");
+            txtSecondSecurityQuestion.setText(resultSet.getString("secondSecurity"));
+            this.secondAnswer = resultSet.getString("secondAnswer");
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -37,7 +63,6 @@ public class ForgotPIN extends javax.swing.JFrame {
         setTitle("SaveMyPass - Forgot PIN");
         setMinimumSize(new java.awt.Dimension(377, 430));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(377, 430));
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -158,10 +183,8 @@ public class ForgotPIN extends javax.swing.JFrame {
         });
 
         txtSecondSecurityQuestion.setEditable(false);
-        txtSecondSecurityQuestion.setText("Second security question");
 
         txtFirstSecurityQuestion.setEditable(false);
-        txtFirstSecurityQuestion.setText("First security question");
 
         gotoLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         gotoLogin.setForeground(new java.awt.Color(51, 153, 255));
@@ -242,13 +265,6 @@ public class ForgotPIN extends javax.swing.JFrame {
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(gotoLogin);
-        /*
-            Get data from database:
-              - First security question.
-              - Second security question.
-        
-            Apply data to the fields.
-        */
     }//GEN-LAST:event_formComponentShown
 
     private void btnNextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMouseEntered
@@ -268,14 +284,11 @@ public class ForgotPIN extends javax.swing.JFrame {
         String secondSecurityAnswer = txtSecurityAnswer2.getText().trim();
         
         if(firstSecurityAnswer.length() == 0 || secondSecurityAnswer.length() == 0) {
-            JOptionPane.showMessageDialog(null, "Please fill both answers.", "Empty answer(s)!", JOptionPane.WARNING_MESSAGE);
+            Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
+        }else if(!firstSecurityAnswer.equals(firstAnswer) || !secondSecurityAnswer.equals(secondAnswer)){
+            Customization.displayWarningMessage("Check your answer(s). They are not correct.", "Invalid answer(s)!");
         } else {
-            /*
-                If they don't match the database answers:
-                    Tell user that one or more answers are not correct.
-                    JOptionPane.showMessageDialog(null, "Please check your answers and try again!", "Wrong answer(s)!", JOptionPane.WARNING_MESSAGE);
-            */
-            NewPIN forgotNewPIN = new NewPIN(0);
+            NewPin forgotNewPIN = new NewPin(0);
             forgotNewPIN.setVisible(true);
             this.dispose();
         }
@@ -294,7 +307,7 @@ public class ForgotPIN extends javax.swing.JFrame {
     private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseExited
         gotoLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
     }//GEN-LAST:event_gotoLoginMouseExited
-
+    
     /**
      * @param args the command line arguments
      */
@@ -312,20 +325,21 @@ public class ForgotPIN extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ForgotPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ForgotPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ForgotPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ForgotPIN.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ForgotPIN().setVisible(true);
+                new ForgotPin().setVisible(true);
             }
         });
     }
