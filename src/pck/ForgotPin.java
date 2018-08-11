@@ -23,7 +23,8 @@ public class ForgotPin extends javax.swing.JFrame {
         Connection connection = DatabaseHandler.getConnection();
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
+            ResultSet resultSet = statement.executeQuery("SELECT firstSecurity, firstAnswer, "
+                                                         + "secondSecurity, secondAnswer FROM User");
             resultSet.next();
             txtFirstSecurityQuestion.setText(resultSet.getString("firstSecurity"));
             this.firstAnswer = resultSet.getString("firstAnswer");

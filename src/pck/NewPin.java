@@ -1020,7 +1020,7 @@ public class NewPin extends javax.swing.JFrame {
     private void loadCurrentPin(){
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
+            ResultSet resultSet = statement.executeQuery("SELECT pin FROM User");
             resultSet.next();
             this.currentMasterPin = resultSet.getString("pin");
             resultSet.close();
