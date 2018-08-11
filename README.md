@@ -20,6 +20,7 @@ Simple offline password manager initially made for my own use and as an academic
 * AES-256 password data encryption.
 * Hashed master pin (with salt).
 * Hashed security question answers.
+* Auto-logout after a timer set by the user.
 * Add password card to favorites.
 * Delete all database (for emergencies).
 
