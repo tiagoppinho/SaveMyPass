@@ -2,6 +2,10 @@ package pck;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,7 +20,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
-    
+        
     /* -------------------- Side Panel Buttons -------------- */
     private Component[] sidePanelButtons = new JPanel[4];
     private JLabel[] sidePanelButtonsMarker = new JLabel[4];
@@ -47,34 +51,65 @@ public class Dashboard extends javax.swing.JFrame {
         }
     };
     
-    /* ------------------------ Settings components value ---------------- */
-    //private Component[] settingsFields = new Component[7];
-    /* ------------------------------------------------------------------- */
-    
     public Dashboard() {
         initComponents();
         this.sidePanelButtons = new Component[]{btnAllCards, btnFavourites, btnNotes, btnSettings};
         this.sidePanelButtonsMarker = new JLabel[]{btnAllCardsMarker, btnFavouritesMarker, btnNotesMarker, btnSettingsMarker};
         this.mainPanels = new JPanel[]{allCardsPanel, favouritesPanel, notesPanel, settingsPanel};
         this.titleButtons = new JLabel[]{btnAddNewCard, null, btnAddNewNote, null};
-        //this.settingsFields = new Component[]{lengthSlider, uppercaseLetters, lowercaseLetters, numbers, specialCharacters, autoLogoutEnabled, autoLogoutTimerComboBox};
         this.activeSidePanelButton = sidePanelButtons[0];
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
-        loadSettings();
+        String tableHeaders[] = {""/*, ""*/};
+        customModelAllCards.setColumnIdentifiers(tableHeaders);
+        customModelNotes.setColumnIdentifiers(tableHeaders);
+        allCardsTable.setDefaultEditor(Object.class, null);
+        allCardsTable.setRowHeight(55);
+        notesTable.setDefaultEditor(Object.class, null);
+        notesTable.setRowHeight(55);
+        allCardsTable.setModel(customModelAllCards);
+        notesTable.setModel(customModelNotes);
+        //allCardsTable.getColumnModel().getColumn(0).setMinWidth(620);
+        loadData();
+        btnSaveSettings.setVisible(false);
     }
     
-    private void loadSettings(){
-        lengthSlider.setValue(20);
-        uppercaseLetters.setSelected(true);
-        lowercaseLetters.setSelected(true);
-        numbers.setSelected(true);
-        specialCharacters.setSelected(true);
-        security.setText("Strong");
-        autoLogoutEnabled.setSelected(true);
-        autoLogoutTimerComboBox.setSelectedIndex(0);
-        btnSaveSettings.setVisible(false);
+    private void loadData(){
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
+            while(resultSet.next()){
+                addNewTableRow(customModelAllCards, new String[]{
+                    resultSet.getString("title"), resultSet.getString("username")
+                });
+            }
+            resultSet.close();
+            resultSet = statement.executeQuery("SELECT title, description FROM Notes");
+            while(resultSet.next()){
+                addNewTableRow(customModelNotes, new String[]{
+                    resultSet.getString("title"), 
+                    resultSet.getString("description").substring(0, 61) + "..."
+                });
+            }
+            resultSet.close();
+            resultSet = statement.executeQuery("SELECT * FROM Settings");
+            resultSet.next();
+            lengthSlider.setValue(resultSet.getInt("passwordLength"));
+            uppercaseLetters.setSelected(resultSet.getBoolean("passwordUppercase"));
+            lowercaseLetters.setSelected(resultSet.getBoolean("passwordLowercase"));
+            numbers.setSelected(resultSet.getBoolean("passwordNumbers"));
+            specialCharacters.setSelected(resultSet.getBoolean("passwordSpecialCharacters"));
+            security.setText(resultSet.getString("passwordSecurity"));
+            autoLogoutEnabled.setSelected(resultSet.getBoolean("autoLogoutEnabled"));
+            autoLogoutTimerComboBox.setSelectedIndex(resultSet.getInt("autoLogoutTimerIndex"));
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -840,41 +875,6 @@ public class Dashboard extends javax.swing.JFrame {
                 }
             });
         }
-        
-        //Sets empty colum names (headers).
-        String tableHeaders[] = {""/*, ""*/};
-        customModelAllCards.setColumnIdentifiers(tableHeaders);
-        customModelNotes.setColumnIdentifiers(tableHeaders);
-        allCardsTable.setDefaultEditor(Object.class, null);
-        allCardsTable.setRowHeight(55);
-        notesTable.setDefaultEditor(Object.class, null);
-        notesTable.setRowHeight(55);
-        allCardsTable.setModel(customModelAllCards);
-        notesTable.setModel(customModelNotes);
-        //allCardsTable.getColumnModel().getColumn(0).setMinWidth(620);
-        
-        //Values should be given by the database.
-        //TEST porpuses only.
-        String titlesAllCards[] = {"Gmail", "Outlook", "Icons 8"};
-        String usernames[] = {"tiagoppinho@gmail.com", "tiagoppinho@outlook.pt", "tiagoppinho"};
-        String titlesNotes[] = {"Nota1", "Nota2", "Nota3"};
-        String infoNotes[] = {"Nota1 parte do texto (60 caracters)", "Nota2 parte do texto (60 caracters)", "Nota3 parte do texto (60 caracters)"};
-                
-        /* --------------------------------------------- TESTING AREA -------------------------------------------------- */
-        
-        for(int j = 0; j < titlesAllCards.length; j++)
-            addNewTableRow(customModelAllCards, new String[]{titlesAllCards[j], usernames[j]});
-        
-        //checkForNewTableValues(0);
-        
-        for(int j = 0; j < titlesNotes.length; j++)
-            addNewTableRow(customModelNotes, new String[]{titlesNotes[j], infoNotes[j]});
-        
-        //checkForNewTableValues(1);
-            
-        /* ------------------------------------------------------------------------------------------------------------- */
-        
-        
     }//GEN-LAST:event_formComponentShown
 
     private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMousePressed
