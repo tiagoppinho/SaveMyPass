@@ -75,6 +75,9 @@ public class Dashboard extends javax.swing.JFrame {
         btnSaveSettings.setVisible(false);
     }
     
+    /**
+     * Loads all the data from database needed for Dashboard.
+     */
     private void loadData(){
         Connection connection = DatabaseHandler.getConnection();
         try{
@@ -86,11 +89,14 @@ public class Dashboard extends javax.swing.JFrame {
                 });
             }
             resultSet.close();
-            resultSet = statement.executeQuery("SELECT title, description FROM Notes");
+            resultSet = statement.executeQuery("SELECT * FROM Notes");
+            String title, description;
             while(resultSet.next()){
+                title = resultSet.getString("title");
+                description = resultSet.getString("description");
                 addNewTableRow(customModelNotes, new String[]{
-                    resultSet.getString("title"), 
-                    resultSet.getString("description").substring(0, 61) + "..."
+                    title,
+                    (description.length() > 60) ? description.substring(0, 61) + "..." : description
                 });
             }
             resultSet.close();
@@ -990,13 +996,11 @@ public class Dashboard extends javax.swing.JFrame {
     
     /**
      * Pops up the Add New frame.
-     * @param index Integer between 0 and 3.
+     * @param index Integer.
      * <br>
-     * 0 - Forgot Pin.
+     * 0 - New Card.
      * <br>
-     * 1 - First Time Setup.
-     * <br>
-     * 2 - Change Master Pin.
+     * 1 - New Note.
      */
     private void addNewItem(int index) {
         try{
