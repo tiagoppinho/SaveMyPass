@@ -286,7 +286,6 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try{
-                connection.setAutoCommit(false);
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
                 statement.setString(1, pin);
                 statement.setString(2, salt);
@@ -295,7 +294,6 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
                 statement.setString(5, secondSecurityQuestion);
                 statement.setString(6, secondSecurityAnswer);
                 statement.executeUpdate();
-                connection.commit();
                 statement.close();
                 connection.close();
             }catch(SQLException ex){
