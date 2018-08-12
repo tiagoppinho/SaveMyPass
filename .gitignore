@@ -1,9 +1,10 @@
+manifest.mf
 nbproject/private/
 build/
 dist/
 test/
 db/
-manifest.mf
+store/
 src/pck/Encryptor.java
 src/pck/Hasher.java
 src/pck/img/Star_30px_gold.png
