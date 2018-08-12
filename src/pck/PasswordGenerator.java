@@ -1,5 +1,9 @@
 package pck;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
 
 /**
@@ -8,57 +12,83 @@ import java.util.Random;
  */
 public class PasswordGenerator {
     
-    private final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-    private final String NUMBERS = "0123456789";
-    private final String SPECIAL_CHARACTERS = "#$%&/!=.,";
+    //Characters
+    private final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                         LOWERCASE = "abcdefghijklmnopqrstuvwxyz",
+                         NUMBERS = "0123456789",
+                         SPECIAL_CHARACTERS = "#$%&/!=.,[]{}-+*";
     
-    private boolean hasUppercase = false;
-    private boolean hasLowerCase = false;
-    private boolean hasNumbers = false;
-    private boolean hasSpecialCharacters = false;
-
+    //Settings
+    private int length;
+    private boolean uppercase, lowercase, numbers, specialCharacters;
+    
     public PasswordGenerator() {
-        resetBooleans();
+        loadSettings();
+    }
+    
+    /**
+     * Loads all the settings from database needed to generate a random secure password.
+     */
+    private void loadSettings(){
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT passwordLength, passwordUppercase,"
+                                                    + " passwordLowercase, passwordNumbers, "
+                                                    + " passwordSpecialCharacters FROM SETTINGS");
+            resultSet.next();
+            this.length = resultSet.getInt("passwordLength");
+            this.uppercase = resultSet.getBoolean("passwordUppercase");
+            this.lowercase = resultSet.getBoolean("passwordLowercase");
+            this.numbers = resultSet.getBoolean("passwordNumbers");
+            this.specialCharacters = resultSet.getBoolean("passwordSpecialCharacters");
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
     
     /**
      * Generates a random secure password.
-     * @param size Password size.
      * @return String
      */
-    public String generateRandomPassword(int size/*, boolean[] check*/){
-        String fullChars = UPPERCASE + LOWERCASE + NUMBERS + SPECIAL_CHARACTERS;
-        String generatedPassword = "";
+    public String generateRandomSecurePassword(){
+        String characters = getPasswordCharacters(uppercase, lowercase, numbers, specialCharacters);
+        StringBuilder generatedPassword = new StringBuilder();
         Random rnd = new Random();
-        while(!hasUppercase || !hasLowerCase || !hasNumbers || !hasSpecialCharacters){
-            generatedPassword = "";
-            resetBooleans();
-            for(int i = 0; i < size; i++){
-                int next = rnd.nextInt(fullChars.length());
-                //uppercase
-                if(next < 26)
-                    hasUppercase = true;
-                //lowercase
-                else if(next < 52)
-                    hasLowerCase = true;
-                //numbers
-                else if(next < 62)
-                    hasNumbers = true;
-                //special characters
-                else
-                    hasSpecialCharacters = true;
-                
-                generatedPassword += String.valueOf(fullChars.charAt(next));
-            }
+        while(generatedPassword.toString().length() < length){
+            int next = rnd.nextInt(characters.length());
+            generatedPassword.append(String.valueOf(characters.charAt(next)));
         }
-        return generatedPassword;
+        return generatedPassword.toString();
     }
     
-    private void resetBooleans(){
-        hasUppercase = false;
-        hasLowerCase = false;
-        hasNumbers = false;
-        hasSpecialCharacters = false;
+    /**
+     * Returns the password characters set based on settings.
+     * @param upper Boolean (uppercase)
+     * @param lower Boolean (lowercase)
+     * @param numbers Boolean (numbers)
+     * @param special Boolean (special characters)
+     * @return String
+     */
+    private String getPasswordCharacters(boolean upper, boolean lower, boolean numbers, boolean special){
+        StringBuilder sb = new StringBuilder();
+        
+        if(upper)
+            sb.append(UPPERCASE);
+        if(lower)
+            sb.append(LOWERCASE);
+        if(numbers)
+            sb.append(NUMBERS);
+        if(special)
+            sb.append(SPECIAL_CHARACTERS);
+        
+        return sb.toString();
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(new PasswordGenerator().generateRandomSecurePassword());
     }
 }
