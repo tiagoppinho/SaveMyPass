@@ -1,6 +1,9 @@
 package pck;
 
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +30,8 @@ public class AddNew extends javax.swing.JFrame {
             dashboard.setEnabled(false);
             initComponents();
             this.setVisible(true);
-        }
+        } else
+            throw new IllegalArgumentException("Index out of range. 0 - New Card. 1 - New Note");
         
     }
 
@@ -353,42 +357,58 @@ public class AddNew extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMousePressed
+        String dataForTable[];
         DefaultTableModel tableModel;
-        String databaseTableName;
-        String[] dataForTable;
-        String[] dataForDatabase;
+        Connection connection = DatabaseHandler.getConnection();
+        PreparedStatement statement;
         
-        if(index == 0){  
-            dataForTable = new String[]{txtCardName.getText(), txtUsername.getText()};
-            dataForDatabase = new String[]{txtCardName.getText(), txtUsername.getText(), 
-                                String.valueOf(txtPassword.getPassword())};
-            databaseTableName = "Cards";
+        if(index == 0){
+            String cardName = txtCardName.getText(), username = txtUsername.getText(),
+                   password = String.valueOf(txtPassword.getPassword());
+            
+            try{
+                statement = connection.prepareStatement("INSERT INTO Cards VALUES (?, ?, ?)");
+                statement.setString(1, cardName);
+                statement.setString(2, username);
+                statement.setString(3, password);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }
             tableModel = Dashboard.getAllCardsTableModel();
+            dataForTable = new String[]{cardName, username};
         } else {
-            String noteDescriptionShort;
+            String noteTitle = txtNoteTitle.getText(), noteDescription = txtNoteDescription.getText();
             
-            if(txtNoteDescription.getText().length() > 60)
-                noteDescriptionShort = txtNoteDescription.getText().substring(0, 60);
-            else
-                noteDescriptionShort = txtNoteDescription.getText();
-            
-            dataForTable = new String[]{txtNoteTitle.getText(), noteDescriptionShort};
-            dataForDatabase = new String[]{txtNoteTitle.getText(), txtNoteDescription.getText(), noteDescriptionShort};
-            databaseTableName = "Notes";
+            try{
+                statement = connection.prepareStatement("INSERT INTO Notes VALUES (?, ?)");
+                statement.setString(1, noteTitle);
+                statement.setString(2, noteDescription);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+            }catch(SQLException ex){
+                ex.printStackTrace();
+            }
             tableModel = Dashboard.getNotesTableModel();
+            dataForTable = new String[]{
+                noteTitle,
+                (noteDescription.length() > 60) ? noteDescription.substring(0, 61) + "..." : noteDescription
+            };
         }
         
+        //Add new table row on dashboard.
         Dashboard.addNewTableRow(tableModel, dataForTable);
-        //DatabaseHelper.updateTable(tableName, dataForDatabase);
-        
+        //Close this frame and enable dashboard.
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
     }//GEN-LAST:event_btnAddMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
-        //Test value - 20 - 64.
-        String generatedPassword = new PasswordGenerator().generateRandomPassword(50);
+        String generatedPassword = new PasswordGenerator().generateRandomSecurePassword();
         txtPassword.setText(generatedPassword);
     }//GEN-LAST:event_generatePasswordMousePressed
 
