@@ -280,12 +280,14 @@ public class ForgotPin extends javax.swing.JFrame {
     }//GEN-LAST:event_closeMousePressed
 
     private void btnNextMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMousePressed
-        String firstSecurityAnswer = txtSecurityAnswer1.getText().trim();
-        String secondSecurityAnswer = txtSecurityAnswer2.getText().trim();
+        String firstSecurityAnswer = txtSecurityAnswer1.getText().trim(),
+               secondSecurityAnswer = txtSecurityAnswer2.getText().trim(),
+               hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
+               hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
         
         if(firstSecurityAnswer.length() == 0 || secondSecurityAnswer.length() == 0) {
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
-        }else if(!firstSecurityAnswer.equals(firstAnswer) || !secondSecurityAnswer.equals(secondAnswer)){
+        }else if(!hashedFirstSecurityAnswer.equals(firstAnswer) || !hashedSecondSecurityAnswer.equals(secondAnswer)){
             Customization.displayWarningMessage("Check your answer(s). They are not correct.", "Invalid answer(s)!");
         } else {
             NewPin forgotNewPIN = new NewPin(0);

@@ -278,27 +278,33 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
         String secondSecurityQuestion = String.valueOf(securityQuestion2.getSelectedItem()).trim();
         String firstSecurityAnswer = securityAnswer1.getText().trim();
         String secondSecurityAnswer = securityAnswer2.getText().trim();
-        String salt = "test";
         
         if(firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
         else if(!pin.isEmpty()){
+            //Hash data.
+            String salt = Hasher.generateSalt(),
+                   hashedPin = Hasher.hashPin(pin, salt),
+                   hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
+                   hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
+            
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try{
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
-                statement.setString(1, pin);
+                statement.setString(1, hashedPin);
                 statement.setString(2, salt);
                 statement.setString(3, firstSecurityQuestion);
-                statement.setString(4, firstSecurityAnswer);
+                statement.setString(4, hashedFirstSecurityAnswer);
                 statement.setString(5, secondSecurityQuestion);
-                statement.setString(6, secondSecurityAnswer);
+                statement.setString(6, hashedSecondSecurityAnswer);
                 statement.executeUpdate();
                 statement.close();
                 connection.close();
             }catch(SQLException ex){
                 ex.printStackTrace();
             }
+            
             //Proceed to login.
             new Login();
             this.dispose();
