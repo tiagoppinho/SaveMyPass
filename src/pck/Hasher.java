@@ -21,13 +21,13 @@ public class Hasher {
                              KEY_LENGTH = 512;
     
     /**
-     * Salts and hashes a password with PBKDF2 (PBKDF2WithHmacSHA512).
-     * @param password Password to be hashed.
+     * Salts and hashes a master pin with PBKDF2 (PBKDF2WithHmacSHA512).
+     * @param pin Pin to be hashed.
      * @param salt 32 bytes salt to be used on the hashing process.
      * @return String
      */
-    public static String hashPassword(String password, String salt){
-        char[] passwordChars = password.toCharArray();
+    public static String hashPin(String pin, String salt){
+        char[] passwordChars = pin.toCharArray();
         try {
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PASSWORD_ALGORITHM);
             PBEKeySpec keySpec = new PBEKeySpec(passwordChars, salt.getBytes(), ITERATIONS, KEY_LENGTH);
