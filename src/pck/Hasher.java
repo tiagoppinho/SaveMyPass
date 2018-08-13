@@ -10,13 +10,13 @@ import javax.crypto.spec.PBEKeySpec;
 import java.util.Base64;
 
 /**
- * Class responsible for hashing, uses PBKDF2 for passwords and SHA-256 for security answers.
+ * Class responsible for hashing, uses PBKDF2 for pins and SHA-256 for security answers.
  * @author Tiago Pinho
  */
 public class Hasher {
     
-    private static final String PASSWORD_ALGORITHM = "PBKDF2WithHmacSHA512",
-                                STRING_ALGORITHM = "SHA-256";
+    private static final String PIN_ALGORITHM = "PBKDF2WithHmacSHA512",
+                                SECURITY_ANSWER_ALGORITHM = "SHA-256";
     private static final int ITERATIONS = 10000,
                              KEY_LENGTH = 512;
     
@@ -29,7 +29,7 @@ public class Hasher {
     public static String hashPin(String pin, String salt){
         char[] passwordChars = pin.toCharArray();
         try {
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PASSWORD_ALGORITHM);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PIN_ALGORITHM);
             PBEKeySpec keySpec = new PBEKeySpec(passwordChars, salt.getBytes(), ITERATIONS, KEY_LENGTH);
             SecretKey key = secretKeyFactory.generateSecret(keySpec);
             byte[] hashedPassword = key.getEncoded();
@@ -41,13 +41,13 @@ public class Hasher {
     }
     
     /**
-     * Hashes a security answer.
+     * Hashes a security answer using SHA-256.
      * @param securityAnswer Security answer to be hashed.
      * @return String
      */
     public static String hashSecurityAnswer(String securityAnswer){
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance(STRING_ALGORITHM);
+            MessageDigest messageDigest = MessageDigest.getInstance(SECURITY_ANSWER_ALGORITHM);
             messageDigest.update(securityAnswer.getBytes());
             return Base64.getEncoder().encodeToString(messageDigest.digest());
         } catch (NoSuchAlgorithmException ex) {
