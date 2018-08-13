@@ -20,7 +20,7 @@ public class NewPin extends javax.swing.JFrame {
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
     
-    private String currentMasterPin = null;
+    private String currentMasterPin = null, currentSalt = null;
     
     private Connection connection = null;
     
@@ -769,9 +769,9 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_txtConfirmationMasterPinMousePressed
 
     private void btnNextOrFinishMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextOrFinishMousePressed
-        String pin = getCurrentPin(txtMasterPin);
-        String confirmationPin = getCurrentPin(txtConfirmationMasterPin);
-        String salt = "test";
+        String pin = getCurrentPin(txtMasterPin),
+               confirmationPin = getCurrentPin(txtConfirmationMasterPin),
+               salt = Hasher.generateSalt(), hashedPin = Hasher.hashPin(pin, salt);
         
         if(pin.isEmpty() || confirmationPin.isEmpty())
             Customization.displayWarningMessage("Please fill both PIN fields.", "Empty PIN field(s)!");
@@ -781,9 +781,7 @@ public class NewPin extends javax.swing.JFrame {
             clearPinFields();
         } else if(index == 0) {
             //If user forgot his pin.
-            
-            updatePinOnDatabase(pin, salt);
-            
+            updatePinOnDatabase(hashedPin, salt);
             //Proceed to login.
             goToLogin();
         } else {
@@ -825,16 +823,16 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCurrentPinMousePressed
 
     private void btnFinishNewPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMousePressed
-        String currentPin = getCurrentPin(txtCurrentPin);
-        String newMasterPin = getCurrentPin(txtNewMasterPin);
-        String confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin);
-        
-        //TEST.
-        String salt = "test";
+        String currentPin = getCurrentPin(txtCurrentPin),
+               newMasterPin = getCurrentPin(txtNewMasterPin),
+               confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin),
+               hashedCurrentPin = Hasher.hashPin(currentPin, currentSalt),
+               newSalt = Hasher.generateSalt(), 
+               hashedNewPin = Hasher.hashPin(newMasterPin, newSalt);
                 
         if(currentPin.isEmpty() || newMasterPin.isEmpty() || confirmationNewMasterPin.isEmpty())
             Customization.displayWarningMessage("Please fill all PIN fields.", "Empty PIN field(s)!");
-        else if(!currentPin.equals(currentMasterPin)) {
+        else if(!hashedCurrentPin.equals(currentMasterPin)) {
             //If the current pin doesn't match the database.
             Customization.displayWarningMessage("The current pin is wrong.", "Invalid!");
             clearPinFields();
@@ -844,9 +842,7 @@ public class NewPin extends javax.swing.JFrame {
             clearPinFields();
         } else {
             //Send data to database.
-            
-            updatePinOnDatabase(newMasterPin, salt);
-            
+            updatePinOnDatabase(hashedNewPin, newSalt);
             //Proceed to login.
             goToLogin();
         }
@@ -1020,9 +1016,10 @@ public class NewPin extends javax.swing.JFrame {
     private void loadCurrentPin(){
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT pin FROM User");
+            ResultSet resultSet = statement.executeQuery("SELECT pin, salt FROM User");
             resultSet.next();
             this.currentMasterPin = resultSet.getString("pin");
+            this.currentSalt = resultSet.getString("salt");
             resultSet.close();
             statement.close();
         }catch(SQLException ex){
