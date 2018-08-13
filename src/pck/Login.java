@@ -15,7 +15,7 @@ public class Login extends javax.swing.JFrame {
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
     
-    private String masterPin;
+    private String masterPin = null, salt = null;
     
     private boolean isFirstTime = false;
       
@@ -45,6 +45,7 @@ public class Login extends javax.swing.JFrame {
                 this.isFirstTime = true;
             else{
                 this.masterPin = resultSet.getString("pin");
+                this.salt = resultSet.getString("salt");
             }
             
             resultSet.close();
@@ -528,12 +529,12 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginMouseExited
 
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
-        String pin = getCurrentPin();
+        String pin = getCurrentPin(), hashedPin = Hasher.hashPin(pin, salt);
         
         if(pin.isEmpty()) {
             //Pin field is empty.
             Customization.displayWarningMessage("PIN field is empty.", "Empty PIN!");
-        }else if(!pin.equals(masterPin)) {
+        }else if(!hashedPin.equals(masterPin)) {
             //Wrong PIN.
             Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
             txtPin.setText(null);
