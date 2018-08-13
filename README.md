@@ -4,10 +4,11 @@ Simple offline password manager initially made for my own use and as an academic
 
 ## Features
 
-* Master pin that protects all your information.
-* Two security questions in case you forgot your master pin.
 * Low-weight application with low-weight database (SQLite).
 * No internet connection needed.
+* Master pin that protects all your information.
+* Two security questions in case you forgot your master pin.
+* Strong hashing using PBKDF2.
 * Built-in virtual keyboard (everytime you need to enter your master pin or create a new one).
 * Built-in password generator.
 * Change your master pin anytime.
@@ -18,8 +19,6 @@ Simple offline password manager initially made for my own use and as an academic
 * User settings.
 * Improved password generator.
 * AES-256 password data encryption.
-* Hashed master pin (with salt).
-* Hashed security question answers.
 * Auto-logout after a timer set by the user.
 * Add password card to favorites.
 * Delete all database (for emergencies).
