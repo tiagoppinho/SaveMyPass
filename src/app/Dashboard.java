@@ -5,6 +5,7 @@ import utils.Customization;
 import utils.Constants;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -25,13 +27,21 @@ public class Dashboard extends javax.swing.JFrame {
     private JLabel[] titleButtons = new JLabel[4];
         
     /* -------------------- Side Panel Buttons -------------- */
-    private Component[] sidePanelButtons = new JPanel[4];
+    private Component sidePanelButtons[] = new JPanel[4], 
+                      activeSidePanelButton;
     private JLabel[] sidePanelButtonsMarker = new JLabel[4];
-    private Component activeSidePanelButton;
     /* ------------------------------------------------------ */
     
     /* -------------------- Main Panels --------------------- */
     private JPanel[] mainPanels = new JPanel[4];
+    /* ------------------------------------------------------ */
+        
+    /* -------------------- Auto Logout --------------------- */
+     private final Timer autoLogoutTimer;
+     //Represents the number of seconds without activity.
+     private int autoLogoutCounter = 0, 
+                 //Number of seconds defined by the user.
+                 expectedAutoLogoutCounter;
     /* ------------------------------------------------------ */
     
     //All cards table model.
@@ -63,6 +73,8 @@ public class Dashboard extends javax.swing.JFrame {
         this.mainPanels = new JPanel[]{allCardsPanel, favouritesPanel, notesPanel, settingsPanel};
         this.titleButtons = new JLabel[]{btnAddNewCard, null, btnAddNewNote, null};
         this.activeSidePanelButton = sidePanelButtons[0];
+        this.autoLogoutTimer = new Timer(1000, incrementAutoLogoutCounter);
+        this.autoLogoutTimer.start();
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
@@ -113,7 +125,12 @@ public class Dashboard extends javax.swing.JFrame {
             numberCharacters.setSelected(resultSet.getBoolean("passwordNumbers"));
             specialCharacters.setSelected(resultSet.getBoolean("passwordSpecialCharacters"));
             autoLogoutEnabled.setSelected(resultSet.getBoolean("autoLogoutEnabled"));
-            autoLogoutTimerComboBox.setSelectedIndex(resultSet.getInt("autoLogoutTimerIndex"));
+            int autoLogoutTimerIndex = resultSet.getInt("autoLogoutTimerIndex");
+            autoLogoutTimerComboBox.setSelectedIndex(autoLogoutTimerIndex);
+            String autoLogoutComboBoxSelectedItem = autoLogoutTimerComboBox.getSelectedItem().toString().trim();
+            this.expectedAutoLogoutCounter = Integer.parseInt(
+                autoLogoutComboBoxSelectedItem.substring(0, autoLogoutComboBoxSelectedItem.indexOf(" "))
+            ) * 60;
             resultSet.close();
             statement.close();
             connection.close();
@@ -121,6 +138,21 @@ public class Dashboard extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }
+    
+    /**
+     * ActionListener responsible for incrementing the auto logout counter.
+     * Works with autoLogoutTimer each second.
+     */
+    private final ActionListener incrementAutoLogoutCounter = new ActionListener(){
+        @Override
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            if(autoLogoutCounter + 1 == expectedAutoLogoutCounter){
+                autoLogoutTimer.stop();
+                logout();
+            }else
+                autoLogoutCounter++;
+        }
+    };
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -193,6 +225,11 @@ public class Dashboard extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(909, 637));
         setUndecorated(true);
         setResizable(false);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
@@ -201,6 +238,11 @@ public class Dashboard extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         headerPanel.setBackground(new java.awt.Color(255, 255, 255));
+        headerPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         headerPanel.setLayout(null);
 
         btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Logout Rounded Left_24px.png"))); // NOI18N
@@ -244,6 +286,11 @@ public class Dashboard extends javax.swing.JFrame {
         headerPanel.setBounds(0, 0, 910, 40);
 
         sidePanel.setBackground(new java.awt.Color(0, 39, 255));
+        sidePanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         sidePanel.setLayout(null);
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
@@ -507,6 +554,11 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsTable.setShowVerticalLines(false);
         allCardsTable.getTableHeader().setResizingAllowed(false);
         allCardsTable.getTableHeader().setReorderingAllowed(false);
+        allCardsTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         allCardsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 allCardsTableMousePressed(evt);
@@ -577,6 +629,11 @@ public class Dashboard extends javax.swing.JFrame {
         notesTable.setShowVerticalLines(false);
         notesTable.getTableHeader().setResizingAllowed(false);
         notesTable.getTableHeader().setReorderingAllowed(false);
+        notesTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         scrollPaneNotesTable.setViewportView(notesTable);
 
         notesPanel.add(scrollPaneNotesTable);
@@ -596,6 +653,11 @@ public class Dashboard extends javax.swing.JFrame {
         notesPanel.setBounds(240, 160, 670, 480);
 
         settingsPanel.setBackground(new java.awt.Color(255, 255, 255));
+        settingsPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
         settingsPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 settingsPanelComponentShown(evt);
@@ -708,7 +770,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel9.setText("Timer:");
 
         autoLogoutTimerComboBox.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        autoLogoutTimerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2 min", "5 min", "10 min", "15 min", "20 min" }));
+        autoLogoutTimerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 min", "2 min", "5 min", "10 min", "15 min", "20 min" }));
         autoLogoutTimerComboBox.setFocusable(false);
         autoLogoutTimerComboBox.setRequestFocusEnabled(false);
         autoLogoutTimerComboBox.addActionListener(new java.awt.event.ActionListener() {
@@ -1033,6 +1095,10 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMousePressed
         addNewItem(1);
     }//GEN-LAST:event_btnAddNewNoteMousePressed
+
+    private void autoLogoutTrackingHandlersMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autoLogoutTrackingHandlersMouseMoved
+        autoLogoutCounter = 0;
+    }//GEN-LAST:event_autoLogoutTrackingHandlersMouseMoved
      
     /**
      * Sends the user to Login frame.
