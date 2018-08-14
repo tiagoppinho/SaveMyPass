@@ -1,4 +1,4 @@
-package pck;
+package app;
 
 import java.awt.Component;
 import java.util.ArrayList;

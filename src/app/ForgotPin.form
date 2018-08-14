@@ -127,7 +127,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Privacy_48px_white.png"/>
+              <Image iconType="3" name="/app/img/Privacy_48px_white.png"/>
             </Property>
           </Properties>
         </Component>
@@ -140,7 +140,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Cancel_24px_white.png"/>
+              <Image iconType="3" name="/app/img/Cancel_24px_white.png"/>
             </Property>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Hand Cursor"/>

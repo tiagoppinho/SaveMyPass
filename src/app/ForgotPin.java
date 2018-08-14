@@ -1,4 +1,4 @@
-package pck;
+package app;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -83,11 +83,11 @@ public class ForgotPin extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Privacy_48px_white.png"))); // NOI18N
 
         close.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         close.setForeground(new java.awt.Color(255, 255, 255));
-        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Cancel_24px_white.png"))); // NOI18N
+        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
         close.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         close.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {

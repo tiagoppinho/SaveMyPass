@@ -1,4 +1,4 @@
-package pck;
+package app;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -200,7 +200,7 @@ public class Dashboard extends javax.swing.JFrame {
         headerPanel.setBackground(new java.awt.Color(255, 255, 255));
         headerPanel.setLayout(null);
 
-        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Logout Rounded Left_24px.png"))); // NOI18N
+        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Logout Rounded Left_24px.png"))); // NOI18N
         btnLogout.setToolTipText("Logout");
         btnLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -209,13 +209,13 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnLogout);
-        btnLogout.setBounds(806, 10, 24, 24);
+        btnLogout.setBounds(806, 10, 0, 0);
 
         jPanel1.setBackground(new java.awt.Color(0, 39, 255));
         headerPanel.add(jPanel1);
         jPanel1.setBounds(0, 0, 240, 40);
 
-        btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Cancel_24px.png"))); // NOI18N
+        btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px.png"))); // NOI18N
         btnClose.setToolTipText("Close");
         btnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -224,9 +224,9 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnClose);
-        btnClose.setBounds(870, 10, 24, 24);
+        btnClose.setBounds(870, 10, 0, 0);
 
-        btnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Minus_24px.png"))); // NOI18N
+        btnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Minus_24px.png"))); // NOI18N
         btnMinimize.setToolTipText("Minimize");
         btnMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -235,7 +235,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnMinimize);
-        btnMinimize.setBounds(840, 10, 20, 24);
+        btnMinimize.setBounds(840, 10, 20, 0);
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 910, 40);
@@ -245,9 +245,9 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Privacy_48px_white.png"))); // NOI18N
         sidePanel.add(jLabel3);
-        jLabel3.setBounds(20, 20, 48, 48);
+        jLabel3.setBounds(20, 20, 0, 0);
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -268,7 +268,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel21.setForeground(new java.awt.Color(255, 255, 255));
         jLabel21.setText("All cards");
 
-        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Data Grid_30px.png"))); // NOI18N
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Data Grid_30px.png"))); // NOI18N
 
         btnAllCardsMarker.setBackground(new java.awt.Color(255, 255, 255));
         btnAllCardsMarker.setName("btnAllCardsMarker"); // NOI18N
@@ -298,7 +298,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnAllCards);
-        btnAllCards.setBounds(0, 150, 240, 68);
+        btnAllCards.setBounds(0, 150, 0, 0);
 
         btnFavourites.setBackground(new java.awt.Color(0, 39, 255));
         btnFavourites.setName("1"); // NOI18N
@@ -307,7 +307,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel23.setForeground(new java.awt.Color(255, 255, 255));
         jLabel23.setText("Favorites");
 
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Star Filled_30px.png"))); // NOI18N
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Star Filled_30px.png"))); // NOI18N
 
         btnFavouritesMarker.setBackground(new java.awt.Color(255, 255, 255));
         btnFavouritesMarker.setName("btnFavouritesMarker"); // NOI18N
@@ -336,7 +336,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnFavourites);
-        btnFavourites.setBounds(0, 230, 240, 68);
+        btnFavourites.setBounds(0, 230, 0, 0);
 
         btnNotes.setBackground(new java.awt.Color(0, 39, 255));
         btnNotes.setName("2"); // NOI18N
@@ -345,7 +345,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel29.setForeground(new java.awt.Color(255, 255, 255));
         jLabel29.setText("Notes");
 
-        jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Edit Property_30px.png"))); // NOI18N
+        jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Edit Property_30px.png"))); // NOI18N
 
         btnNotesMarker.setBackground(new java.awt.Color(255, 255, 255));
         btnNotesMarker.setName("btnNotesMarker"); // NOI18N
@@ -374,7 +374,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnNotes);
-        btnNotes.setBounds(0, 310, 240, 68);
+        btnNotes.setBounds(0, 310, 0, 0);
 
         btnSettings.setBackground(new java.awt.Color(0, 39, 255));
         btnSettings.setName("3"); // NOI18N
@@ -383,7 +383,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel31.setForeground(new java.awt.Color(255, 255, 255));
         jLabel31.setText("Settings");
 
-        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Settings_30px.png"))); // NOI18N
+        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Settings_30px.png"))); // NOI18N
 
         btnSettingsMarker.setBackground(new java.awt.Color(255, 255, 255));
         btnSettingsMarker.setName("btnNotesMarker"); // NOI18N
@@ -412,7 +412,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnSettings);
-        btnSettings.setBounds(0, 390, 240, 68);
+        btnSettings.setBounds(0, 390, 0, 0);
 
         getContentPane().add(sidePanel);
         sidePanel.setBounds(0, 40, 240, 600);

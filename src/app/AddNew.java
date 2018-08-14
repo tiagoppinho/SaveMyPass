@@ -1,4 +1,4 @@
-package pck;
+package app;
 
 import java.awt.Color;
 import java.sql.Connection;
@@ -115,7 +115,7 @@ public class AddNew extends javax.swing.JFrame {
 
         txtPassword.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
 
-        showHidePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Eye_24px.png"))); // NOI18N
+        showHidePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Eye_24px.png"))); // NOI18N
         showHidePassword.setToolTipText("Show Password");
         showHidePassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         showHidePassword.setName("Show"); // NOI18N
@@ -125,7 +125,7 @@ public class AddNew extends javax.swing.JFrame {
             }
         });
 
-        generatePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Restart_20px.png"))); // NOI18N
+        generatePassword.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Restart_20px.png"))); // NOI18N
         generatePassword.setToolTipText("Generate Password");
         generatePassword.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         generatePassword.addMouseListener(new java.awt.event.MouseAdapter() {

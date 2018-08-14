@@ -1,4 +1,4 @@
-package pck;
+package app;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -118,11 +118,11 @@ public class Login extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Privacy_48px_white.png"))); // NOI18N
 
         btnMainClose.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         btnMainClose.setForeground(new java.awt.Color(255, 255, 255));
-        btnMainClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Cancel_24px_white.png"))); // NOI18N
+        btnMainClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
         btnMainClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMainClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -300,7 +300,7 @@ public class Login extends javax.swing.JFrame {
 
         btnSecondaryClose.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
         btnSecondaryClose.setForeground(new java.awt.Color(255, 255, 255));
-        btnSecondaryClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Cancel_24px_white.png"))); // NOI18N
+        btnSecondaryClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
         btnSecondaryClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSecondaryClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -338,7 +338,7 @@ public class Login extends javax.swing.JFrame {
 
         closeKeyboard.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         closeKeyboard.setForeground(new java.awt.Color(51, 153, 255));
-        closeKeyboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pck/img/Back To_24px.png"))); // NOI18N
+        closeKeyboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Back To_24px.png"))); // NOI18N
         closeKeyboard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         closeKeyboard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {

@@ -53,7 +53,7 @@
         <Component class="javax.swing.JLabel" name="btnLogout">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Logout Rounded Left_24px.png"/>
+              <Image iconType="3" name="/app/img/Logout Rounded Left_24px.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Logout"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -86,7 +86,7 @@
         <Component class="javax.swing.JLabel" name="btnClose">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Cancel_24px.png"/>
+              <Image iconType="3" name="/app/img/Cancel_24px.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Close"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -105,7 +105,7 @@
         <Component class="javax.swing.JLabel" name="btnMinimize">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Minus_24px.png"/>
+              <Image iconType="3" name="/app/img/Minus_24px.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Minimize"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -148,7 +148,7 @@
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/pck/img/Privacy_48px_white.png"/>
+              <Image iconType="3" name="/app/img/Privacy_48px_white.png"/>
             </Property>
           </Properties>
           <Constraints>
@@ -244,7 +244,7 @@
             <Component class="javax.swing.JLabel" name="jLabel22">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/pck/img/Data Grid_30px.png"/>
+                  <Image iconType="3" name="/app/img/Data Grid_30px.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -314,7 +314,7 @@
             <Component class="javax.swing.JLabel" name="jLabel24">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/pck/img/Star Filled_30px.png"/>
+                  <Image iconType="3" name="/app/img/Star Filled_30px.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -383,7 +383,7 @@
             <Component class="javax.swing.JLabel" name="jLabel30">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/pck/img/Edit Property_30px.png"/>
+                  <Image iconType="3" name="/app/img/Edit Property_30px.png"/>
                 </Property>
               </Properties>
             </Component>
@@ -452,7 +452,7 @@
             <Component class="javax.swing.JLabel" name="jLabel32">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/pck/img/Settings_30px.png"/>
+                  <Image iconType="3" name="/app/img/Settings_30px.png"/>
                 </Property>
               </Properties>
             </Component>
