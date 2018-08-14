@@ -1,5 +1,10 @@
 package app;
 
+import handlers.KeyboardHandler;
+import handlers.DatabaseHandler;
+import utils.Customization;
+import utils.Constants;
+import crypto.Hasher;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

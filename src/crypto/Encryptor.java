@@ -1,5 +1,6 @@
-package app;
+package crypto;
 
+import handlers.DatabaseHandler;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

@@ -1,5 +1,9 @@
 package app;
 
+import handlers.DatabaseHandler;
+import utils.Customization;
+import utils.Constants;
+import crypto.Hasher;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

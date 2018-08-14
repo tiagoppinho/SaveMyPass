@@ -1,5 +1,8 @@
 package app;
 
+import handlers.DatabaseHandler;
+import utils.Customization;
+import utils.Constants;
 import java.awt.Color;
 import java.awt.Component;
 import java.sql.Connection;

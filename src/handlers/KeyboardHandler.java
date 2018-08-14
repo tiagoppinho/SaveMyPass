@@ -1,5 +1,6 @@
-package app;
+package handlers;
 
+import utils.Constants;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Random;
