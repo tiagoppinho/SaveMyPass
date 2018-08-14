@@ -27,10 +27,10 @@ public class Hasher {
      * @return String
      */
     public static String hashPin(String pin, String salt){
-        char[] passwordChars = pin.toCharArray();
         try {
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PIN_ALGORITHM);
-            PBEKeySpec keySpec = new PBEKeySpec(passwordChars, salt.getBytes(), ITERATIONS, KEY_LENGTH);
+            PBEKeySpec keySpec = new PBEKeySpec(pin.toCharArray(), salt.getBytes(), 
+                                                ITERATIONS, KEY_LENGTH);
             SecretKey key = secretKeyFactory.generateSecret(keySpec);
             byte[] hashedPassword = key.getEncoded();
             return Base64.getEncoder().encodeToString(hashedPassword);
