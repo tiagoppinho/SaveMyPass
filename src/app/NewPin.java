@@ -93,6 +93,7 @@ public class NewPin extends javax.swing.JFrame {
         setTitle("SaveMyPass - New PIN");
         setMinimumSize(new java.awt.Dimension(377, 385));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(377, 385));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);

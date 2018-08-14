@@ -49,6 +49,7 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
         setTitle("SaveMyPass - First-time setup");
         setMinimumSize(new java.awt.Dimension(377, 440));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(377, 440));
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {

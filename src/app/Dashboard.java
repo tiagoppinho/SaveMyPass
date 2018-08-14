@@ -209,7 +209,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnLogout);
-        btnLogout.setBounds(806, 10, 0, 0);
+        btnLogout.setBounds(806, 10, 24, 24);
 
         jPanel1.setBackground(new java.awt.Color(0, 39, 255));
         headerPanel.add(jPanel1);
@@ -224,7 +224,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnClose);
-        btnClose.setBounds(870, 10, 0, 0);
+        btnClose.setBounds(870, 10, 24, 24);
 
         btnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Minus_24px.png"))); // NOI18N
         btnMinimize.setToolTipText("Minimize");
@@ -235,7 +235,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         headerPanel.add(btnMinimize);
-        btnMinimize.setBounds(840, 10, 20, 0);
+        btnMinimize.setBounds(840, 10, 20, 24);
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 910, 40);
@@ -247,7 +247,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Privacy_48px_white.png"))); // NOI18N
         sidePanel.add(jLabel3);
-        jLabel3.setBounds(20, 20, 0, 0);
+        jLabel3.setBounds(20, 20, 48, 48);
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -262,6 +262,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel8.setBounds(88, 50, 110, 15);
 
         btnAllCards.setBackground(new java.awt.Color(51, 144, 255));
+        btnAllCards.setMinimumSize(new java.awt.Dimension(240, 68));
         btnAllCards.setName("0"); // NOI18N
 
         jLabel21.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -298,9 +299,10 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnAllCards);
-        btnAllCards.setBounds(0, 150, 0, 0);
+        btnAllCards.setBounds(0, 150, 240, 68);
 
         btnFavourites.setBackground(new java.awt.Color(0, 39, 255));
+        btnFavourites.setMinimumSize(new java.awt.Dimension(240, 68));
         btnFavourites.setName("1"); // NOI18N
 
         jLabel23.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -336,9 +338,10 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnFavourites);
-        btnFavourites.setBounds(0, 230, 0, 0);
+        btnFavourites.setBounds(0, 230, 240, 68);
 
         btnNotes.setBackground(new java.awt.Color(0, 39, 255));
+        btnNotes.setMinimumSize(new java.awt.Dimension(240, 68));
         btnNotes.setName("2"); // NOI18N
 
         jLabel29.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -374,9 +377,10 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnNotes);
-        btnNotes.setBounds(0, 310, 0, 0);
+        btnNotes.setBounds(0, 310, 240, 68);
 
         btnSettings.setBackground(new java.awt.Color(0, 39, 255));
+        btnSettings.setMinimumSize(new java.awt.Dimension(240, 68));
         btnSettings.setName("3"); // NOI18N
 
         jLabel31.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -412,7 +416,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         sidePanel.add(btnSettings);
-        btnSettings.setBounds(0, 390, 0, 0);
+        btnSettings.setBounds(0, 390, 240, 68);
 
         getContentPane().add(sidePanel);
         sidePanel.setBounds(0, 40, 240, 600);
