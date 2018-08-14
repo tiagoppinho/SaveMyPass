@@ -11,15 +11,16 @@ import java.sql.SQLException;
  */
 public class RecoverMethodsSetup extends javax.swing.JFrame {
     
-    private String pin = null;
+    private String pin = null, salt = null;
 
     public RecoverMethodsSetup() {
         initComponents();
     }
     
-    public RecoverMethodsSetup(String pin) {
+    public RecoverMethodsSetup(String pin, String salt) {
         initComponents();
         this.pin = pin;
+        this.salt = salt;
     }
 
     @SuppressWarnings("unchecked")
@@ -281,18 +282,16 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
         
         if(firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
-        else if(!pin.isEmpty()){
+        else if(pin != null){
             //Hash data.
-            String salt = Hasher.generateSalt(),
-                   hashedPin = Hasher.hashPin(pin, salt),
-                   hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
+            String hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
                    hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
             
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try{
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
-                statement.setString(1, hashedPin);
+                statement.setString(1, pin);
                 statement.setString(2, salt);
                 statement.setString(3, firstSecurityQuestion);
                 statement.setString(4, hashedFirstSecurityAnswer);

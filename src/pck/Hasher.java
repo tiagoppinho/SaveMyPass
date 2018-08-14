@@ -17,8 +17,8 @@ public class Hasher {
     
     private static final String PIN_ALGORITHM = "PBKDF2WithHmacSHA512",
                                 SECURITY_ANSWER_ALGORITHM = "SHA-256";
-    private static final int ITERATIONS = 10000,
-                             KEY_LENGTH = 512;
+    
+    private static final int ITERATIONS = 10000, KEY_LENGTH = 512;
     
     /**
      * Salts and hashes a master pin with PBKDF2 (PBKDF2WithHmacSHA512).

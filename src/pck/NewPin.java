@@ -786,7 +786,7 @@ public class NewPin extends javax.swing.JFrame {
             goToLogin();
         } else {
             //If it's the first time setup.
-            RecoverMethodsSetup firstTimeSetup = new RecoverMethodsSetup(pin);
+            RecoverMethodsSetup firstTimeSetup = new RecoverMethodsSetup(hashedPin, salt);
             firstTimeSetup.setVisible(true);
             this.dispose();
         }
