@@ -54,7 +54,9 @@ public class Dashboard extends javax.swing.JFrame {
     public Dashboard() {
         initComponents();
         this.sidePanelButtons = new Component[]{btnAllCards, btnFavourites, btnNotes, btnSettings};
-        this.sidePanelButtonsMarker = new JLabel[]{btnAllCardsMarker, btnFavouritesMarker, btnNotesMarker, btnSettingsMarker};
+        this.sidePanelButtonsMarker = new JLabel[]{
+            btnAllCardsMarker, btnFavouritesMarker, btnNotesMarker, btnSettingsMarker
+        };
         this.mainPanels = new JPanel[]{allCardsPanel, favouritesPanel, notesPanel, settingsPanel};
         this.titleButtons = new JLabel[]{btnAddNewCard, null, btnAddNewNote, null};
         this.activeSidePanelButton = sidePanelButtons[0];
@@ -103,11 +105,10 @@ public class Dashboard extends javax.swing.JFrame {
             resultSet = statement.executeQuery("SELECT * FROM Settings");
             resultSet.next();
             lengthSlider.setValue(resultSet.getInt("passwordLength"));
-            uppercaseLetters.setSelected(resultSet.getBoolean("passwordUppercase"));
-            lowercaseLetters.setSelected(resultSet.getBoolean("passwordLowercase"));
-            numbers.setSelected(resultSet.getBoolean("passwordNumbers"));
+            uppercaseCharacters.setSelected(resultSet.getBoolean("passwordUppercase"));
+            lowercaseCharacters.setSelected(resultSet.getBoolean("passwordLowercase"));
+            numberCharacters.setSelected(resultSet.getBoolean("passwordNumbers"));
             specialCharacters.setSelected(resultSet.getBoolean("passwordSpecialCharacters"));
-            security.setText(resultSet.getString("passwordSecurity"));
             autoLogoutEnabled.setSelected(resultSet.getBoolean("autoLogoutEnabled"));
             autoLogoutTimerComboBox.setSelectedIndex(resultSet.getInt("autoLogoutTimerIndex"));
             resultSet.close();
@@ -168,9 +169,9 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         lengthSlider = new javax.swing.JSlider();
         sliderValue = new javax.swing.JLabel();
-        uppercaseLetters = new javax.swing.JCheckBox();
-        lowercaseLetters = new javax.swing.JCheckBox();
-        numbers = new javax.swing.JCheckBox();
+        uppercaseCharacters = new javax.swing.JCheckBox();
+        lowercaseCharacters = new javax.swing.JCheckBox();
+        numberCharacters = new javax.swing.JCheckBox();
         specialCharacters = new javax.swing.JCheckBox();
         jLabel6 = new javax.swing.JLabel();
         security = new javax.swing.JLabel();
@@ -181,6 +182,8 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         btnChangeMasterPin = new javax.swing.JLabel();
         btnSaveSettings = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        btnDeleteAllData = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SaveMyPass - Dashboard");
@@ -627,32 +630,35 @@ public class Dashboard extends javax.swing.JFrame {
         sliderValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         sliderValue.setText("18");
 
-        uppercaseLetters.setBackground(new java.awt.Color(255, 255, 255));
-        uppercaseLetters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        uppercaseLetters.setSelected(true);
-        uppercaseLetters.setText("A - Z  ");
-        uppercaseLetters.setFocusable(false);
-        uppercaseLetters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        uppercaseLetters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        uppercaseLetters.setRequestFocusEnabled(false);
+        uppercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
+        uppercaseCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        uppercaseCharacters.setSelected(true);
+        uppercaseCharacters.setText("A - Z  ");
+        uppercaseCharacters.setFocusable(false);
+        uppercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        uppercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        uppercaseCharacters.setName("0"); // NOI18N
+        uppercaseCharacters.setRequestFocusEnabled(false);
 
-        lowercaseLetters.setBackground(new java.awt.Color(255, 255, 255));
-        lowercaseLetters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        lowercaseLetters.setSelected(true);
-        lowercaseLetters.setText("a - z  ");
-        lowercaseLetters.setFocusable(false);
-        lowercaseLetters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        lowercaseLetters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        lowercaseLetters.setRequestFocusEnabled(false);
+        lowercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
+        lowercaseCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lowercaseCharacters.setSelected(true);
+        lowercaseCharacters.setText("a - z  ");
+        lowercaseCharacters.setFocusable(false);
+        lowercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        lowercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        lowercaseCharacters.setName("1"); // NOI18N
+        lowercaseCharacters.setRequestFocusEnabled(false);
 
-        numbers.setBackground(new java.awt.Color(255, 255, 255));
-        numbers.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        numbers.setSelected(true);
-        numbers.setText("0 - 9  ");
-        numbers.setFocusable(false);
-        numbers.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        numbers.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        numbers.setRequestFocusEnabled(false);
+        numberCharacters.setBackground(new java.awt.Color(255, 255, 255));
+        numberCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        numberCharacters.setSelected(true);
+        numberCharacters.setText("0 - 9  ");
+        numberCharacters.setFocusable(false);
+        numberCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        numberCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        numberCharacters.setName("2"); // NOI18N
+        numberCharacters.setRequestFocusEnabled(false);
 
         specialCharacters.setBackground(new java.awt.Color(255, 255, 255));
         specialCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -661,6 +667,7 @@ public class Dashboard extends javax.swing.JFrame {
         specialCharacters.setFocusable(false);
         specialCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         specialCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        specialCharacters.setName("3"); // NOI18N
         specialCharacters.setRequestFocusEnabled(false);
 
         jLabel6.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -707,7 +714,7 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel10.setText("Security options for the generated password.");
 
         jLabel11.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
-        jLabel11.setText("When the app is not being used for the amount of time set, it will automatically log-off.");
+        jLabel11.setText("When the app is not being used for the amount of time set, it will automatically logout.");
 
         btnChangeMasterPin.setBackground(new java.awt.Color(230, 230, 230));
         btnChangeMasterPin.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
@@ -721,10 +728,10 @@ public class Dashboard extends javax.swing.JFrame {
         btnChangeMasterPin.setPreferredSize(new java.awt.Dimension(61, 37));
         btnChangeMasterPin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnChangeMasterPinMouseEntered(evt);
+                accountButtonsMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnChangeMasterPinMouseExited(evt);
+                accountButtonsMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnChangeMasterPinMousePressed(evt);
@@ -753,6 +760,29 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel1.setText("DANGER ZONE: (deletes all database, use for emergencies only)");
+
+        btnDeleteAllData.setBackground(new java.awt.Color(230, 230, 230));
+        btnDeleteAllData.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        btnDeleteAllData.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnDeleteAllData.setText("Delete all data");
+        btnDeleteAllData.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        btnDeleteAllData.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDeleteAllData.setMaximumSize(new java.awt.Dimension(61, 37));
+        btnDeleteAllData.setMinimumSize(new java.awt.Dimension(61, 37));
+        btnDeleteAllData.setOpaque(true);
+        btnDeleteAllData.setPreferredSize(new java.awt.Dimension(61, 37));
+        btnDeleteAllData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                accountButtonsMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                accountButtonsMouseExited(evt);
+            }
+        });
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -760,45 +790,49 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(settingsPanelLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(autoLogoutEnabled, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(84, 84, 84)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(autoLogOffTitle)
-                    .addComponent(passwordGeneratorTitle)
-                    .addComponent(accountTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(sliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
+                        .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(settingsPanelLayout.createSequentialGroup()
+                                .addComponent(autoLogoutEnabled, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(84, 84, 84)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(autoLogOffTitle)
+                            .addComponent(passwordGeneratorTitle)
+                            .addComponent(accountTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(uppercaseLetters))
-                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(settingsPanelLayout.createSequentialGroup()
-                                    .addGap(82, 82, 82)
-                                    .addComponent(lowercaseLetters)
-                                    .addGap(84, 84, 84)
-                                    .addComponent(numbers)
-                                    .addGap(66, 66, 66)
-                                    .addComponent(specialCharacters))
-                                .addGroup(settingsPanelLayout.createSequentialGroup()
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(security, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                                    .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(sliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
+                                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(uppercaseCharacters))
+                                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(settingsPanelLayout.createSequentialGroup()
+                                            .addGap(82, 82, 82)
+                                            .addComponent(lowercaseCharacters)
+                                            .addGap(84, 84, 84)
+                                            .addComponent(numberCharacters)
+                                            .addGap(66, 66, 66)
+                                            .addComponent(specialCharacters))
+                                        .addGroup(settingsPanelLayout.createSequentialGroup()
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(security, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(48, Short.MAX_VALUE))))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -815,10 +849,10 @@ public class Dashboard extends javax.swing.JFrame {
                             .addComponent(lengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(numbers)
+                            .addComponent(numberCharacters)
                             .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(uppercaseLetters)
-                                .addComponent(lowercaseLetters)
+                                .addComponent(uppercaseCharacters)
+                                .addComponent(lowercaseCharacters)
                                 .addComponent(specialCharacters)))
                         .addGap(18, 18, 18)
                         .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -838,9 +872,17 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(accountTitle)
                 .addGap(18, 18, 18)
                 .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel1)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         getContentPane().add(settingsPanel);
@@ -916,13 +958,13 @@ public class Dashboard extends javax.swing.JFrame {
         
     }//GEN-LAST:event_settingsPanelComponentShown
 
-    private void btnChangeMasterPinMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMouseEntered
-        btnChangeMasterPin.setBackground(new Color(204, 204, 204));
-    }//GEN-LAST:event_btnChangeMasterPinMouseEntered
+    private void accountButtonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseEntered
+        evt.getComponent().setBackground(new Color(204, 204, 204));
+    }//GEN-LAST:event_accountButtonsMouseEntered
 
-    private void btnChangeMasterPinMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMouseExited
-        btnChangeMasterPin.setBackground(new Color(230, 230, 230));
-    }//GEN-LAST:event_btnChangeMasterPinMouseExited
+    private void accountButtonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseExited
+        evt.getComponent().setBackground(new Color(230, 230, 230));
+    }//GEN-LAST:event_accountButtonsMouseExited
 
     private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMousePressed
         int confirm = JOptionPane.showConfirmDialog(null, "If you proceed you'll be logged out." +
@@ -984,7 +1026,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMousePressed
         addNewItem(1);
     }//GEN-LAST:event_btnAddNewNoteMousePressed
-        
+     
     /**
      * Sends the user to Login frame.
      */
@@ -1051,6 +1093,14 @@ public class Dashboard extends javax.swing.JFrame {
     private void activateSaveSettingsButton() {
         if(!btnSaveSettings.isVisible())
             btnSaveSettings.setVisible(true);
+    }
+    
+    /**
+     * 
+     */
+    private void deactivateSaveSettingsButton(){
+        if(btnSaveSettings.isVisible())
+            btnSaveSettings.setVisible(false);
     }
     
     /**
@@ -1168,6 +1218,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel btnAllCardsMarker;
     private javax.swing.JLabel btnChangeMasterPin;
     private javax.swing.JLabel btnClose;
+    private javax.swing.JLabel btnDeleteAllData;
     private javax.swing.JPanel btnFavourites;
     private javax.swing.JLabel btnFavouritesMarker;
     private javax.swing.JLabel btnLogout;
@@ -1179,6 +1230,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel btnSettingsMarker;
     private javax.swing.JPanel favouritesPanel;
     private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -1198,13 +1250,13 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSlider lengthSlider;
-    private javax.swing.JCheckBox lowercaseLetters;
+    private javax.swing.JCheckBox lowercaseCharacters;
     private javax.swing.JLabel mainTitle;
     private static javax.swing.JLabel noCardsInfo;
     private static javax.swing.JLabel noNotesInfo;
     private javax.swing.JPanel notesPanel;
     private static javax.swing.JTable notesTable;
-    private javax.swing.JCheckBox numbers;
+    private javax.swing.JCheckBox numberCharacters;
     private javax.swing.JLabel passwordGeneratorTitle;
     private static javax.swing.JScrollPane scrollPaneAllCardsTable;
     private static javax.swing.JScrollPane scrollPaneNotesTable;
@@ -1214,6 +1266,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel sliderValue;
     private javax.swing.JCheckBox specialCharacters;
     private javax.swing.JPanel titlePanel;
-    private javax.swing.JCheckBox uppercaseLetters;
+    private javax.swing.JCheckBox uppercaseCharacters;
     // End of variables declaration//GEN-END:variables
 }
