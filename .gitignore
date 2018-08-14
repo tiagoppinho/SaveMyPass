@@ -5,6 +5,5 @@ dist/
 test/
 db/
 store/
-src/pck/Encryptor.java
 src/pck/img/Star_30px_gold.png
 src/pck/img/Star_Filled_30px_gold.png
