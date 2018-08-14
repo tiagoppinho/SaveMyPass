@@ -11,6 +11,7 @@ Simple offline password manager initially made for my own use and as an academic
 * Strong hashing using PBKDF2.
 * Built-in virtual keyboard (everytime you need to enter your master pin or create a new one).
 * Built-in password generator.
+* Auto-logout after a timer set by the user.
 * Change your master pin anytime.
 * Notes.
 
@@ -19,7 +20,6 @@ Simple offline password manager initially made for my own use and as an academic
 * User settings.
 * Improved password generator.
 * AES-256 password data encryption.
-* Auto-logout after a timer set by the user.
 * Add password card to favorites.
 * Delete all database (for emergencies).
 
