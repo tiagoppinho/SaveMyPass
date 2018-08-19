@@ -103,7 +103,7 @@ public class AddNew extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 128, 255));
-        jLabel2.setText("Card Name / Service");
+        jLabel2.setText("Card Title / Service");
 
         txtCardName.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
 
