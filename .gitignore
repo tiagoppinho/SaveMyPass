@@ -5,6 +5,6 @@ dist/
 test/
 db/
 store/
-src/sql/
+src/sql/scripts/
 src/app/img/Star_30px_gold.png
 src/app/img/Star_Filled_30px_gold.png
