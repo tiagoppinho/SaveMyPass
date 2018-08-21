@@ -5,7 +5,7 @@ import java.awt.Dimension;
 
 /**
  * Class responsable for holding important constants to reduce the amount of repeated code.
- * The porpuse of each constant is to change their value only in one place to avoid conflicts.
+ * The porpuse of this class is to change values only in one place to avoid conflicts.
  * @author Tiago Pinho
  */
 public class Constants {
@@ -29,6 +29,8 @@ public class Constants {
     public static final Color SIDE_PANEL_BUTTONS_COLOR_ON_MOUSE_CLICK = new Color(51,144,255);
     public static final Color TITLE_BUTTONS_DEFAULT_COLOR = new Color(255, 255, 255);
     public static final Color TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER = new Color(230, 230, 230);
+    public static final Color ACCOUNT_BUTTONS_DEFAULT_COLOR = new Color(230, 230, 230);
+    public static final Color ACCOUNT_BUTTONS_COLOR_ON_MOUSE_HOVER = new Color(204, 204, 204);
     /* ----------------------------------------------------------------------------------------- */
     
 }
