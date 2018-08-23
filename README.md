@@ -9,6 +9,7 @@ Simple offline password manager initially made for my own use and as an academic
 * Master pin that protects all your information.
 * Two security questions in case you forgot your master pin.
 * Strong hashing using PBKDF2.
+* AES-128 password data encryption.
 * Built-in virtual keyboard (everytime you need to enter your master pin or create a new one).
 * Built-in password generator.
 * Auto-logout after a timer set by the user.
