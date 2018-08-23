@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JLabel;
+
 /**
  * 
  * @author Tiago Pinho
@@ -510,14 +511,12 @@ public class Login extends javax.swing.JFrame {
         /*  Doesn't start on 0 because the first element
         of the array is the clear button and it must NOT have this event listener.  */
         for (int i = 1; i < keyboardButtons.length; i++) {
-            if(i > 0) {
-                keyboardButtons[i].addMouseListener(new java.awt.event.MouseAdapter() {
-                    @Override
-                    public void mousePressed(java.awt.event.MouseEvent evt) {
-                        keyboardButtonsMousePressed(evt);
-                    }
-                });
-            }
+            keyboardButtons[i].addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent evt) {
+                    keyboardButtonsMousePressed(evt);
+                }
+            });
         }
     }//GEN-LAST:event_formComponentShown
             
