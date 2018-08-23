@@ -70,4 +70,18 @@ public class Customization {
                                     title, 
                                     JOptionPane.WARNING_MESSAGE);
     }
+    
+    /**
+     * Displays a yes/no confirm dialog message to the user.
+     * @param message Message to be displayed.
+     * @param title Title of the confirm dialog message.
+     * @return Integer - Chosen option.
+     */
+    public static int displayConfirmMessage(String message, String title){
+        return JOptionPane.showConfirmDialog(null,
+                                                    message,
+                                                    title,
+                                                    JOptionPane.YES_NO_OPTION,
+                                                    JOptionPane.WARNING_MESSAGE);
+    }
 }
