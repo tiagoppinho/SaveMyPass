@@ -7,10 +7,12 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,7 +20,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * 
  * @author Tiago Pinho
  */
 public class Dashboard extends javax.swing.JFrame {
@@ -26,7 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
     private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
         
-    /* -------------------- Side Panel Buttons -------------- */
+    /* -------------------- Side Panel ---------------------- */
     private Component sidePanelButtons[] = new JPanel[4], 
                       activeSidePanelButton;
     private JLabel[] sidePanelButtonsMarker = new JLabel[4];
@@ -37,12 +39,22 @@ public class Dashboard extends javax.swing.JFrame {
     /* ------------------------------------------------------ */
         
     /* -------------------- Auto Logout --------------------- */
-     private final Timer autoLogoutTimer;
-     //Represents the number of seconds without activity.
-     private int autoLogoutCounter = 0, 
-                 //Number of seconds defined by the user.
-                 expectedAutoLogoutCounter;
+    private final Timer autoLogoutTimer;
+    //Represents the number of seconds without activity.
+    private int autoLogoutCounter = 0, 
+                //Number of seconds defined by the user.
+                expectedAutoLogoutCounter;
     /* ------------------------------------------------------ */
+     
+    /* -------------------------------- Settings ----------------------------------- */
+    private final String[] SETTINGS_COLUMNS = {
+        "passwordLength", "passwordUppercase", "passwordLowercase", "passwordNumbers",
+        "passwordSpecialCharacters", "autoLogoutEnabled", "autoLogoutTimerIndex"
+    };
+    private JCheckBox[] passwordGeneratorSettingsCheckBoxes = new JCheckBox[4];
+    private int[] oldSettings = new int[7], newSettings = new int[7];
+    private boolean isSaveSettingsActive = false; 
+    /* ----------------------------------------------------------------------------- */
     
     //All cards table model.
     private final DefaultTableModel customModelAllCards = new DefaultTableModel() {
@@ -74,7 +86,10 @@ public class Dashboard extends javax.swing.JFrame {
         this.titleButtons = new JLabel[]{btnAddNewCard, null, btnAddNewNote, null};
         this.activeSidePanelButton = sidePanelButtons[0];
         this.autoLogoutTimer = new Timer(1000, incrementAutoLogoutCounter);
-        this.autoLogoutTimer.start();
+        this.passwordGeneratorSettingsCheckBoxes = new JCheckBox[]{
+            uppercaseCharacters, lowercaseCharacters, numberCharacters, specialCharacters
+        };
+        this.newSettings = new int[]{-1, -1, -1, -1, -1, -1, -1};
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
@@ -90,6 +105,7 @@ public class Dashboard extends javax.swing.JFrame {
         //allCardsTable.getColumnModel().getColumn(0).setMinWidth(620);
         loadData();
         btnSaveSettings.setVisible(false);
+        this.autoLogoutTimer.start();
     }
     
     /**
@@ -119,24 +135,18 @@ public class Dashboard extends javax.swing.JFrame {
             resultSet.close();
             resultSet = statement.executeQuery("SELECT * FROM Settings");
             resultSet.next();
-            lengthSlider.setValue(resultSet.getInt("passwordLength"));
-            uppercaseCharacters.setSelected(resultSet.getBoolean("passwordUppercase"));
-            lowercaseCharacters.setSelected(resultSet.getBoolean("passwordLowercase"));
-            numberCharacters.setSelected(resultSet.getBoolean("passwordNumbers"));
-            specialCharacters.setSelected(resultSet.getBoolean("passwordSpecialCharacters"));
-            autoLogoutEnabled.setSelected(resultSet.getBoolean("autoLogoutEnabled"));
-            int autoLogoutTimerIndex = resultSet.getInt("autoLogoutTimerIndex");
-            autoLogoutTimerComboBox.setSelectedIndex(autoLogoutTimerIndex);
-            String autoLogoutComboBoxSelectedItem = autoLogoutTimerComboBox.getSelectedItem().toString().trim();
-            this.expectedAutoLogoutCounter = Integer.parseInt(
-                autoLogoutComboBoxSelectedItem.substring(0, autoLogoutComboBoxSelectedItem.indexOf(" "))
-            ) * 60;
+            
+            for(int i = 0; i < this.oldSettings.length; i++)
+                this.oldSettings[i] = resultSet.getInt(SETTINGS_COLUMNS[i]);
+            
             resultSet.close();
             statement.close();
             connection.close();
         }catch(SQLException ex){
-            ex.printStackTrace();
+            System.out.println(ex.toString());
+            Customization.displayWarningMessage(ex.toString(), "SQLException");
         }
+        setOldSettings();
     }
     
     /**
@@ -147,9 +157,8 @@ public class Dashboard extends javax.swing.JFrame {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             if(autoLogoutCounter + 1 == expectedAutoLogoutCounter){
-                autoLogoutTimer.stop();
                 logout();
-            }else
+            } else
                 autoLogoutCounter++;
         }
     };
@@ -203,13 +212,11 @@ public class Dashboard extends javax.swing.JFrame {
         accountTitle = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lengthSlider = new javax.swing.JSlider();
-        sliderValue = new javax.swing.JLabel();
+        txtSliderValue = new javax.swing.JLabel();
         uppercaseCharacters = new javax.swing.JCheckBox();
         lowercaseCharacters = new javax.swing.JCheckBox();
         numberCharacters = new javax.swing.JCheckBox();
         specialCharacters = new javax.swing.JCheckBox();
-        jLabel6 = new javax.swing.JLabel();
-        security = new javax.swing.JLabel();
         autoLogoutEnabled = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         autoLogoutTimerComboBox = new javax.swing.JComboBox<>();
@@ -219,6 +226,7 @@ public class Dashboard extends javax.swing.JFrame {
         btnSaveSettings = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         btnDeleteAllData = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SaveMyPass - Dashboard");
@@ -487,10 +495,10 @@ public class Dashboard extends javax.swing.JFrame {
         btnAddNewCard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAddNewCard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAddNewCardMouseEntered(evt);
+                titleButtonsMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAddNewCardMouseExited(evt);
+                titleButtonsMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddNewCardMousePressed(evt);
@@ -506,10 +514,10 @@ public class Dashboard extends javax.swing.JFrame {
         btnAddNewNote.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnAddNewNote.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAddNewNoteMouseEntered(evt);
+                titleButtonsMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAddNewNoteMouseExited(evt);
+                titleButtonsMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddNewNoteMousePressed(evt);
@@ -658,11 +666,6 @@ public class Dashboard extends javax.swing.JFrame {
                 autoLogoutTrackingHandlersMouseMoved(evt);
             }
         });
-        settingsPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                settingsPanelComponentShown(evt);
-            }
-        });
 
         passwordGeneratorTitle.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         passwordGeneratorTitle.setForeground(new java.awt.Color(51, 153, 255));
@@ -688,6 +691,7 @@ public class Dashboard extends javax.swing.JFrame {
         lengthSlider.setSnapToTicks(true);
         lengthSlider.setValue(18);
         lengthSlider.setFocusable(false);
+        lengthSlider.setName("0"); // NOI18N
         lengthSlider.setRequestFocusEnabled(false);
         lengthSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -695,9 +699,9 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        sliderValue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        sliderValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        sliderValue.setText("18");
+        txtSliderValue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtSliderValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txtSliderValue.setText("18");
 
         uppercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
         uppercaseCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -706,7 +710,7 @@ public class Dashboard extends javax.swing.JFrame {
         uppercaseCharacters.setFocusable(false);
         uppercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         uppercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        uppercaseCharacters.setName("0"); // NOI18N
+        uppercaseCharacters.setName("1"); // NOI18N
         uppercaseCharacters.setRequestFocusEnabled(false);
 
         lowercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
@@ -716,7 +720,7 @@ public class Dashboard extends javax.swing.JFrame {
         lowercaseCharacters.setFocusable(false);
         lowercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         lowercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        lowercaseCharacters.setName("1"); // NOI18N
+        lowercaseCharacters.setName("2"); // NOI18N
         lowercaseCharacters.setRequestFocusEnabled(false);
 
         numberCharacters.setBackground(new java.awt.Color(255, 255, 255));
@@ -726,7 +730,7 @@ public class Dashboard extends javax.swing.JFrame {
         numberCharacters.setFocusable(false);
         numberCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         numberCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        numberCharacters.setName("2"); // NOI18N
+        numberCharacters.setName("3"); // NOI18N
         numberCharacters.setRequestFocusEnabled(false);
 
         specialCharacters.setBackground(new java.awt.Color(255, 255, 255));
@@ -736,20 +740,8 @@ public class Dashboard extends javax.swing.JFrame {
         specialCharacters.setFocusable(false);
         specialCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         specialCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        specialCharacters.setName("3"); // NOI18N
+        specialCharacters.setName("4"); // NOI18N
         specialCharacters.setRequestFocusEnabled(false);
-
-        jLabel6.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jLabel6.setLabelFor(lengthSlider);
-        jLabel6.setText("Security:");
-
-        security.setBackground(new java.awt.Color(255, 255, 255));
-        security.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        security.setForeground(java.awt.Color.green);
-        security.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        security.setLabelFor(lengthSlider);
-        security.setText("Strong");
-        security.setOpaque(true);
 
         autoLogoutEnabled.setBackground(new java.awt.Color(255, 255, 255));
         autoLogoutEnabled.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -758,6 +750,7 @@ public class Dashboard extends javax.swing.JFrame {
         autoLogoutEnabled.setFocusable(false);
         autoLogoutEnabled.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         autoLogoutEnabled.setMargin(new java.awt.Insets(2, 0, 2, 2));
+        autoLogoutEnabled.setName("5"); // NOI18N
         autoLogoutEnabled.setRequestFocusEnabled(false);
         autoLogoutEnabled.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -772,6 +765,7 @@ public class Dashboard extends javax.swing.JFrame {
         autoLogoutTimerComboBox.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         autoLogoutTimerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 min", "2 min", "5 min", "10 min", "15 min", "20 min" }));
         autoLogoutTimerComboBox.setFocusable(false);
+        autoLogoutTimerComboBox.setName("6"); // NOI18N
         autoLogoutTimerComboBox.setRequestFocusEnabled(false);
         autoLogoutTimerComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -831,7 +825,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel1.setText("DANGER ZONE: (deletes all database, use for emergencies only)");
+        jLabel1.setText("DANGER ZONE");
 
         btnDeleteAllData.setBackground(new java.awt.Color(230, 230, 230));
         btnDeleteAllData.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
@@ -852,6 +846,10 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel6.setText("Deletes all database, use for emergencies only!");
+
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
@@ -860,12 +858,32 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
+                        .addGap(25, 25, 25))
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(passwordGeneratorTitle)
+                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txtSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
+                                    .addComponent(uppercaseCharacters)
+                                    .addGap(82, 82, 82)
+                                    .addComponent(lowercaseCharacters)
+                                    .addGap(84, 84, 84)
+                                    .addComponent(numberCharacters)
+                                    .addGap(66, 66, 66)
+                                    .addComponent(specialCharacters))))
+                        .addContainerGap(48, Short.MAX_VALUE))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
                             .addComponent(jLabel1)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(settingsPanelLayout.createSequentialGroup()
@@ -875,33 +893,10 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(autoLogOffTitle)
-                            .addComponent(passwordGeneratorTitle)
                             .addComponent(accountTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(sliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(uppercaseCharacters))
-                                    .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(settingsPanelLayout.createSequentialGroup()
-                                            .addGap(82, 82, 82)
-                                            .addComponent(lowercaseCharacters)
-                                            .addGap(84, 84, 84)
-                                            .addComponent(numberCharacters)
-                                            .addGap(66, 66, 66)
-                                            .addComponent(specialCharacters))
-                                        .addGroup(settingsPanelLayout.createSequentialGroup()
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(security, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(48, Short.MAX_VALUE))))
+                            .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -922,14 +917,10 @@ public class Dashboard extends javax.swing.JFrame {
                             .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(uppercaseCharacters)
                                 .addComponent(lowercaseCharacters)
-                                .addComponent(specialCharacters)))
-                        .addGap(18, 18, 18)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(security, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(autoLogOffTitle))
-                    .addComponent(sliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(specialCharacters))))
+                    .addComponent(txtSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(autoLogOffTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addGap(18, 18, 18)
@@ -941,17 +932,15 @@ public class Dashboard extends javax.swing.JFrame {
                 .addComponent(accountTitle)
                 .addGap(18, 18, 18)
                 .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                        .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
 
         getContentPane().add(settingsPanel);
@@ -992,13 +981,30 @@ public class Dashboard extends javax.swing.JFrame {
                 }
             });
         }
+        
+        //Adds action listener to the password generator settings checkboxes.
+        for(JCheckBox checkBox : passwordGeneratorSettingsCheckBoxes){
+            checkBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    passwordGeneratorSettingsCheckBoxActionPerformed(evt);
+                }
+            });
+        }
     }//GEN-LAST:event_formComponentShown
 
     private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMousePressed
+        if(isSaveSettingsActive)
+            confirmSettings();
+        
+        this.autoLogoutTimer.stop();
         System.exit(0);
     }//GEN-LAST:event_btnCloseMousePressed
 
     private void btnLogoutMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLogoutMousePressed
+        if(isSaveSettingsActive)
+            confirmSettings();
+        
         logout();
     }//GEN-LAST:event_btnLogoutMousePressed
 
@@ -1007,39 +1013,53 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMinimizeMousePressed
 
     private void lengthSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lengthSliderStateChanged
-        int value = lengthSlider.getValue();
+        int value = lengthSlider.getValue(), 
+            arrayIndex = Integer.parseInt(lengthSlider.getName());
         
-        sliderValue.setText(String.valueOf(value));
+        txtSliderValue.setText(String.valueOf(value));
         
-        //activateSaveSettingsButton();
+        if(value != oldSettings[arrayIndex]) {
+            this.newSettings[arrayIndex] = value;
+            activateSaveSettingsButton();
+        } else {
+            this.newSettings[arrayIndex] = -1;
+            deactivateSaveSettingsButton();
+        }
     }//GEN-LAST:event_lengthSliderStateChanged
 
     private void autoLogoutEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoLogoutEnabledActionPerformed
-        if(autoLogoutEnabled.isSelected())
+        boolean isAutoLogoutEnabled = autoLogoutEnabled.isSelected();
+        int arrayIndex = Integer.parseInt(autoLogoutEnabled.getName());
+                
+        if(isAutoLogoutEnabled != (oldSettings[arrayIndex] == 1)) {
+            this.newSettings[arrayIndex] = (isAutoLogoutEnabled) ? 1 : 0;
+            activateSaveSettingsButton();
+        } else {
+            this.newSettings[arrayIndex] = -1;
+            deactivateSaveSettingsButton();
+        }
+        
+        if(isAutoLogoutEnabled)
             autoLogoutTimerComboBox.setEnabled(true);
         else
             autoLogoutTimerComboBox.setEnabled(false);
         
-        //activateSaveSettingsButton();
     }//GEN-LAST:event_autoLogoutEnabledActionPerformed
 
-    private void settingsPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_settingsPanelComponentShown
-        
-    }//GEN-LAST:event_settingsPanelComponentShown
-
     private void accountButtonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseEntered
-        evt.getComponent().setBackground(new Color(204, 204, 204));
+        evt.getComponent().setBackground(Constants.ACCOUNT_BUTTONS_COLOR_ON_MOUSE_HOVER);
     }//GEN-LAST:event_accountButtonsMouseEntered
 
     private void accountButtonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseExited
-        evt.getComponent().setBackground(new Color(230, 230, 230));
+        evt.getComponent().setBackground(Constants.ACCOUNT_BUTTONS_DEFAULT_COLOR);
     }//GEN-LAST:event_accountButtonsMouseExited
 
     private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMousePressed
-        int confirm = JOptionPane.showConfirmDialog(null, "If you proceed you'll be logged out." +
-                                                " Are you sure you want to proceed?", 
-                                                "Change master PIN", JOptionPane.YES_NO_OPTION,
-                                                JOptionPane.WARNING_MESSAGE);
+        int confirm = Customization.displayConfirmMessage(
+            "If you proceed you'll be logged out. Are you sure you want to proceed?", 
+            "Change master PIN"
+        );
+        
         if(confirm == JOptionPane.YES_OPTION){
             NewPin changePin = new NewPin(2);
             changePin.setVisible(true);
@@ -1049,11 +1069,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnChangeMasterPinMousePressed
 
     private void btnSaveSettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveSettingsMousePressed
-        /*
-            Save new settings to database.
-            Apply changes.
-            Inform the user that settings have been saved.
-        */
+        saveUserSettings();
     }//GEN-LAST:event_btnSaveSettingsMousePressed
 
     private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allCardsTableMousePressed
@@ -1069,28 +1085,29 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonsMouseExited
 
     private void autoLogoutTimerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoLogoutTimerComboBoxActionPerformed
-        System.out.println(autoLogoutTimerComboBox.getSelectedItem().toString());
+        int index = autoLogoutTimerComboBox.getSelectedIndex(),
+            arrayIndex = Integer.parseInt(autoLogoutTimerComboBox.getName());
+        
+        if(index != oldSettings[arrayIndex]) {
+            this.newSettings[arrayIndex] = index;
+            activateSaveSettingsButton();
+        } else {
+            this.newSettings[arrayIndex] = -1;
+            deactivateSaveSettingsButton();
+        }
     }//GEN-LAST:event_autoLogoutTimerComboBoxActionPerformed
 
-    private void btnAddNewCardMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewCardMouseEntered
-        btnAddNewCard.setForeground(Constants.TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnAddNewCardMouseEntered
+    private void titleButtonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_titleButtonsMouseEntered
+        evt.getComponent().setForeground(Constants.TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER);
+    }//GEN-LAST:event_titleButtonsMouseEntered
 
-    private void btnAddNewCardMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewCardMouseExited
-        btnAddNewCard.setForeground(Constants.TITLE_BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnAddNewCardMouseExited
+    private void titleButtonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_titleButtonsMouseExited
+        evt.getComponent().setForeground(Constants.TITLE_BUTTONS_DEFAULT_COLOR);
+    }//GEN-LAST:event_titleButtonsMouseExited
 
     private void btnAddNewCardMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewCardMousePressed
         addNewItem(0);
     }//GEN-LAST:event_btnAddNewCardMousePressed
-
-    private void btnAddNewNoteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMouseEntered
-        btnAddNewNote.setForeground(Constants.TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnAddNewNoteMouseEntered
-
-    private void btnAddNewNoteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMouseExited
-        btnAddNewNote.setForeground(Constants.TITLE_BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnAddNewNoteMouseExited
 
     private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMousePressed
         addNewItem(1);
@@ -1104,9 +1121,10 @@ public class Dashboard extends javax.swing.JFrame {
      * Sends the user to Login frame.
      */
     private void logout() {
+        autoLogoutTimer.stop();
+        this.dispose();
         Login login = new Login();
         login.setState(this.getState());
-        this.dispose();
     }
     
     /**
@@ -1161,19 +1179,120 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     /**
-     * Sets the save settings button visible.
+     * Sets the save settings button visible if not visible.
      */
     private void activateSaveSettingsButton() {
-        if(!btnSaveSettings.isVisible())
+        if(!isSaveSettingsActive){
             btnSaveSettings.setVisible(true);
+            isSaveSettingsActive = true;
+        }
     }
     
     /**
-     * 
+     * Sets the save settings button not visible.
+     * Applies only if visible and all settings have their own default value.
      */
     private void deactivateSaveSettingsButton(){
-        if(btnSaveSettings.isVisible())
-            btnSaveSettings.setVisible(false);
+        if(isSaveSettingsActive){
+            int i = 0;
+            
+            for(int value : newSettings)
+                if(value != -1)
+                    i++;
+            
+            if(i == 0){
+                btnSaveSettings.setVisible(false);
+                isSaveSettingsActive = false;
+            }
+        }
+    }
+    
+    /**
+     * Saves the user's new settings on database.
+     * Only saves the settings that were changed.
+     * Updates old settings and resets new settings.
+     */
+    private void saveUserSettings(){
+        Connection connection = DatabaseHandler.getConnection();
+        PreparedStatement statement;
+        
+        for(int i = 0; i < newSettings.length; i++){
+            if(newSettings[i] != -1){
+                try {
+                    statement = connection.prepareStatement(
+                        "UPDATE Settings SET " + SETTINGS_COLUMNS[i] + " = ?"
+                    );
+                    statement.setInt(1, newSettings[i]);
+                    statement.executeUpdate();
+                    statement.close();
+                    this.oldSettings[i] = newSettings[i];
+                    this.newSettings[i] = -1;
+                    if(i == 6)
+                        updateExpectedAutoLogoutCounter();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        deactivateSaveSettingsButton();
+    }
+    
+    /**
+     * Resets settings to their old value.
+     */
+    private void setOldSettings(){
+        int i = 0;
+        lengthSlider.setValue(oldSettings[i++]);
+        uppercaseCharacters.setSelected(oldSettings[i++] == 1);
+        lowercaseCharacters.setSelected(oldSettings[i++] == 1);
+        numberCharacters.setSelected(oldSettings[i++] == 1);
+        specialCharacters.setSelected(oldSettings[i++] == 1);
+        autoLogoutEnabled.setSelected(oldSettings[i++] == 1);
+        autoLogoutTimerComboBox.setSelectedIndex(oldSettings[i]);
+        updateExpectedAutoLogoutCounter();
+    }
+    
+    /**
+     * Confirms the unsaved settings.
+     */
+    private void confirmSettings(){
+        int confirmSettings = Customization.displayConfirmMessage(
+                "You have unsaved settings. Do you want to save them now?", "Unsaved Settings!"
+        );
+            
+        if(confirmSettings == JOptionPane.YES_OPTION)
+            saveUserSettings();
+        else
+            setOldSettings();
+
+    }
+    
+    /**
+     * Updates the expected auto logout counter.
+     */
+    private void updateExpectedAutoLogoutCounter(){
+        String autoLogoutComboBoxSelectedItem = autoLogoutTimerComboBox.getSelectedItem().toString().trim();
+        this.expectedAutoLogoutCounter = Integer.parseInt(
+            autoLogoutComboBoxSelectedItem.substring(0, autoLogoutComboBoxSelectedItem.indexOf(" "))
+        ) * 60;
+    }
+    
+    /**
+     * Handles the action event of the password generator settings checkboxes.
+     * @param evt ActionEvent
+     */
+    private void passwordGeneratorSettingsCheckBoxActionPerformed(java.awt.event.ActionEvent evt){
+        JCheckBox checkBox = (JCheckBox) evt.getSource();
+        int arrayIndex = Integer.parseInt(checkBox.getName());
+        boolean isSelected = checkBox.isSelected();
+        
+        if(isSelected != (oldSettings[arrayIndex] == 1)) {
+            this.newSettings[arrayIndex] = (isSelected) ? 1 : 0;
+            activateSaveSettingsButton();
+        } else {
+            this.newSettings[arrayIndex] = -1;
+            deactivateSaveSettingsButton();
+        }
     }
     
     /**
@@ -1205,15 +1324,19 @@ public class Dashboard extends javax.swing.JFrame {
     private void sidePanelButtonMousePressed(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
         
-        if(!button.getName().equals(activeSidePanelButton.getName())) {
+        if(!button.getName().equals(activeSidePanelButton.getName()) && !isSaveSettingsActive) {
+            closeActiveSidePanelButton();
+            activateNewSidePanelButton(button);
+        } else if(!button.getName().equals(activeSidePanelButton.getName()) && isSaveSettingsActive) {
+            confirmSettings();
             closeActiveSidePanelButton();
             activateNewSidePanelButton(button);
         }
     }
     
     /**
-     * Closes the active side panel button, based on it's number.
-     * Removes the respective properties of an active side panel button.
+     * Closes the active side panel button.
+     * Removes the respective properties of an active side panel button, based on it's number..
      */
     private void closeActiveSidePanelButton() {
         int activeSidePanelNumber = Integer.valueOf(activeSidePanelButton.getName());
@@ -1226,9 +1349,9 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     /**
-     * Activates a new side panel button with a given component (button), based on it's number.
-     * Applies the respective properties of an active side panel button.
-     * @param button Given button to set as active.
+     * Activates a new side panel button.
+     * Applies the respective properties of an active side panel button, based on it's number.
+     * @param button Given button (Component) to set as active.
      */
     private void activateNewSidePanelButton(Component button) {
         int buttonNumber = Integer.valueOf(button.getName());
@@ -1333,12 +1456,11 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel passwordGeneratorTitle;
     private static javax.swing.JScrollPane scrollPaneAllCardsTable;
     private static javax.swing.JScrollPane scrollPaneNotesTable;
-    private javax.swing.JLabel security;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel sidePanel;
-    private javax.swing.JLabel sliderValue;
     private javax.swing.JCheckBox specialCharacters;
     private javax.swing.JPanel titlePanel;
+    private javax.swing.JLabel txtSliderValue;
     private javax.swing.JCheckBox uppercaseCharacters;
     // End of variables declaration//GEN-END:variables
 }
