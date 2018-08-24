@@ -4,10 +4,11 @@ import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
+import java.util.Base64;
 
 /**
  *
@@ -291,6 +292,12 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
             String hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
                    hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
             
+            //Locker data.
+            byte[] locker = new byte[32], lockerSalt = new byte[16];
+            SecureRandom random = new SecureRandom();
+            random.nextBytes(locker);
+            random.nextBytes(lockerSalt);
+            
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try{
@@ -301,6 +308,11 @@ public class RecoverMethodsSetup extends javax.swing.JFrame {
                 statement.setString(4, hashedFirstSecurityAnswer);
                 statement.setString(5, secondSecurityQuestion);
                 statement.setString(6, hashedSecondSecurityAnswer);
+                statement.executeUpdate();
+                statement.close();
+                statement = connection.prepareStatement("INSERT INTO Locker VALUES (?, ?)");
+                statement.setString(1, Base64.getEncoder().encodeToString(locker));
+                statement.setString(2, Base64.getEncoder().encodeToString(lockerSalt));
                 statement.executeUpdate();
                 statement.close();
                 connection.close();
