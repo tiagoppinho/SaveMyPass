@@ -65,10 +65,9 @@ public class Customization {
      * @param title Title of the message dialog.
      */
     public static void displayWarningMessage(String message, String title){
-        JOptionPane.showMessageDialog(null, 
-                                    message, 
-                                    title, 
-                                    JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(
+            null, message, title, JOptionPane.WARNING_MESSAGE
+        );
     }
     
     /**
@@ -78,10 +77,9 @@ public class Customization {
      * @return Integer - Chosen option.
      */
     public static int displayConfirmMessage(String message, String title){
-        return JOptionPane.showConfirmDialog(null,
-                                                    message,
-                                                    title,
-                                                    JOptionPane.YES_NO_OPTION,
-                                                    JOptionPane.WARNING_MESSAGE);
+        return JOptionPane.showConfirmDialog(
+            null, message, title, JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
     }
 }

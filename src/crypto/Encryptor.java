@@ -55,8 +55,9 @@ public class Encryptor {
         try{
             Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV();
-            byte[] encryptedString = cipher.doFinal(string.getBytes());
+            byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV(),
+                   encryptedString = cipher.doFinal(string.getBytes());
+            
             outputStream.write(iv);
             outputStream.write(encryptedString);
             
