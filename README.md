@@ -8,7 +8,6 @@ Simple offline password manager initially made for my own use and as an academic
 * No internet connection needed.
 * Master pin that protects all your information.
 * Two security questions in case you forgot your master pin.
-* Strong hashing using PBKDF2.
 * AES-128 password data encryption.
 * Built-in virtual keyboard (everytime you need to enter your master pin or create a new one).
 * Built-in password generator.
@@ -18,10 +17,11 @@ Simple offline password manager initially made for my own use and as an academic
 
 ## Future Features (Coming soon)
 
-* User settings.
+* View items.
 * Improved password generator.
 * AES-256 password data encryption.
 * Add password card to favorites.
+* Delete password cards and notes.
 * Delete all database (for emergencies).
 
 ### Icons
