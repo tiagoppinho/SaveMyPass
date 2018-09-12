@@ -31,6 +31,8 @@ public class Constants {
     public static final Color TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER = new Color(230, 230, 230);
     public static final Color ACCOUNT_BUTTONS_DEFAULT_COLOR = new Color(230, 230, 230);
     public static final Color ACCOUNT_BUTTONS_COLOR_ON_MOUSE_HOVER = new Color(204, 204, 204);
+    public static final Color CANCEL_BUTTONS_DEFAULT_COLOR = new Color(153, 153, 153);
+    public static final Color CANCEL_BUTTONS_COLOR_ON_MOUSE_HOVER = new Color(102, 102, 102);
     /* ----------------------------------------------------------------------------------------- */
     
 }
