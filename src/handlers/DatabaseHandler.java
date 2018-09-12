@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- *
+ * Class responsible for handling database connections and retrieve them.
  * @author Tiago Pinho
  */
 public class DatabaseHandler {
