@@ -1144,19 +1144,20 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     /**
-     * Pops up the Add New frame.
-     * @param index Integer.
+     * Pops up the correspondent item frame (Add/New mode).
+     * @param index Integer - Specifies the type of item to add.
      * <br>
      * 0 - New Card.
      * <br>
      * 1 - New Note.
      */
     private void addNewItem(int index) {
-        try{
-            AddNew newCard = new AddNew(index, this);
+        if(index == 0){
+            Card newCard = new Card(0, this);
             newCard.setVisible(true);
-        } catch(IllegalArgumentException ex) {
-            ex.printStackTrace();
+        } else if(index == 1) {
+            Note newNote = new Note(0, this);
+            newNote.setVisible(true);
         }
     }
        

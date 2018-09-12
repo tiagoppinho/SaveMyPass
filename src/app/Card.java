@@ -4,39 +4,35 @@ import handlers.PasswordGenerator;
 import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
-import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Tiago Pinho
  */
-public class AddNew extends javax.swing.JFrame {
+public class Card extends javax.swing.JFrame {
 
     private int index = 0;
     private JFrame dashboard = null;
     
-    public AddNew() {
+    public Card() {
         initComponents();
     }
     
-    // 0 - New Card.
-    // 1 - New Note.
-    public AddNew(int index, JFrame dashboard) {
-        if(index == 0 || index == 1){
+    //0 - New card.
+    //1 - View/change existing card.
+    public Card(int index, JFrame dashboard) {
+        if((index == 0 || index == 1) && dashboard != null){
             this.index = index;
             this.dashboard = dashboard;
             dashboard.setEnabled(false);
             initComponents();
             this.setVisible(true);
-        } else
-            throw new IllegalArgumentException("Index out of range. 0 - New Card. 1 - New Note");
-        
+        }
     }
 
     
@@ -46,7 +42,7 @@ public class AddNew extends javax.swing.JFrame {
 
         headerPanel = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
-        newCardMainPanel = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtCardName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -55,20 +51,15 @@ public class AddNew extends javax.swing.JFrame {
         txtPassword = new javax.swing.JPasswordField();
         showHidePassword = new javax.swing.JLabel();
         generatePassword = new javax.swing.JLabel();
-        newNoteMainPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
-        txtNoteTitle = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtNoteDescription = new javax.swing.JTextArea();
         footerPanel = new javax.swing.JPanel();
         btnCancel = new javax.swing.JLabel();
         btnAdd = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("SaveMyPass - New Card");
+        setTitle("SaveMyPass - Card");
         setMinimumSize(new java.awt.Dimension(379, 348));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(379, 348));
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -98,8 +89,8 @@ public class AddNew extends javax.swing.JFrame {
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 380, 50);
 
-        newCardMainPanel.setBackground(new java.awt.Color(250, 250, 250));
-        newCardMainPanel.setName("mainPanel"); // NOI18N
+        mainPanel.setBackground(new java.awt.Color(250, 250, 250));
+        mainPanel.setName(""); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(51, 128, 255));
@@ -138,20 +129,20 @@ public class AddNew extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout newCardMainPanelLayout = new javax.swing.GroupLayout(newCardMainPanel);
-        newCardMainPanel.setLayout(newCardMainPanelLayout);
-        newCardMainPanelLayout.setHorizontalGroup(
-            newCardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newCardMainPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(newCardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(newCardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtCardName)
                         .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
-                    .addGroup(newCardMainPanelLayout.createSequentialGroup()
+                    .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(showHidePassword)
@@ -159,9 +150,9 @@ public class AddNew extends javax.swing.JFrame {
                         .addComponent(generatePassword)))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
-        newCardMainPanelLayout.setVerticalGroup(
-            newCardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newCardMainPanelLayout.createSequentialGroup()
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -171,8 +162,8 @@ public class AddNew extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(newCardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(newCardMainPanelLayout.createSequentialGroup()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -181,59 +172,8 @@ public class AddNew extends javax.swing.JFrame {
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        getContentPane().add(newCardMainPanel);
-        newCardMainPanel.setBounds(0, 50, 380, 230);
-
-        newNoteMainPanel.setBackground(new java.awt.Color(250, 250, 250));
-        newNoteMainPanel.setName("mainPanel"); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(51, 128, 255));
-        jLabel5.setText("Note Title");
-
-        txtNoteTitle.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(51, 128, 255));
-        jLabel6.setText("Description");
-
-        txtNoteDescription.setColumns(20);
-        txtNoteDescription.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        txtNoteDescription.setLineWrap(true);
-        txtNoteDescription.setRows(5);
-        txtNoteDescription.setTabSize(0);
-        txtNoteDescription.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(txtNoteDescription);
-
-        javax.swing.GroupLayout newNoteMainPanelLayout = new javax.swing.GroupLayout(newNoteMainPanel);
-        newNoteMainPanel.setLayout(newNoteMainPanelLayout);
-        newNoteMainPanelLayout.setHorizontalGroup(
-            newNoteMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newNoteMainPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(newNoteMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNoteTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-        newNoteMainPanelLayout.setVerticalGroup(
-            newNoteMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newNoteMainPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtNoteTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-
-        getContentPane().add(newNoteMainPanel);
-        newNoteMainPanel.setBounds(0, 50, 380, 230);
+        getContentPane().add(mainPanel);
+        mainPanel.setBounds(0, 50, 380, 230);
 
         footerPanel.setBackground(new java.awt.Color(250, 250, 250));
 
@@ -326,17 +266,15 @@ public class AddNew extends javax.swing.JFrame {
     }//GEN-LAST:event_showHidePasswordMousePressed
 
     private void btnCancelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseEntered
-        btnCancel.setBackground(new Color(102, 102, 102));
+        btnCancel.setBackground(Constants.CANCEL_BUTTONS_COLOR_ON_MOUSE_HOVER);
     }//GEN-LAST:event_btnCancelMouseEntered
 
     private void btnCancelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseExited
-        btnCancel.setBackground(new Color(153, 153, 153));
+        btnCancel.setBackground(Constants.CANCEL_BUTTONS_DEFAULT_COLOR);
     }//GEN-LAST:event_btnCancelMouseExited
 
     private void btnCancelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMousePressed
-        this.dispose();
-        dashboard.setEnabled(true);
-        dashboard.requestFocus();
+        close();
     }//GEN-LAST:event_btnCancelMousePressed
 
     private void btnAddMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseEntered
@@ -349,66 +287,40 @@ public class AddNew extends javax.swing.JFrame {
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
-        
-        //If it's a new card.
-        if(index == 0) {
-            newNoteMainPanel.setVisible(false);
-        } else /* If it's a new note */ {
-            this.setTitle("SaveMyPass - New Note");
-            title.setText("New Note");
-            newCardMainPanel.setVisible(false);
-        }
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMousePressed
-        String dataForTable[];
-        DefaultTableModel tableModel;
-        Connection connection = DatabaseHandler.getConnection();
-        PreparedStatement statement;
-        
         if(index == 0){
             String cardName = txtCardName.getText(), username = txtUsername.getText(),
                    password = String.valueOf(txtPassword.getPassword());
             
-            try{
-                statement = connection.prepareStatement("INSERT INTO Cards VALUES (?, ?, ?)");
-                statement.setString(1, cardName);
-                statement.setString(2, username);
-                statement.setString(3, password);
-                statement.executeUpdate();
-                statement.close();
-                connection.close();
-            }catch(SQLException ex){
-                ex.printStackTrace();
+            if(cardName.isEmpty() || username.isEmpty() || password.isEmpty()){
+                Customization.displayWarningMessage(
+                    "Please fill all the card fields.",
+                    "Empty field(s)!"
+                );
+            } else {
+                Connection connection = DatabaseHandler.getConnection();
+                try{
+                    PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO Cards VALUES (?, ?, ?)"
+                    );
+                    statement.setString(1, cardName);
+                    statement.setString(2, username);
+                    statement.setString(3, password);
+                    statement.executeUpdate();
+                    statement.close();
+                    connection.close();
+                } catch(SQLException ex) {
+                    ex.printStackTrace();
+                }
+                Dashboard.addNewTableRow(
+                    Dashboard.getAllCardsTableModel(),
+                    new String[]{cardName, username}
+                );
+                close();
             }
-            tableModel = Dashboard.getAllCardsTableModel();
-            dataForTable = new String[]{cardName, username};
-        } else {
-            String noteTitle = txtNoteTitle.getText(), noteDescription = txtNoteDescription.getText();
-            
-            try{
-                statement = connection.prepareStatement("INSERT INTO Notes VALUES (?, ?)");
-                statement.setString(1, noteTitle);
-                statement.setString(2, noteDescription);
-                statement.executeUpdate();
-                statement.close();
-                connection.close();
-            }catch(SQLException ex){
-                ex.printStackTrace();
-            }
-            tableModel = Dashboard.getNotesTableModel();
-            dataForTable = new String[]{
-                noteTitle,
-                (noteDescription.length() > 60) ? noteDescription.substring(0, 61) + "..." : noteDescription
-            };
         }
-        
-        //Add new table row on dashboard.
-        Dashboard.addNewTableRow(tableModel, dataForTable);
-        //Close this frame and enable dashboard.
-        this.dispose();
-        dashboard.setEnabled(true);
-        dashboard.requestFocus();
     }//GEN-LAST:event_btnAddMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
@@ -416,6 +328,15 @@ public class AddNew extends javax.swing.JFrame {
         txtPassword.setText(generatedPassword);
     }//GEN-LAST:event_generatePasswordMousePressed
 
+    /**
+     * Closes this frame and enables dashboard.
+     */
+    private void close(){
+        this.dispose();
+        dashboard.setEnabled(true);
+        dashboard.requestFocus();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -430,23 +351,18 @@ public class AddNew extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Card.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Card.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Card.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddNew.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Card.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddNew();
-            }
-        });
+        //</editor-fold>
+        //</editor-fold>
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -458,16 +374,10 @@ public class AddNew extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPanel newCardMainPanel;
-    private javax.swing.JPanel newNoteMainPanel;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel showHidePassword;
     private javax.swing.JLabel title;
     private javax.swing.JTextField txtCardName;
-    private javax.swing.JTextArea txtNoteDescription;
-    private javax.swing.JTextField txtNoteTitle;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
