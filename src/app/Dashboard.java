@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+import sql.SQLScriptFileRunner;
 
 /**
  * 
@@ -27,7 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
-        
+    
     /* -------------------- Side Panel ---------------------- */
     private Component sidePanelButtons[] = new JPanel[4], 
                       activeSidePanelButton;
@@ -844,6 +845,9 @@ public class Dashboard extends javax.swing.JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseExited(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDeleteAllDataMousePressed(evt);
+            }
         });
 
         jLabel6.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -1116,12 +1120,24 @@ public class Dashboard extends javax.swing.JFrame {
     private void autoLogoutTrackingHandlersMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autoLogoutTrackingHandlersMouseMoved
         autoLogoutCounter = 0;
     }//GEN-LAST:event_autoLogoutTrackingHandlersMouseMoved
+
+    private void btnDeleteAllDataMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteAllDataMousePressed
+        int confirm = Customization.displayConfirmMessage(
+            "This will delete all your data and logout. Are you sure you want to continue?",
+            "Delete all data"
+        );
+        
+        if(confirm == JOptionPane.YES_OPTION){
+            SQLScriptFileRunner.runScriptFile("panic");
+            logout();
+        }
+    }//GEN-LAST:event_btnDeleteAllDataMousePressed
      
     /**
      * Sends the user to Login frame.
      */
     private void logout() {
-        autoLogoutTimer.stop();
+        this.autoLogoutTimer.stop();
         this.dispose();
         Login login = new Login();
         login.setState(this.getState());
