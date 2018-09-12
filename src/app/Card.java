@@ -1,5 +1,6 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.PasswordGenerator;
 import handlers.DatabaseHandler;
 import utils.Customization;
@@ -301,13 +302,14 @@ public class Card extends javax.swing.JFrame {
                 );
             } else {
                 Connection connection = DatabaseHandler.getConnection();
+                Encryptor encryptor = new Encryptor();
                 try{
                     PreparedStatement statement = connection.prepareStatement(
                         "INSERT INTO Cards VALUES (?, ?, ?)"
                     );
-                    statement.setString(1, cardName);
-                    statement.setString(2, username);
-                    statement.setString(3, password);
+                    statement.setString(1, encryptor.encrypt(cardName));
+                    statement.setString(2, encryptor.encrypt(username));
+                    statement.setString(3, encryptor.encrypt(password));
                     statement.executeUpdate();
                     statement.close();
                     connection.close();

@@ -1,5 +1,6 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
@@ -28,6 +29,8 @@ public class Dashboard extends javax.swing.JFrame {
 
     private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
+    
+    private Encryptor encryptor = new Encryptor();
     
     /* -------------------- Side Panel ---------------------- */
     private Component sidePanelButtons[] = new JPanel[4], 
@@ -119,15 +122,16 @@ public class Dashboard extends javax.swing.JFrame {
             ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
             while(resultSet.next()){
                 addNewTableRow(customModelAllCards, new String[]{
-                    resultSet.getString("title"), resultSet.getString("username")
+                    encryptor.decrypt(resultSet.getString("title")),
+                    encryptor.decrypt(resultSet.getString("username"))
                 });
             }
             resultSet.close();
             resultSet = statement.executeQuery("SELECT * FROM Notes");
             String title, description;
             while(resultSet.next()){
-                title = resultSet.getString("title");
-                description = resultSet.getString("description");
+                title = encryptor.decrypt(resultSet.getString("title"));
+                description = encryptor.decrypt(resultSet.getString("description"));
                 addNewTableRow(customModelNotes, new String[]{
                     title,
                     (description.length() > 60) ? description.substring(0, 61) + "..." : description

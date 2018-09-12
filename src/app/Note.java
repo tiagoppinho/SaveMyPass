@@ -1,5 +1,6 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.DatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -251,10 +252,11 @@ public class Note extends javax.swing.JFrame {
                 );
             } else {
                 Connection connection = DatabaseHandler.getConnection();
+                Encryptor encryptor = new Encryptor();
                 try{
                     PreparedStatement statement = connection.prepareStatement("INSERT INTO Notes VALUES (?, ?)");
-                    statement.setString(1, noteTitle);
-                    statement.setString(2, noteDescription);
+                    statement.setString(1, encryptor.encrypt(noteTitle));
+                    statement.setString(2, encryptor.encrypt(noteDescription));
                     statement.executeUpdate();
                     statement.close();
                     connection.close();
