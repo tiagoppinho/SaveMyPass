@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.Random;
 
 /**
- * Class responsible for generating random secure passwords according to the user needs.
+ * Class responsible for generating random secure passwords according to the user settings.
  * @author Tiago Pinho
  */
 public class PasswordGenerator {
@@ -24,6 +24,40 @@ public class PasswordGenerator {
     
     public PasswordGenerator() {
         loadSettings();
+    }
+    
+    /**
+     * Generates a random secure password.
+     * @return String
+     */
+    public String generateRandomSecurePassword(){
+        String characters = getPasswordCharacters();
+        StringBuilder generatedPassword = new StringBuilder();
+        Random rnd = new Random();
+        while(generatedPassword.toString().length() < length){
+            int next = rnd.nextInt(characters.length());
+            generatedPassword.append(String.valueOf(characters.charAt(next)));
+        }
+        return generatedPassword.toString();
+    }
+    
+    /**
+     * Returns the password characters set based on settings.
+     * @return String containing all characters.
+     */
+    private String getPasswordCharacters(){
+        StringBuilder sb = new StringBuilder();
+        
+        if(uppercase)
+            sb.append(UPPERCASE);
+        if(lowercase)
+            sb.append(LOWERCASE);
+        if(numbers)
+            sb.append(NUMBERS);
+        if(specialCharacters)
+            sb.append(SPECIAL_CHARACTERS);
+        
+        return sb.toString();
     }
     
     /**
@@ -48,43 +82,5 @@ public class PasswordGenerator {
         }catch(SQLException ex){
             ex.printStackTrace();
         }
-    }
-    
-    /**
-     * Generates a random secure password.
-     * @return String
-     */
-    public String generateRandomSecurePassword(){
-        String characters = getPasswordCharacters(uppercase, lowercase, numbers, specialCharacters);
-        StringBuilder generatedPassword = new StringBuilder();
-        Random rnd = new Random();
-        while(generatedPassword.toString().length() < length){
-            int next = rnd.nextInt(characters.length());
-            generatedPassword.append(String.valueOf(characters.charAt(next)));
-        }
-        return generatedPassword.toString();
-    }
-    
-    /**
-     * Returns the password characters set based on settings.
-     * @param upper Boolean (uppercase)
-     * @param lower Boolean (lowercase)
-     * @param numbers Boolean (numbers)
-     * @param special Boolean (special characters)
-     * @return String
-     */
-    private String getPasswordCharacters(boolean upper, boolean lower, boolean numbers, boolean special){
-        StringBuilder sb = new StringBuilder();
-        
-        if(upper)
-            sb.append(UPPERCASE);
-        if(lower)
-            sb.append(LOWERCASE);
-        if(numbers)
-            sb.append(NUMBERS);
-        if(special)
-            sb.append(SPECIAL_CHARACTERS);
-        
-        return sb.toString();
     }
 }
