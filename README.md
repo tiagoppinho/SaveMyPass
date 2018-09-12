@@ -14,6 +14,7 @@ Simple offline password manager initially made for my own use and as an academic
 * Auto-logout after a timer set by the user.
 * Change your master pin anytime.
 * Notes.
+* Delete all database (for emergencies).
 
 ## Future Features (Coming soon)
 
@@ -22,7 +23,6 @@ Simple offline password manager initially made for my own use and as an academic
 * AES-256 password data encryption.
 * Add password card to favorites.
 * Delete password cards and notes.
-* Delete all database (for emergencies).
 
 ### Icons
 
