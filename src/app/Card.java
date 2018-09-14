@@ -7,7 +7,10 @@ import utils.Customization;
 import utils.Constants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
@@ -16,26 +19,38 @@ import javax.swing.JFrame;
  * @author Tiago Pinho
  */
 public class Card extends javax.swing.JFrame {
-
-    private int index = 0;
+    
     private JFrame dashboard = null;
+    private int cardIdentifier = -1, index = 0;
     
-    public Card() {
-        initComponents();
-    }
+    private ArrayList<String> cardTitles = new ArrayList<>(),
+                              cardUsernames = new ArrayList<>();
+    private boolean titleExists = false, usernameExists = false;
     
-    //0 - New card.
-    //1 - View/change existing card.
-    public Card(int index, JFrame dashboard) {
-        if((index == 0 || index == 1) && dashboard != null){
-            this.index = index;
+    //View mode only.
+    private String oldCardTitle, oldCardUsername, oldCardPassword;
+    
+    private final Encryptor encryptor = new Encryptor();
+       
+    public Card(JFrame dashboard, int cardIdentifier) {
+        if(dashboard != null){
             this.dashboard = dashboard;
+            
+            if(cardIdentifier == -1){
+                this.index = 0;
+            } else {
+                this.index = 1;
+                this.cardIdentifier = cardIdentifier;
+            }
+            
             dashboard.setEnabled(false);
             initComponents();
+            load();
             this.setVisible(true);
+        } else {
+            throw new IllegalArgumentException("Dashboard instance is required.");
         }
     }
-
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -43,9 +58,10 @@ public class Card extends javax.swing.JFrame {
 
         headerPanel = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        txtCardName = new javax.swing.JTextField();
+        txtCardTitle = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -53,11 +69,10 @@ public class Card extends javax.swing.JFrame {
         showHidePassword = new javax.swing.JLabel();
         generatePassword = new javax.swing.JLabel();
         footerPanel = new javax.swing.JPanel();
-        btnCancel = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JLabel();
+        btnAddOrSave = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("SaveMyPass - Card");
+        setTitle("SaveMyPass - New Card");
         setMinimumSize(new java.awt.Dimension(379, 348));
         setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(379, 348));
@@ -70,22 +85,30 @@ public class Card extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
+        headerPanel.setLayout(null);
 
         title.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("New Card");
+        headerPanel.add(title);
+        title.setBounds(50, 0, 270, 50);
 
-        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
-        headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-        );
+        btnCancel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
+        btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
+        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCancel.setMaximumSize(new java.awt.Dimension(61, 37));
+        btnCancel.setMinimumSize(new java.awt.Dimension(61, 37));
+        btnCancel.setPreferredSize(new java.awt.Dimension(61, 37));
+        btnCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnCancelMousePressed(evt);
+            }
+        });
+        headerPanel.add(btnCancel);
+        btnCancel.setBounds(340, 10, 20, 20);
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 380, 50);
@@ -97,7 +120,7 @@ public class Card extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(51, 128, 255));
         jLabel2.setText("Card Title / Service");
 
-        txtCardName.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        txtCardTitle.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(51, 128, 255));
@@ -141,7 +164,7 @@ public class Card extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtCardName)
+                        .addComponent(txtCardTitle)
                         .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -157,7 +180,7 @@ public class Card extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtCardName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCardTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -178,47 +201,25 @@ public class Card extends javax.swing.JFrame {
 
         footerPanel.setBackground(new java.awt.Color(250, 250, 250));
 
-        btnCancel.setBackground(new java.awt.Color(153, 153, 153));
-        btnCancel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
-        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnCancel.setText("Cancel");
-        btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnCancel.setMaximumSize(new java.awt.Dimension(61, 37));
-        btnCancel.setMinimumSize(new java.awt.Dimension(61, 37));
-        btnCancel.setOpaque(true);
-        btnCancel.setPreferredSize(new java.awt.Dimension(61, 37));
-        btnCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnAddOrSave.setBackground(new java.awt.Color(51, 153, 255));
+        btnAddOrSave.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        btnAddOrSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddOrSave.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnAddOrSave.setText("Add");
+        btnAddOrSave.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAddOrSave.setMaximumSize(new java.awt.Dimension(61, 37));
+        btnAddOrSave.setMinimumSize(new java.awt.Dimension(61, 37));
+        btnAddOrSave.setOpaque(true);
+        btnAddOrSave.setPreferredSize(new java.awt.Dimension(61, 37));
+        btnAddOrSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnCancelMouseEntered(evt);
+                btnAddOrSaveMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnCancelMouseExited(evt);
+                btnAddOrSaveMouseExited(evt);
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnCancelMousePressed(evt);
-            }
-        });
-
-        btnAdd.setBackground(new java.awt.Color(51, 153, 255));
-        btnAdd.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
-        btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnAdd.setText("Add");
-        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnAdd.setMaximumSize(new java.awt.Dimension(61, 37));
-        btnAdd.setMinimumSize(new java.awt.Dimension(61, 37));
-        btnAdd.setOpaque(true);
-        btnAdd.setPreferredSize(new java.awt.Dimension(61, 37));
-        btnAdd.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAddMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAddMouseExited(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnAddMousePressed(evt);
+                btnAddOrSaveMousePressed(evt);
             }
         });
 
@@ -227,19 +228,15 @@ public class Card extends javax.swing.JFrame {
         footerPanelLayout.setHorizontalGroup(
             footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(footerPanelLayout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64))
+                .addGap(133, 133, 133)
+                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(139, Short.MAX_VALUE))
         );
         footerPanelLayout.setVerticalGroup(
             footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(footerPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
@@ -266,33 +263,31 @@ public class Card extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showHidePasswordMousePressed
 
-    private void btnCancelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseEntered
-        btnCancel.setBackground(Constants.CANCEL_BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnCancelMouseEntered
-
-    private void btnCancelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMouseExited
-        btnCancel.setBackground(Constants.CANCEL_BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnCancelMouseExited
-
     private void btnCancelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMousePressed
         close();
     }//GEN-LAST:event_btnCancelMousePressed
 
-    private void btnAddMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseEntered
-        btnAdd.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnAddMouseEntered
+    private void btnAddOrSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMouseEntered
+        btnAddOrSave.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
+    }//GEN-LAST:event_btnAddOrSaveMouseEntered
 
-    private void btnAddMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMouseExited
-        btnAdd.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnAddMouseExited
+    private void btnAddOrSaveMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMouseExited
+        btnAddOrSave.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
+    }//GEN-LAST:event_btnAddOrSaveMouseExited
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
+        
+        if(index == 1){
+            this.setTitle("SaveMyPass - View Card");
+            title.setText("View Card");
+            btnAddOrSave.setText("Save");
+        }
     }//GEN-LAST:event_formComponentShown
 
-    private void btnAddMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddMousePressed
+    private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
         if(index == 0){
-            String cardName = txtCardName.getText(), username = txtUsername.getText(),
+            String cardName = txtCardTitle.getText(), username = txtUsername.getText(),
                    password = String.valueOf(txtPassword.getPassword());
             
             if(cardName.isEmpty() || username.isEmpty() || password.isEmpty()){
@@ -302,10 +297,10 @@ public class Card extends javax.swing.JFrame {
                 );
             } else {
                 Connection connection = DatabaseHandler.getConnection();
-                Encryptor encryptor = new Encryptor();
+                
                 try{
                     PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO Cards VALUES (?, ?, ?)"
+                        "INSERT INTO Cards (title, username, password) VALUES (?, ?, ?)"
                     );
                     statement.setString(1, encryptor.encrypt(cardName));
                     statement.setString(2, encryptor.encrypt(username));
@@ -318,12 +313,13 @@ public class Card extends javax.swing.JFrame {
                 }
                 Dashboard.addNewTableRow(
                     Dashboard.getAllCardsTableModel(),
-                    new String[]{cardName, username}
+                    new String[]{cardName, username},
+                    true
                 );
                 close();
             }
         }
-    }//GEN-LAST:event_btnAddMousePressed
+    }//GEN-LAST:event_btnAddOrSaveMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
         String generatedPassword = new PasswordGenerator().generateRandomSecurePassword();
@@ -338,10 +334,69 @@ public class Card extends javax.swing.JFrame {
         dashboard.setEnabled(true);
         dashboard.requestFocus();
     }
+     /* ----------------------------------------- */
+    
+    //private void exists(){}
+    
+    /* ------------------------------------------- */
     
     /**
-     * @param args the command line arguments
+     * Loads all the needed data to compare with new values.
      */
+    private void load(){
+        Connection connection = DatabaseHandler.getConnection();
+        
+        try{
+            if(index == 0){
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
+                
+                while(resultSet.next()){
+                    cardTitles.add(resultSet.getString("title"));
+                    cardUsernames.add(resultSet.getString("username"));
+                }
+                
+                resultSet.close();
+                statement.close();
+            } else {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT title, username FROM Cards WHERE ID <> ?"
+                );
+                statement.setInt(1, cardIdentifier);
+                
+                ResultSet resultSet = statement.executeQuery();
+                
+                while(resultSet.next()){
+                    cardTitles.add(resultSet.getString("title"));
+                    cardUsernames.add(resultSet.getString("username"));
+                }
+                
+                resultSet.close();
+                statement.close();
+                
+                statement = connection.prepareStatement("SELECT title, username, password FROM Cards WHERE ID = ?");
+                statement.setInt(1, cardIdentifier);
+                
+                resultSet = statement.executeQuery();
+                
+                this.oldCardTitle = encryptor.decrypt(resultSet.getString("title"));
+                this.oldCardUsername = encryptor.decrypt(resultSet.getString("username"));
+                this.oldCardPassword = encryptor.decrypt(resultSet.getString("password"));
+                
+                txtCardTitle.setText(oldCardTitle);
+                txtUsername.setText(oldCardUsername);
+                txtPassword.setText(oldCardPassword);
+                
+                resultSet.close();
+                statement.close();
+            }
+            
+            connection.close();
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+    }    
+    
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -368,7 +423,7 @@ public class Card extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel btnAdd;
+    private javax.swing.JLabel btnAddOrSave;
     private javax.swing.JLabel btnCancel;
     private javax.swing.JPanel footerPanel;
     private javax.swing.JLabel generatePassword;
@@ -379,7 +434,7 @@ public class Card extends javax.swing.JFrame {
     private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel showHidePassword;
     private javax.swing.JLabel title;
-    private javax.swing.JTextField txtCardName;
+    private javax.swing.JTextField txtCardTitle;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
