@@ -12,7 +12,6 @@ import utils.Constants;
 import utils.Customization;
 
 /**
- *
  * @author Tiago Pinho
  */
 public class Note extends javax.swing.JFrame {
@@ -252,7 +251,8 @@ public class Note extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddOrSaveMouseExited
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String noteTitle = txtNoteTitle.getText(), description = txtNoteDescription.getText();
+        String noteTitle = txtNoteTitle.getText().trim(),
+               description = txtNoteDescription.getText().trim();
         
         if(noteTitle.isEmpty() || description.isEmpty()){
             Customization.displayWarningMessage(

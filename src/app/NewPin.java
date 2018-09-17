@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 
 /**
- *
  * @author Tiago Pinho
  */
 public class NewPin extends javax.swing.JFrame {
@@ -28,14 +27,6 @@ public class NewPin extends javax.swing.JFrame {
     private String currentMasterPin = null, currentSalt = null;
     
     private Connection connection = null;
-    
-    public NewPin() {
-        this.connection = DatabaseHandler.getConnection();
-        initComponents();
-        this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
-                                   lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
-        changePINPanel.setVisible(false);
-    }
     
     //0 - Forgot PIN
     //1 - First Time
@@ -774,8 +765,8 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_txtConfirmationMasterPinMousePressed
 
     private void btnNextOrFinishMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextOrFinishMousePressed
-        String pin = getCurrentPin(txtMasterPin),
-               confirmationPin = getCurrentPin(txtConfirmationMasterPin),
+        String pin = getCurrentPin(txtMasterPin).trim(),
+               confirmationPin = getCurrentPin(txtConfirmationMasterPin).trim(),
                salt = Hasher.generateSalt(), hashedPin = Hasher.hashPin(pin, salt);
         
         if(pin.isEmpty() || confirmationPin.isEmpty())
@@ -828,9 +819,9 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCurrentPinMousePressed
 
     private void btnFinishNewPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMousePressed
-        String currentPin = getCurrentPin(txtCurrentPin),
-               newMasterPin = getCurrentPin(txtNewMasterPin),
-               confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin),
+        String currentPin = getCurrentPin(txtCurrentPin).trim(),
+               newMasterPin = getCurrentPin(txtNewMasterPin).trim(),
+               confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin).trim(),
                hashedCurrentPin = Hasher.hashPin(currentPin, currentSalt),
                newSalt = Hasher.generateSalt(), 
                hashedNewPin = Hasher.hashPin(newMasterPin, newSalt);
@@ -1005,6 +996,11 @@ public class NewPin extends javax.swing.JFrame {
         this.dispose();
     }
     
+    /**
+     * Updates the master pin and salt on database.
+     * @param pin New master pin.
+     * @param salt New salt.
+     */
     private void updatePinOnDatabase(String pin, String salt){
         try {
             PreparedStatement statement = connection.prepareStatement("UPDATE User SET pin = ?, salt = ?");
@@ -1018,6 +1014,9 @@ public class NewPin extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Loads the current master pin and salt on database.
+     */
     private void loadCurrentPin(){
         try{
             Statement statement = connection.createStatement();
@@ -1032,9 +1031,6 @@ public class NewPin extends javax.swing.JFrame {
         }
     }
     
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1059,13 +1055,6 @@ public class NewPin extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewPin().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

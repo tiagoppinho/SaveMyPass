@@ -11,16 +11,11 @@ import java.sql.SQLException;
 import java.util.Base64;
 
 /**
- *
  * @author Tiago Pinho
  */
 public class Setup extends javax.swing.JFrame {
     
     private String pin = null, salt = null;
-
-    public Setup() {
-        initComponents();
-    }
     
     public Setup(String pin, String salt) {
         initComponents();
@@ -325,11 +320,7 @@ public class Setup extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_btnFinishMousePressed
-    
-    
-    /**
-     * @param args the command line arguments
-     */
+        
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -354,13 +345,6 @@ public class Setup extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Setup().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

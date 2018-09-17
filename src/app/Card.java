@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
- *
  * @author Tiago Pinho
  */
 public class Card extends javax.swing.JFrame {
@@ -301,8 +300,8 @@ public class Card extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String cardTitle = txtCardTitle.getText(), username = txtUsername.getText(),
-                   password = String.valueOf(txtPassword.getPassword());
+        String cardTitle = txtCardTitle.getText().trim(), username = txtUsername.getText().trim(),
+                   password = String.valueOf(txtPassword.getPassword()).trim();
         
         if(cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()){
             Customization.displayWarningMessage(
