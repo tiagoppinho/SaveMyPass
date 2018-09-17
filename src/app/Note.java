@@ -4,8 +4,10 @@ import crypto.Encryptor;
 import handlers.DatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.JFrame;
+import java.sql.Statement;
+import java.util.ArrayList;
 import utils.Constants;
 import utils.Customization;
 
@@ -15,22 +17,35 @@ import utils.Customization;
  */
 public class Note extends javax.swing.JFrame {
 
-    private int index = 0;
-    private JFrame dashboard = null;
+    private Dashboard dashboard = null;
+    private int noteIdentifier = -1, index = 0;
+    private final Encryptor encryptor = new Encryptor();
     
-    public Note() {
-        initComponents();
-    }
+    private ArrayList<String> noteTitles = new ArrayList<>();
     
-    //0 - New note.
-    //1 - View/change existing note.
-    public Note(int index, JFrame dashboard) {
-        if((index == 0 || index == 1) && dashboard != null){
-            this.index = index;
+    private final String[] VALUES_COLUMNS = {"title", "description"};
+    
+    //View mode only.
+    private String[] oldValues = new String[2];
+    private String oldNoteTitle, oldNoteDescription;
+       
+    public Note(Dashboard dashboard, int noteIdentifier) {
+        if(dashboard != null){
             this.dashboard = dashboard;
+            
+            if(noteIdentifier == -1){
+                this.index = 0;
+            } else {
+                this.index = 1;
+                this.noteIdentifier = noteIdentifier;
+            }
+            
             dashboard.setEnabled(false);
             initComponents();
+            load();
             this.setVisible(true);
+        } else {
+            throw new IllegalArgumentException("Dashboard instance is required.");
         }
     }
     
@@ -55,21 +70,24 @@ public class Note extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(379, 348));
         setUndecorated(true);
         setResizable(false);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
-        headerPanel.setLayout(null);
 
         title.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("New Note");
-        headerPanel.add(title);
-        title.setBounds(50, 0, 270, 50);
 
         btnCancel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
+        btnCancel.setToolTipText("Close/Cancel");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.setMaximumSize(new java.awt.Dimension(61, 37));
         btnCancel.setMinimumSize(new java.awt.Dimension(61, 37));
@@ -79,8 +97,25 @@ public class Note extends javax.swing.JFrame {
                 btnCancelMousePressed(evt);
             }
         });
-        headerPanel.add(btnCancel);
-        btnCancel.setBounds(340, 10, 20, 20);
+
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         mainPanel.setBackground(new java.awt.Color(250, 250, 250));
         mainPanel.setName(""); // NOI18N
@@ -179,7 +214,7 @@ public class Note extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(footerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -190,14 +225,14 @@ public class Note extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 230, Short.MAX_VALUE)
+                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
                 .addComponent(footerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 50, Short.MAX_VALUE)
+                    .addGap(0, 49, Short.MAX_VALUE)
                     .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 70, Short.MAX_VALUE)))
+                    .addGap(0, 69, Short.MAX_VALUE)))
         );
 
         pack();
@@ -217,38 +252,80 @@ public class Note extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddOrSaveMouseExited
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        if(index == 0){
-            String noteTitle = txtNoteTitle.getText(), noteDescription = txtNoteDescription.getText();
-
-            if(noteTitle.isEmpty() || noteDescription.isEmpty()){
-                Customization.displayWarningMessage(
-                    "Please fill all the card fields.",
-                    "Empty field(s)!"
-                );
-            } else {
+        String noteTitle = txtNoteTitle.getText(), description = txtNoteDescription.getText();
+        
+        if(noteTitle.isEmpty() || description.isEmpty()){
+            Customization.displayWarningMessage(
+                "Please fill all the note fields.",
+                "Empty field(s)!"
+            );
+        }else if(exists(noteTitle)){
+            Customization.displayWarningMessage(
+                "This note already exists. Make sure you're inserting the right values.",
+                "Duplicated note!"
+            );
+        } else {
+            if(index == 0){
                 Connection connection = DatabaseHandler.getConnection();
-                Encryptor encryptor = new Encryptor();
+
                 try{
-                    PreparedStatement statement = connection.prepareStatement("INSERT INTO Notes VALUES (?, ?)");
+                    PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO Notes (title, description) VALUES (?, ?)"
+                    );
                     statement.setString(1, encryptor.encrypt(noteTitle));
-                    statement.setString(2, encryptor.encrypt(noteDescription));
+                    statement.setString(2, encryptor.encrypt(description));
                     statement.executeUpdate();
                     statement.close();
                     connection.close();
-                }catch(SQLException ex){
+                } catch(SQLException ex) {
                     ex.printStackTrace();
                 }
-                Dashboard.addNewTableRow(
-                    Dashboard.getNotesTableModel(),
-                    new String[]{
-                        noteTitle,
-                        (noteDescription.length() > 60) ? noteDescription.substring(0, 61) + "..." : noteDescription
-                    }
+                dashboard.addNewTableRow(
+                    dashboard.getNotesTableModel(),
+                    new String[]{noteTitle, description},
+                    true
                 );
-                close();
+            } else {
+                String[] values = {noteTitle, description};
+                Connection connection = DatabaseHandler.getConnection();
+                PreparedStatement statement;
+                
+                for(int i = 0; i < values.length; i++){
+                    if(!values[i].equals(oldValues[i])){
+                        try {
+                            statement = connection.prepareStatement(
+                                "UPDATE Notes SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?"
+                            );
+                            statement.setString(1, encryptor.encrypt(values[i]));
+                            statement.setInt(2, noteIdentifier);
+                            statement.executeUpdate();
+                            statement.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+                
+                try{
+                    connection.close();
+                } catch(SQLException ex){
+                    ex.printStackTrace();
+                }
             }
+            close();
         }
+        dashboard.loadNotes();
     }//GEN-LAST:event_btnAddOrSaveMousePressed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        Customization.applyDraggability(headerPanel, this);
+        
+        if(index == 1){
+            this.setTitle("SaveMyPass - View Note");
+            title.setText("View Note");
+            btnAddOrSave.setText("Save");
+        }
+    }//GEN-LAST:event_formComponentShown
 
     /**
      * Closes this frame and enables dashboard.
@@ -260,8 +337,75 @@ public class Note extends javax.swing.JFrame {
     }
     
     /**
-     * @param args the command line arguments
+     * Checks if note already exist based on it's title.
+     * Helps preventing duplicated notes.
      */
+    private boolean exists(String title){
+        boolean titleExists = false;
+        
+        for (String noteTitle : noteTitles){
+            if(title.equals(noteTitle)){
+                titleExists = true;
+                break;
+            }
+        }
+        
+        return titleExists;
+    }
+    
+    /**
+     * Loads all the needed data to compare with new values.
+     */
+    private void load(){
+        Connection connection = DatabaseHandler.getConnection();
+        
+        try{
+            if(index == 0){
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT title FROM Notes");
+                
+                while(resultSet.next()){
+                    noteTitles.add(encryptor.decrypt(resultSet.getString("title")));
+                }
+                
+                resultSet.close();
+                statement.close();
+            } else {
+                PreparedStatement statement = connection.prepareStatement(
+                    "SELECT title FROM Notes WHERE ID <> ?"
+                );
+                statement.setInt(1, noteIdentifier);
+                
+                ResultSet resultSet = statement.executeQuery();
+                
+                while(resultSet.next()){
+                    noteTitles.add(encryptor.decrypt(resultSet.getString("title")));
+                }
+                
+                resultSet.close();
+                statement.close();
+                
+                statement = connection.prepareStatement("SELECT title, description FROM Notes WHERE ID = ?");
+                statement.setInt(1, noteIdentifier);
+                
+                resultSet = statement.executeQuery();
+                
+                for(int i = 0; i < oldValues.length; i++)
+                    oldValues[i] = encryptor.decrypt(resultSet.getString(VALUES_COLUMNS[i]));
+                                
+                txtNoteTitle.setText(oldValues[0]);
+                txtNoteDescription.setText(oldValues[1]);
+                
+                resultSet.close();
+                statement.close();
+            }
+            
+            connection.close();
+        } catch(SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
