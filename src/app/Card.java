@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 
 /**
  *
@@ -20,19 +19,20 @@ import javax.swing.JFrame;
  */
 public class Card extends javax.swing.JFrame {
     
-    private JFrame dashboard = null;
+    private Dashboard dashboard = null;
     private int cardIdentifier = -1, index = 0;
+    private final Encryptor encryptor = new Encryptor();
     
     private ArrayList<String> cardTitles = new ArrayList<>(),
                               cardUsernames = new ArrayList<>();
-    private boolean titleExists = false, usernameExists = false;
+    
+    private final String[] VALUES_COLUMNS = {"title", "username", "password"};
     
     //View mode only.
+    private String[] oldValues = new String[3];
     private String oldCardTitle, oldCardUsername, oldCardPassword;
-    
-    private final Encryptor encryptor = new Encryptor();
        
-    public Card(JFrame dashboard, int cardIdentifier) {
+    public Card(Dashboard dashboard, int cardIdentifier) {
         if(dashboard != null){
             this.dashboard = dashboard;
             
@@ -85,19 +85,17 @@ public class Card extends javax.swing.JFrame {
         getContentPane().setLayout(null);
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
-        headerPanel.setLayout(null);
 
         title.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("New Card");
-        headerPanel.add(title);
-        title.setBounds(50, 0, 270, 50);
 
         btnCancel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Cancel_24px_white.png"))); // NOI18N
+        btnCancel.setToolTipText("Close/Cancel");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.setMaximumSize(new java.awt.Dimension(61, 37));
         btnCancel.setMinimumSize(new java.awt.Dimension(61, 37));
@@ -107,8 +105,25 @@ public class Card extends javax.swing.JFrame {
                 btnCancelMousePressed(evt);
             }
         });
-        headerPanel.add(btnCancel);
-        btnCancel.setBounds(340, 10, 20, 20);
+
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(headerPanelLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 380, 50);
@@ -286,23 +301,28 @@ public class Card extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        if(index == 0){
-            String cardName = txtCardTitle.getText(), username = txtUsername.getText(),
+        String cardTitle = txtCardTitle.getText(), username = txtUsername.getText(),
                    password = String.valueOf(txtPassword.getPassword());
-            
-            if(cardName.isEmpty() || username.isEmpty() || password.isEmpty()){
-                Customization.displayWarningMessage(
-                    "Please fill all the card fields.",
-                    "Empty field(s)!"
-                );
-            } else {
+        
+        if(cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()){
+            Customization.displayWarningMessage(
+                "Please fill all the card fields.",
+                "Empty field(s)!"
+            );
+        }else if(exists(cardTitle, username)){
+            Customization.displayWarningMessage(
+                "This card already exists. Make sure you're inserting the right values.",
+                "Duplicated card!"
+            );
+        } else {
+            if(index == 0){
                 Connection connection = DatabaseHandler.getConnection();
-                
+
                 try{
                     PreparedStatement statement = connection.prepareStatement(
                         "INSERT INTO Cards (title, username, password) VALUES (?, ?, ?)"
                     );
-                    statement.setString(1, encryptor.encrypt(cardName));
+                    statement.setString(1, encryptor.encrypt(cardTitle));
                     statement.setString(2, encryptor.encrypt(username));
                     statement.setString(3, encryptor.encrypt(password));
                     statement.executeUpdate();
@@ -311,14 +331,41 @@ public class Card extends javax.swing.JFrame {
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                 }
-                Dashboard.addNewTableRow(
-                    Dashboard.getAllCardsTableModel(),
-                    new String[]{cardName, username},
+                dashboard.addNewTableRow(
+                    dashboard.getAllCardsTableModel(),
+                    new String[]{cardTitle, username},
                     true
                 );
-                close();
+            } else {
+                String[] values = {cardTitle, username, password};
+                Connection connection = DatabaseHandler.getConnection();
+                PreparedStatement statement;
+                
+                for(int i = 0; i < values.length; i++){
+                    if(!values[i].equals(oldValues[i])){
+                        try {
+                            statement = connection.prepareStatement(
+                                "UPDATE Cards SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?"
+                            );
+                            statement.setString(1, encryptor.encrypt(values[i]));
+                            statement.setInt(2, cardIdentifier);
+                            statement.executeUpdate();
+                            statement.close();
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+                
+                try{
+                    connection.close();
+                } catch(SQLException ex){
+                    ex.printStackTrace();
+                }
             }
+            close();
         }
+        dashboard.loadCards();
     }//GEN-LAST:event_btnAddOrSaveMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
@@ -334,11 +381,30 @@ public class Card extends javax.swing.JFrame {
         dashboard.setEnabled(true);
         dashboard.requestFocus();
     }
-     /* ----------------------------------------- */
     
-    //private void exists(){}
+    /**
+     * Checks if card already exist based on it's title and username.
+     * Helps preventing duplicated cards.
+     */
+    private boolean exists(String title, String username){
+        boolean titleExists = false, usernameExists = false;
+        
+        for (String cardTitle : cardTitles){
+            if(cardTitle.equals(title)){
+                titleExists = true;
+                break;
+            }
+        }
     
-    /* ------------------------------------------- */
+        for(String cardUsername : cardUsernames){
+            if(cardUsername.equals(username)){
+                usernameExists = true;
+                break;
+            }
+        }
+        
+        return titleExists && usernameExists;
+    }
     
     /**
      * Loads all the needed data to compare with new values.
@@ -352,8 +418,8 @@ public class Card extends javax.swing.JFrame {
                 ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
                 
                 while(resultSet.next()){
-                    cardTitles.add(resultSet.getString("title"));
-                    cardUsernames.add(resultSet.getString("username"));
+                    cardTitles.add(encryptor.decrypt(resultSet.getString("title")));
+                    cardUsernames.add(encryptor.decrypt(resultSet.getString("username")));
                 }
                 
                 resultSet.close();
@@ -367,8 +433,8 @@ public class Card extends javax.swing.JFrame {
                 ResultSet resultSet = statement.executeQuery();
                 
                 while(resultSet.next()){
-                    cardTitles.add(resultSet.getString("title"));
-                    cardUsernames.add(resultSet.getString("username"));
+                    cardTitles.add(encryptor.decrypt(resultSet.getString("title")));
+                    cardUsernames.add(encryptor.decrypt(resultSet.getString("username")));
                 }
                 
                 resultSet.close();
@@ -379,13 +445,12 @@ public class Card extends javax.swing.JFrame {
                 
                 resultSet = statement.executeQuery();
                 
-                this.oldCardTitle = encryptor.decrypt(resultSet.getString("title"));
-                this.oldCardUsername = encryptor.decrypt(resultSet.getString("username"));
-                this.oldCardPassword = encryptor.decrypt(resultSet.getString("password"));
-                
-                txtCardTitle.setText(oldCardTitle);
-                txtUsername.setText(oldCardUsername);
-                txtPassword.setText(oldCardPassword);
+                for(int i = 0; i < oldValues.length; i++)
+                    oldValues[i] = encryptor.decrypt(resultSet.getString(VALUES_COLUMNS[i]));
+                                
+                txtCardTitle.setText(oldValues[0]);
+                txtUsername.setText(oldValues[1]);
+                txtPassword.setText(oldValues[2]);
                 
                 resultSet.close();
                 statement.close();
