@@ -12,11 +12,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import sql.SQLScriptFileRunner;
@@ -27,10 +29,12 @@ import sql.SQLScriptFileRunner;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    private final String[] TITLES = new String[]{"All cards", "Favourites", "Notes", "Settings"};
+    private final String[] TITLES = new String[]{"All cards", "Favorites", "Notes", "Settings"};
     private JLabel[] titleButtons = new JLabel[4];
     
     private Encryptor encryptor = new Encryptor();
+    
+    private ArrayList<Integer> cardIdentifiers = new ArrayList<>(), noteIdentifiers = new ArrayList<>();
     
     /* -------------------- Side Panel ---------------------- */
     private Component sidePanelButtons[] = new JPanel[4], 
@@ -116,29 +120,12 @@ public class Dashboard extends javax.swing.JFrame {
      * Loads all the data from database needed for Dashboard.
      */
     private void loadData(){
+        loadCards();
+        loadNotes();
         Connection connection = DatabaseHandler.getConnection();
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
-            while(resultSet.next()){
-                addNewTableRow(customModelAllCards, new String[]{
-                    encryptor.decrypt(resultSet.getString("title")),
-                    encryptor.decrypt(resultSet.getString("username"))
-                });
-            }
-            resultSet.close();
-            resultSet = statement.executeQuery("SELECT * FROM Notes");
-            String title, description;
-            while(resultSet.next()){
-                title = encryptor.decrypt(resultSet.getString("title"));
-                description = encryptor.decrypt(resultSet.getString("description"));
-                addNewTableRow(customModelNotes, new String[]{
-                    title,
-                    (description.length() > 60) ? description.substring(0, 61) + "..." : description
-                });
-            }
-            resultSet.close();
-            resultSet = statement.executeQuery("SELECT * FROM Settings");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Settings");
             resultSet.next();
             
             for(int i = 0; i < this.oldSettings.length; i++)
@@ -148,10 +135,64 @@ public class Dashboard extends javax.swing.JFrame {
             statement.close();
             connection.close();
         }catch(SQLException ex){
-            System.out.println(ex.toString());
-            Customization.displayWarningMessage(ex.toString(), "SQLException");
+            ex.printStackTrace();
         }
         setOldSettings();
+    }
+    
+    /**
+     * Loads and updates cards related data.
+     */
+    public void loadCards(){
+        this.cardIdentifiers.clear();
+        customModelAllCards.setRowCount(0);
+        
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT ID, title, username FROM Cards ORDER BY ID DESC");
+            while(resultSet.next()){
+                this.cardIdentifiers.add(resultSet.getInt("ID"));
+                addNewTableRow(customModelAllCards, new String[]{
+                    encryptor.decrypt(resultSet.getString("title")),
+                    encryptor.decrypt(resultSet.getString("username"))
+                }, false);
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    /**
+     * Loads and updates notes related data.
+     */
+    public void loadNotes(){
+        this.noteIdentifiers.clear();
+        customModelNotes.setRowCount(0);
+        
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM Notes ORDER BY ID DESC");
+            String title, description;
+            while(resultSet.next()){
+                this.noteIdentifiers.add(resultSet.getInt("ID"));
+                title = encryptor.decrypt(resultSet.getString("title"));
+                description = encryptor.decrypt(resultSet.getString("description"));
+                addNewTableRow(customModelNotes, new String[]{
+                    title,
+                    (description.length() > 60) ? description.substring(0, 61) + "..." : description
+                }, false);
+            }
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
     
     /**
@@ -647,6 +688,11 @@ public class Dashboard extends javax.swing.JFrame {
                 autoLogoutTrackingHandlersMouseMoved(evt);
             }
         });
+        notesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                notesTableMousePressed(evt);
+            }
+        });
         scrollPaneNotesTable.setViewportView(notesTable);
 
         notesPanel.add(scrollPaneNotesTable);
@@ -1081,7 +1127,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSaveSettingsMousePressed
 
     private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allCardsTableMousePressed
-        //System.out.println(allCardsTable.getSelectedColumn());
+        viewItem(0, cardIdentifiers.get(allCardsTable.getSelectedRow()));
     }//GEN-LAST:event_allCardsTableMousePressed
 
     private void buttonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonsMouseEntered
@@ -1127,7 +1173,8 @@ public class Dashboard extends javax.swing.JFrame {
 
     private void btnDeleteAllDataMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteAllDataMousePressed
         int confirm = Customization.displayConfirmMessage(
-            "This will delete all your data and logout. Are you sure you want to continue?",
+            "This will delete all your data and logout. The app will act like the first time running.\n" +
+            "Are you sure you want to continue?",
             "Delete all data"
         );
         
@@ -1136,6 +1183,10 @@ public class Dashboard extends javax.swing.JFrame {
             logout();
         }
     }//GEN-LAST:event_btnDeleteAllDataMousePressed
+
+    private void notesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notesTableMousePressed
+        viewItem(1, noteIdentifiers.get(notesTable.getSelectedRow()));
+    }//GEN-LAST:event_notesTableMousePressed
      
     /**
      * Sends the user to Login frame.
@@ -1157,20 +1208,40 @@ public class Dashboard extends javax.swing.JFrame {
      */
     private void addNewItem(int index) {
         if(index == 0){
-            Card newCard = new Card(0, this);
+            Card newCard = new Card(this, -1);
             newCard.setVisible(true);
         } else if(index == 1) {
-            Note newNote = new Note(0, this);
+            Note newNote = new Note(this, -1);
             newNote.setVisible(true);
         }
     }
-       
+    
+     /**
+     * Pops up the correspondent item frame (View/Change mode).
+     * @param index Integer - Specifies the type of item to view/change.
+     * @param identifier Integer - Card identifier to match the item data.
+     * <br>
+     * 0 - View/change existing card.
+     * <br>
+     * 1 - View/change existing note.
+     */
+    private void viewItem(int index, int identifier) {
+        if(index == 0){
+            Card viewCard = new Card(this, identifier);
+            viewCard.setVisible(true);
+        } else if(index == 1) {
+            Note viewNote = new Note(this, identifier);
+            viewNote.setVisible(true);
+        }
+    }
+    
     /**
      * Adds new styled data to a table model and sends the new row of data to the top.
      * @param model Table model to add data.
      * @param data Data to be added.
+     * @param isNew Determines if the row is adding a new item (true) or is adding a item from database (false).
      */
-    public static void addNewTableRow(DefaultTableModel model, String[] data) {
+    public void addNewTableRow(DefaultTableModel model, String[] data, boolean isNew) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><font color=\"#3399ff\"><b>");
         sb.append(data[0]);
@@ -1179,7 +1250,7 @@ public class Dashboard extends javax.swing.JFrame {
         String finalData = sb.toString();/*
         ImageIcon img = new ImageIcon(new Dashboard().getClass().getResource("img/Star_Filled_30px_gold.png"));*/
         model.addRow(new Object[]{finalData/*, img*/});
-        if(model.getRowCount() > 1)
+        if(isNew && model.getRowCount() > 1)
             model.moveRow(model.getRowCount() - 1, model.getRowCount() - 1, 0);
     }
     
@@ -1187,16 +1258,16 @@ public class Dashboard extends javax.swing.JFrame {
      * Returns the "All Cards" table model.
      * @return DefaultTableModel
      */
-    public static DefaultTableModel getAllCardsTableModel() {
-        return  (DefaultTableModel) allCardsTable.getModel();
+    public DefaultTableModel getAllCardsTableModel() {
+        return customModelAllCards;
     }
     
     /**
      * Returns the "Notes" table model.
      * @return DefaultTableModel
      */
-    public static DefaultTableModel getNotesTableModel() {
-        return (DefaultTableModel) notesTable.getModel();
+    public DefaultTableModel getNotesTableModel() {
+        return customModelNotes;
     }
     
     /**
@@ -1255,6 +1326,13 @@ public class Dashboard extends javax.swing.JFrame {
                 }
             }
         }
+        
+        try{
+           connection.close(); 
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        
         deactivateSaveSettingsButton();
     }
     
@@ -1387,9 +1465,6 @@ public class Dashboard extends javax.swing.JFrame {
         activeSidePanelButton = button;
     }
     
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1425,7 +1500,7 @@ public class Dashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel accountTitle;
     private javax.swing.JPanel allCardsPanel;
-    private static javax.swing.JTable allCardsTable;
+    private javax.swing.JTable allCardsTable;
     private javax.swing.JLabel autoLogOffTitle;
     private javax.swing.JCheckBox autoLogoutEnabled;
     private javax.swing.JComboBox<String> autoLogoutTimerComboBox;
@@ -1469,14 +1544,14 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JSlider lengthSlider;
     private javax.swing.JCheckBox lowercaseCharacters;
     private javax.swing.JLabel mainTitle;
-    private static javax.swing.JLabel noCardsInfo;
-    private static javax.swing.JLabel noNotesInfo;
+    private javax.swing.JLabel noCardsInfo;
+    private javax.swing.JLabel noNotesInfo;
     private javax.swing.JPanel notesPanel;
-    private static javax.swing.JTable notesTable;
+    private javax.swing.JTable notesTable;
     private javax.swing.JCheckBox numberCharacters;
     private javax.swing.JLabel passwordGeneratorTitle;
-    private static javax.swing.JScrollPane scrollPaneAllCardsTable;
-    private static javax.swing.JScrollPane scrollPaneNotesTable;
+    private javax.swing.JScrollPane scrollPaneAllCardsTable;
+    private javax.swing.JScrollPane scrollPaneNotesTable;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel sidePanel;
     private javax.swing.JCheckBox specialCharacters;
