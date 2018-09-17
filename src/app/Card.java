@@ -363,9 +363,9 @@ public class Card extends javax.swing.JFrame {
                     ex.printStackTrace();
                 }
             }
+            dashboard.loadCards();
             close();
         }
-        dashboard.loadCards();
     }//GEN-LAST:event_btnAddOrSaveMousePressed
 
     private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
