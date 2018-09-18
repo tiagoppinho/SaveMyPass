@@ -31,7 +31,9 @@ public class Dashboard extends javax.swing.JFrame {
     
     private Encryptor encryptor = new Encryptor();
     
-    private ArrayList<Integer> cardIdentifiers = new ArrayList<>(), noteIdentifiers = new ArrayList<>();
+    private ArrayList<Integer> cardIdentifiers = new ArrayList<>(),
+                               favoriteIdentifiers = new ArrayList<>(),
+                               noteIdentifiers = new ArrayList<>();
     
     /* -------------------- Side Panel ---------------------- */
     private Component sidePanelButtons[] = new JPanel[4], 
@@ -68,6 +70,12 @@ public class Dashboard extends javax.swing.JFrame {
         }
     };
     
+    private final DefaultTableModel customModelFavorites = new DefaultTableModel() {
+        public Class getColumnClass(int columnIndex) {
+            return String.class;
+        }
+    };
+    
     //Notes table model.
     private final DefaultTableModel customModelNotes = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
@@ -91,15 +99,20 @@ public class Dashboard extends javax.swing.JFrame {
         this.newSettings = new int[]{-1, -1, -1, -1, -1, -1, -1};
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
+        scrollPaneFavoritesTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
         String tableHeaders[] = {""};
         customModelAllCards.setColumnIdentifiers(tableHeaders);
+        customModelFavorites.setColumnIdentifiers(tableHeaders);
         customModelNotes.setColumnIdentifiers(tableHeaders);
         allCardsTable.setDefaultEditor(Object.class, null);
         allCardsTable.setRowHeight(55);
+        favoritesTable.setDefaultEditor(Object.class, null);
+        favoritesTable.setRowHeight(55);
         notesTable.setDefaultEditor(Object.class, null);
         notesTable.setRowHeight(55);
         allCardsTable.setModel(customModelAllCards);
+        favoritesTable.setModel(customModelFavorites);
         notesTable.setModel(customModelNotes);
         loadData();
         btnSaveSettings.setVisible(false);
@@ -112,6 +125,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void loadData(){
         loadCards();
         loadNotes();
+        
         Connection connection = DatabaseHandler.getConnection();
         try{
             Statement statement = connection.createStatement();
@@ -135,19 +149,31 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public void loadCards(){
         this.cardIdentifiers.clear();
+        this.favoriteIdentifiers.clear();
         customModelAllCards.setRowCount(0);
+        customModelFavorites.setRowCount(0);
         
         Connection connection = DatabaseHandler.getConnection();
         try{
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT ID, title, username FROM Cards ORDER BY ID DESC");
+            ResultSet resultSet = statement.executeQuery("SELECT ID, title, username, favorite FROM Cards ORDER BY ID DESC");
+            
             while(resultSet.next()){
-                this.cardIdentifiers.add(resultSet.getInt("ID"));
-                addNewTableRow(customModelAllCards, new String[]{
-                    encryptor.decrypt(resultSet.getString("title")),
-                    encryptor.decrypt(resultSet.getString("username"))
-                }, false);
+                int identifier = resultSet.getInt("ID");
+                
+                this.cardIdentifiers.add(identifier);
+                
+                String title = encryptor.decrypt(resultSet.getString("title")),
+                       username = encryptor.decrypt(resultSet.getString("username"));
+                
+                addNewTableRow(customModelAllCards, new String[]{title, username}, false);
+                
+                if(resultSet.getBoolean("favorite")){
+                    this.favoriteIdentifiers.add(identifier);
+                    addNewTableRow(customModelFavorites, new String[]{title, username}, false);
+                }
             }
+            
             resultSet.close();
             statement.close();
             connection.close();
@@ -168,15 +194,19 @@ public class Dashboard extends javax.swing.JFrame {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Notes ORDER BY ID DESC");
             String title, description;
+            
             while(resultSet.next()){
                 this.noteIdentifiers.add(resultSet.getInt("ID"));
+                
                 title = encryptor.decrypt(resultSet.getString("title"));
                 description = encryptor.decrypt(resultSet.getString("description"));
+                
                 addNewTableRow(customModelNotes, new String[]{
                     title,
                     (description.length() > 60) ? description.substring(0, 61) + "..." : description
                 }, false);
             }
+            
             resultSet.close();
             statement.close();
             connection.close();
@@ -239,7 +269,8 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsTable = new javax.swing.JTable();
         noCardsInfo = new javax.swing.JLabel();
         favouritesPanel = new javax.swing.JPanel();
-        jLabel5 = new javax.swing.JLabel();
+        scrollPaneFavoritesTable = new javax.swing.JScrollPane();
+        favoritesTable = new javax.swing.JTable();
         notesPanel = new javax.swing.JPanel();
         scrollPaneNotesTable = new javax.swing.JScrollPane();
         notesTable = new javax.swing.JTable();
@@ -631,13 +662,49 @@ public class Dashboard extends javax.swing.JFrame {
         favouritesPanel.setBackground(new java.awt.Color(255, 255, 255));
         favouritesPanel.setLayout(null);
 
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(51, 153, 255));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Coming soon...");
-        jLabel5.setToolTipText("");
-        favouritesPanel.add(jLabel5);
-        jLabel5.setBounds(0, -2, 670, 310);
+        scrollPaneFavoritesTable.setBorder(null);
+
+        favoritesTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        favoritesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                ""
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        favoritesTable.setGridColor(new java.awt.Color(0, 0, 0));
+        favoritesTable.setIntercellSpacing(new java.awt.Dimension(10, 4));
+        favoritesTable.setName(""); // NOI18N
+        favoritesTable.setRowHeight(100);
+        favoritesTable.setSelectionBackground(new java.awt.Color(255, 255, 255));
+        favoritesTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        favoritesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        favoritesTable.setShowVerticalLines(false);
+        favoritesTable.getTableHeader().setResizingAllowed(false);
+        favoritesTable.getTableHeader().setReorderingAllowed(false);
+        favoritesTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                autoLogoutTrackingHandlersMouseMoved(evt);
+            }
+        });
+        favoritesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                favoritesTableMousePressed(evt);
+            }
+        });
+        scrollPaneFavoritesTable.setViewportView(favoritesTable);
+
+        favouritesPanel.add(scrollPaneFavoritesTable);
+        scrollPaneFavoritesTable.setBounds(0, -10, 670, 490);
 
         getContentPane().add(favouritesPanel);
         favouritesPanel.setBounds(240, 160, 670, 480);
@@ -1179,6 +1246,10 @@ public class Dashboard extends javax.swing.JFrame {
     private void notesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notesTableMousePressed
         viewItem(1, noteIdentifiers.get(notesTable.getSelectedRow()));
     }//GEN-LAST:event_notesTableMousePressed
+
+    private void favoritesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_favoritesTableMousePressed
+        viewItem(0, favoriteIdentifiers.get(favoritesTable.getSelectedRow()));
+    }//GEN-LAST:event_favoritesTableMousePressed
      
     /**
      * Sends the user to Login frame.
@@ -1251,6 +1322,14 @@ public class Dashboard extends javax.swing.JFrame {
      */
     public DefaultTableModel getAllCardsTableModel() {
         return customModelAllCards;
+    }
+    
+    /**
+     * Returns the "Favorites" table model.
+     * @return DefaultTableModel
+     */
+    public DefaultTableModel getFavoritesTableModel() {
+        return customModelFavorites;
     }
     
     /**
@@ -1511,6 +1590,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel btnSaveSettings;
     private javax.swing.JPanel btnSettings;
     private javax.swing.JLabel btnSettingsMarker;
+    private javax.swing.JTable favoritesTable;
     private javax.swing.JPanel favouritesPanel;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
@@ -1527,7 +1607,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1542,6 +1621,7 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JCheckBox numberCharacters;
     private javax.swing.JLabel passwordGeneratorTitle;
     private javax.swing.JScrollPane scrollPaneAllCardsTable;
+    private javax.swing.JScrollPane scrollPaneFavoritesTable;
     private javax.swing.JScrollPane scrollPaneNotesTable;
     private javax.swing.JPanel settingsPanel;
     private javax.swing.JPanel sidePanel;
