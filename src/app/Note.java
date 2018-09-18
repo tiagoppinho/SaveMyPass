@@ -330,6 +330,8 @@ public class Note extends javax.swing.JFrame {
             this.setTitle("SaveMyPass - View Note");
             title.setText("View Note");
             btnAddOrSave.setText("Save");
+        } else {
+            btnDelete.setVisible(false);
         }
     }//GEN-LAST:event_formComponentShown
 
