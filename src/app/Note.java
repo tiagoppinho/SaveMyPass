@@ -31,6 +31,7 @@ public class Note extends javax.swing.JFrame {
     public Note(Dashboard dashboard, int noteIdentifier) {
         if(dashboard != null){
             this.dashboard = dashboard;
+            dashboard.autoLogoutTimer.stop();
             
             if(noteIdentifier == -1){
                 this.index = 0;
@@ -334,6 +335,7 @@ public class Note extends javax.swing.JFrame {
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
+        dashboard.autoLogoutTimer.start();
     }
     
     /**

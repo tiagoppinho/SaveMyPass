@@ -13,18 +13,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import sql.SQLScriptFileRunner;
 
 /**
- * 
  * @author Tiago Pinho
  */
 public class Dashboard extends javax.swing.JFrame {
@@ -47,7 +44,7 @@ public class Dashboard extends javax.swing.JFrame {
     /* ------------------------------------------------------ */
         
     /* -------------------- Auto Logout --------------------- */
-    private final Timer autoLogoutTimer;
+    public final Timer autoLogoutTimer;
     //Represents the number of seconds without activity.
     private int autoLogoutCounter = 0, 
                 //Number of seconds defined by the user.
@@ -67,12 +64,6 @@ public class Dashboard extends javax.swing.JFrame {
     //All cards table model.
     private final DefaultTableModel customModelAllCards = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
-            /*switch(columnIndex){
-                case 1:
-                    return ImageIcon.class;
-                default:
-                    return String.class;
-            } */
             return String.class;
         }
     };
@@ -101,7 +92,7 @@ public class Dashboard extends javax.swing.JFrame {
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
-        String tableHeaders[] = {""/*, ""*/};
+        String tableHeaders[] = {""};
         customModelAllCards.setColumnIdentifiers(tableHeaders);
         customModelNotes.setColumnIdentifiers(tableHeaders);
         allCardsTable.setDefaultEditor(Object.class, null);
@@ -110,7 +101,6 @@ public class Dashboard extends javax.swing.JFrame {
         notesTable.setRowHeight(55);
         allCardsTable.setModel(customModelAllCards);
         notesTable.setModel(customModelNotes);
-        //allCardsTable.getColumnModel().getColumn(0).setMinWidth(620);
         loadData();
         btnSaveSettings.setVisible(false);
         this.autoLogoutTimer.start();
@@ -202,10 +192,12 @@ public class Dashboard extends javax.swing.JFrame {
     private final ActionListener incrementAutoLogoutCounter = new ActionListener(){
         @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            if(autoLogoutCounter + 1 == expectedAutoLogoutCounter){
-                logout();
-            } else
-                autoLogoutCounter++;
+            if(oldSettings[5] == 1){
+                if(autoLogoutCounter + 1 == expectedAutoLogoutCounter){
+                    logout();
+                } else
+                    autoLogoutCounter++;
+            }
         }
     };
     
@@ -1247,9 +1239,8 @@ public class Dashboard extends javax.swing.JFrame {
         sb.append(data[0]);
         sb.append("</b></font><br><br>");
         sb.append(data[1]).append("</html>");
-        String finalData = sb.toString();/*
-        ImageIcon img = new ImageIcon(new Dashboard().getClass().getResource("img/Star_Filled_30px_gold.png"));*/
-        model.addRow(new Object[]{finalData/*, img*/});
+        String finalData = sb.toString();
+        model.addRow(new Object[]{finalData});
         if(isNew && model.getRowCount() > 1)
             model.moveRow(model.getRowCount() - 1, model.getRowCount() - 1, 0);
     }

@@ -34,6 +34,7 @@ public class Card extends javax.swing.JFrame {
     public Card(Dashboard dashboard, int cardIdentifier) {
         if(dashboard != null){
             this.dashboard = dashboard;
+            dashboard.autoLogoutTimer.stop();
             
             if(cardIdentifier == -1){
                 this.index = 0;
@@ -243,15 +244,13 @@ public class Card extends javax.swing.JFrame {
             footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(footerPanelLayout.createSequentialGroup()
                 .addGap(133, 133, 133)
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(139, Short.MAX_VALUE))
+                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         footerPanelLayout.setVerticalGroup(
             footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(footerPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addGap(11, 11, 11)
+                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         getContentPane().add(footerPanel);
@@ -379,6 +378,7 @@ public class Card extends javax.swing.JFrame {
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
+        dashboard.autoLogoutTimer.start();
     }
     
     /**
