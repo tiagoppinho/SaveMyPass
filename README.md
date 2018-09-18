@@ -18,7 +18,6 @@ Simple offline password manager initially made for my own use and as an academic
 
 ## Future Features (Coming soon)
 
-* Improved auto-logout.
 * AES-256 data encryption.
 * Add password card to favorites.
 * Delete password cards and notes.
