@@ -30,6 +30,7 @@ public class Card extends javax.swing.JFrame {
     //View mode only.
     private String[] oldValues = new String[3];
     private String oldCardTitle, oldCardUsername, oldCardPassword;
+    private boolean isFavorite = false;
        
     public Card(Dashboard dashboard, int cardIdentifier) {
         if(dashboard != null){
@@ -70,6 +71,8 @@ public class Card extends javax.swing.JFrame {
         generatePassword = new javax.swing.JLabel();
         footerPanel = new javax.swing.JPanel();
         btnAddOrSave = new javax.swing.JLabel();
+        btnDelete = new javax.swing.JLabel();
+        btnFavorite = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SaveMyPass - New Card");
@@ -215,6 +218,7 @@ public class Card extends javax.swing.JFrame {
         mainPanel.setBounds(0, 50, 380, 230);
 
         footerPanel.setBackground(new java.awt.Color(250, 250, 250));
+        footerPanel.setLayout(null);
 
         btnAddOrSave.setBackground(new java.awt.Color(51, 153, 255));
         btnAddOrSave.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
@@ -237,21 +241,25 @@ public class Card extends javax.swing.JFrame {
                 btnAddOrSaveMousePressed(evt);
             }
         });
+        footerPanel.add(btnAddOrSave);
+        btnAddOrSave.setBounds(133, 11, 108, 31);
 
-        javax.swing.GroupLayout footerPanelLayout = new javax.swing.GroupLayout(footerPanel);
-        footerPanel.setLayout(footerPanelLayout);
-        footerPanelLayout.setHorizontalGroup(
-            footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(footerPanelLayout.createSequentialGroup()
-                .addGap(133, 133, 133)
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        footerPanelLayout.setVerticalGroup(
-            footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(footerPanelLayout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Waste_25px.png"))); // NOI18N
+        btnDelete.setToolTipText("Delete card");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        footerPanel.add(btnDelete);
+        btnDelete.setBounds(340, 30, 25, 25);
+
+        btnFavorite.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Star_27px_gold.png"))); // NOI18N
+        btnFavorite.setToolTipText("Add to favorites");
+        btnFavorite.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnFavorite.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnFavoriteMousePressed(evt);
+            }
+        });
+        footerPanel.add(btnFavorite);
+        btnFavorite.setBounds(10, 30, 27, 27);
 
         getContentPane().add(footerPanel);
         footerPanel.setBounds(0, 280, 380, 70);
@@ -295,6 +303,13 @@ public class Card extends javax.swing.JFrame {
             this.setTitle("SaveMyPass - View Card");
             title.setText("View Card");
             btnAddOrSave.setText("Save");
+            if(isFavorite){
+                btnFavorite.setIcon(new ImageIcon(getClass().getResource("img/Star_Filled_27px_gold.png")));
+                showHidePassword.setToolTipText("Remove from favorites");
+            }
+        } else {
+            btnFavorite.setVisible(false);
+            btnDelete.setVisible(false);
         }
     }//GEN-LAST:event_formComponentShown
 
@@ -318,11 +333,12 @@ public class Card extends javax.swing.JFrame {
 
                 try{
                     PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO Cards (title, username, password) VALUES (?, ?, ?)"
+                        "INSERT INTO Cards (title, username, password, favorite) VALUES (?, ?, ?, ?)"
                     );
                     statement.setString(1, encryptor.encrypt(cardTitle));
                     statement.setString(2, encryptor.encrypt(username));
                     statement.setString(3, encryptor.encrypt(password));
+                    statement.setInt(4, 0);
                     statement.executeUpdate();
                     statement.close();
                     connection.close();
@@ -361,7 +377,6 @@ public class Card extends javax.swing.JFrame {
                     ex.printStackTrace();
                 }
             }
-            dashboard.loadCards();
             close();
         }
     }//GEN-LAST:event_btnAddOrSaveMousePressed
@@ -371,10 +386,37 @@ public class Card extends javax.swing.JFrame {
         txtPassword.setText(generatedPassword);
     }//GEN-LAST:event_generatePasswordMousePressed
 
+    private void btnFavoriteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFavoriteMousePressed
+        if(!isFavorite){
+            btnFavorite.setIcon(new ImageIcon(getClass().getResource("img/Star_Filled_27px_gold.png")));
+            showHidePassword.setToolTipText("Remove from favorites");
+            isFavorite = true;
+        } else {
+            btnFavorite.setIcon(new ImageIcon(getClass().getResource("img/Star_27px_gold.png")));
+            showHidePassword.setToolTipText("Add to favorites");
+            isFavorite = false;
+        }
+        
+        Connection connection = DatabaseHandler.getConnection();
+        try{
+            PreparedStatement statement = connection.prepareStatement(
+                "UPDATE Cards SET favorite = ? WHERE ID = ?"
+            );
+            statement.setInt(1, (isFavorite) ? 1 : 0);
+            statement.setInt(2, cardIdentifier);
+            statement.executeUpdate();
+            statement.close();
+            connection.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnFavoriteMousePressed
+
     /**
      * Closes this frame and enables dashboard.
      */
     private void close(){
+        dashboard.loadCards();
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
@@ -439,7 +481,9 @@ public class Card extends javax.swing.JFrame {
                 resultSet.close();
                 statement.close();
                 
-                statement = connection.prepareStatement("SELECT title, username, password FROM Cards WHERE ID = ?");
+                statement = connection.prepareStatement(
+                    "SELECT title, username, password, favorite FROM Cards WHERE ID = ?"
+                );
                 statement.setInt(1, cardIdentifier);
                 
                 resultSet = statement.executeQuery();
@@ -447,6 +491,8 @@ public class Card extends javax.swing.JFrame {
                 for(int i = 0; i < oldValues.length; i++)
                     oldValues[i] = encryptor.decrypt(resultSet.getString(VALUES_COLUMNS[i]));
                                 
+                this.isFavorite = resultSet.getBoolean("favorite");
+                
                 txtCardTitle.setText(oldValues[0]);
                 txtUsername.setText(oldValues[1]);
                 txtPassword.setText(oldValues[2]);
@@ -489,6 +535,8 @@ public class Card extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAddOrSave;
     private javax.swing.JLabel btnCancel;
+    private javax.swing.JLabel btnDelete;
+    private javax.swing.JLabel btnFavorite;
     private javax.swing.JPanel footerPanel;
     private javax.swing.JLabel generatePassword;
     private javax.swing.JPanel headerPanel;
