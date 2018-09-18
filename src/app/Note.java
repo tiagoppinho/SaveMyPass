@@ -318,6 +318,7 @@ public class Note extends javax.swing.JFrame {
                 } catch(SQLException ex){
                     ex.printStackTrace();
                 }
+                dashboard.loadNotes();
             }
             close();
         }
@@ -362,6 +363,7 @@ public class Note extends javax.swing.JFrame {
             } catch(SQLException ex){
                 ex.printStackTrace();
             }
+            dashboard.loadNotes();
             close();
         }
     }//GEN-LAST:event_btnDeleteMousePressed
@@ -370,7 +372,6 @@ public class Note extends javax.swing.JFrame {
      * Closes this frame and enables dashboard.
      */
     private void close(){
-        dashboard.loadNotes();
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();

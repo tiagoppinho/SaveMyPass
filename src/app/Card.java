@@ -388,6 +388,7 @@ public class Card extends javax.swing.JFrame {
                 } catch(SQLException ex){
                     ex.printStackTrace();
                 }
+                dashboard.loadCards();
             }
             close();
         }
@@ -422,6 +423,7 @@ public class Card extends javax.swing.JFrame {
         } catch(SQLException ex){
             ex.printStackTrace();
         }
+        dashboard.loadCards();
     }//GEN-LAST:event_btnFavoriteMousePressed
 
     private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
@@ -443,6 +445,7 @@ public class Card extends javax.swing.JFrame {
             } catch(SQLException ex){
                 ex.printStackTrace();
             }
+            dashboard.loadCards();
             close();
         }
     }//GEN-LAST:event_btnDeleteMousePressed
@@ -459,7 +462,6 @@ public class Card extends javax.swing.JFrame {
      * Closes this frame and enables dashboard.
      */
     private void close(){
-        dashboard.loadCards();
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
