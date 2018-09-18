@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  * @author Tiago Pinho
@@ -247,6 +248,17 @@ public class Card extends javax.swing.JFrame {
         btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Waste_25px.png"))); // NOI18N
         btnDelete.setToolTipText("Delete card");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDeleteMousePressed(evt);
+            }
+        });
         footerPanel.add(btnDelete);
         btnDelete.setBounds(340, 30, 25, 25);
 
@@ -411,6 +423,37 @@ public class Card extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_btnFavoriteMousePressed
+
+    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
+        int confirm = Customization.displayConfirmMessage(
+            "Are you sure you want to delete this card?",
+            "Delete card"
+        );
+        
+        if(confirm == JOptionPane.YES_OPTION){
+            Connection connection = DatabaseHandler.getConnection();
+            try{
+                PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM Cards WHERE ID = ?"
+                );
+                statement.setInt(1, cardIdentifier);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+            } catch(SQLException ex){
+                ex.printStackTrace();
+            }
+            close();
+        }
+    }//GEN-LAST:event_btnDeleteMousePressed
+
+    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseEntered
+        btnDelete.setIcon(new ImageIcon(getClass().getResource("img/Waste_Filled_25px.png")));
+    }//GEN-LAST:event_btnDeleteMouseEntered
+
+    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseExited
+        btnDelete.setIcon(new ImageIcon(getClass().getResource("img/Waste_25px.png")));
+    }//GEN-LAST:event_btnDeleteMouseExited
 
     /**
      * Closes this frame and enables dashboard.

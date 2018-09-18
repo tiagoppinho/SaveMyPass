@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import utils.Constants;
 import utils.Customization;
 
@@ -64,6 +66,7 @@ public class Note extends javax.swing.JFrame {
         txtNoteDescription = new javax.swing.JTextArea();
         footerPanel = new javax.swing.JPanel();
         btnAddOrSave = new javax.swing.JLabel();
+        btnDelete = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("SaveMyPass - New Note");
@@ -167,6 +170,7 @@ public class Note extends javax.swing.JFrame {
 
         footerPanel.setBackground(new java.awt.Color(250, 250, 250));
         footerPanel.setMinimumSize(new java.awt.Dimension(380, 70));
+        footerPanel.setLayout(null);
 
         btnAddOrSave.setBackground(new java.awt.Color(51, 153, 255));
         btnAddOrSave.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
@@ -189,33 +193,35 @@ public class Note extends javax.swing.JFrame {
                 btnAddOrSaveMousePressed(evt);
             }
         });
+        footerPanel.add(btnAddOrSave);
+        btnAddOrSave.setBounds(133, 11, 108, 31);
 
-        javax.swing.GroupLayout footerPanelLayout = new javax.swing.GroupLayout(footerPanel);
-        footerPanel.setLayout(footerPanelLayout);
-        footerPanelLayout.setHorizontalGroup(
-            footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(footerPanelLayout.createSequentialGroup()
-                .addGap(133, 133, 133)
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(139, Short.MAX_VALUE))
-        );
-        footerPanelLayout.setVerticalGroup(
-            footerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(footerPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnAddOrSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/app/img/Waste_25px.png"))); // NOI18N
+        btnDelete.setToolTipText("Delete card");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnDeleteMousePressed(evt);
+            }
+        });
+        footerPanel.add(btnDelete);
+        btnDelete.setBounds(340, 30, 25, 25);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(headerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(footerPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(footerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -227,7 +233,7 @@ public class Note extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
-                .addComponent(footerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(footerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 49, Short.MAX_VALUE)
@@ -315,7 +321,6 @@ public class Note extends javax.swing.JFrame {
             }
             close();
         }
-        dashboard.loadNotes();
     }//GEN-LAST:event_btnAddOrSaveMousePressed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
@@ -328,10 +333,42 @@ public class Note extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formComponentShown
 
+    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseEntered
+        btnDelete.setIcon(new ImageIcon(getClass().getResource("img/Waste_Filled_25px.png")));
+    }//GEN-LAST:event_btnDeleteMouseEntered
+
+    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseExited
+        btnDelete.setIcon(new ImageIcon(getClass().getResource("img/Waste_25px.png")));
+    }//GEN-LAST:event_btnDeleteMouseExited
+
+    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
+        int confirm = Customization.displayConfirmMessage(
+            "Are you sure you want to delete this note?",
+            "Delete note"
+        );
+
+        if(confirm == JOptionPane.YES_OPTION){
+            Connection connection = DatabaseHandler.getConnection();
+            try{
+                PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM Notes WHERE ID = ?"
+                );
+                statement.setInt(1, noteIdentifier);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+            } catch(SQLException ex){
+                ex.printStackTrace();
+            }
+            close();
+        }
+    }//GEN-LAST:event_btnDeleteMousePressed
+
     /**
      * Closes this frame and enables dashboard.
      */
     private void close(){
+        dashboard.loadNotes();
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
@@ -437,6 +474,7 @@ public class Note extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnAddOrSave;
     private javax.swing.JLabel btnCancel;
+    private javax.swing.JLabel btnDelete;
     private javax.swing.JPanel footerPanel;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel5;
