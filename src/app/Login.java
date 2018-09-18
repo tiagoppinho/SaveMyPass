@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JLabel;
+import sql.SQLScriptFileRunner;
 
 /**
  * @author Tiago Pinho
@@ -32,6 +33,11 @@ public class Login extends javax.swing.JFrame {
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};
             this.setVisible(true);
         } else {
+            //Makes sure that database is cleaned and settings are set as default.
+            //Security reasons.
+            SQLScriptFileRunner.runScriptFile("panic");
+            
+            //Proceed to new pin and setup.
             NewPin firstTimeSetup = new NewPin(1);
             firstTimeSetup.setVisible(true);
         }
