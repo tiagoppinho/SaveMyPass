@@ -70,6 +70,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
     };
     
+    //Favorites table model.
     private final DefaultTableModel customModelFavorites = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
@@ -166,11 +167,11 @@ public class Dashboard extends javax.swing.JFrame {
                 String title = encryptor.decrypt(resultSet.getString("title")),
                        username = encryptor.decrypt(resultSet.getString("username"));
                 
-                addNewTableRow(customModelAllCards, new String[]{title, username}, false);
+                addNewTableRow(customModelAllCards, new String[]{title, username});
                 
                 if(resultSet.getBoolean("favorite")){
                     this.favoriteIdentifiers.add(identifier);
-                    addNewTableRow(customModelFavorites, new String[]{title, username}, false);
+                    addNewTableRow(customModelFavorites, new String[]{title, username});
                 }
             }
             
@@ -204,7 +205,7 @@ public class Dashboard extends javax.swing.JFrame {
                 addNewTableRow(customModelNotes, new String[]{
                     title,
                     (description.length() > 60) ? description.substring(0, 61) + "..." : description
-                }, false);
+                });
             }
             
             resultSet.close();
@@ -1302,9 +1303,8 @@ public class Dashboard extends javax.swing.JFrame {
      * Adds new styled data to a table model and sends the new row of data to the top.
      * @param model Table model to add data.
      * @param data Data to be added.
-     * @param isNew Determines if the row is adding a new item (true) or is adding a item from database (false).
      */
-    public void addNewTableRow(DefaultTableModel model, String[] data, boolean isNew) {
+    public void addNewTableRow(DefaultTableModel model, String[] data) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><font color=\"#3399ff\"><b>");
         sb.append(data[0]);
@@ -1312,8 +1312,6 @@ public class Dashboard extends javax.swing.JFrame {
         sb.append(data[1]).append("</html>");
         String finalData = sb.toString();
         model.addRow(new Object[]{finalData});
-        if(isNew && model.getRowCount() > 1)
-            model.moveRow(model.getRowCount() - 1, model.getRowCount() - 1, 0);
     }
     
     /**

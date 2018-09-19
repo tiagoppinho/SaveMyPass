@@ -357,11 +357,6 @@ public class Card extends javax.swing.JFrame {
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                 }
-                dashboard.addNewTableRow(
-                    dashboard.getAllCardsTableModel(),
-                    new String[]{cardTitle, username},
-                    true
-                );
             } else {
                 String[] values = {cardTitle, username, password};
                 Connection connection = DatabaseHandler.getConnection();
@@ -388,8 +383,8 @@ public class Card extends javax.swing.JFrame {
                 } catch(SQLException ex){
                     ex.printStackTrace();
                 }
-                dashboard.loadCards();
             }
+            dashboard.loadCards();
             close();
         }
     }//GEN-LAST:event_btnAddOrSaveMousePressed

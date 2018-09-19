@@ -287,11 +287,6 @@ public class Note extends javax.swing.JFrame {
                 } catch(SQLException ex) {
                     ex.printStackTrace();
                 }
-                dashboard.addNewTableRow(
-                    dashboard.getNotesTableModel(),
-                    new String[]{noteTitle, description},
-                    true
-                );
             } else {
                 String[] values = {noteTitle, description};
                 Connection connection = DatabaseHandler.getConnection();
@@ -318,8 +313,8 @@ public class Note extends javax.swing.JFrame {
                 } catch(SQLException ex){
                     ex.printStackTrace();
                 }
-                dashboard.loadNotes();
             }
+            dashboard.loadNotes();
             close();
         }
     }//GEN-LAST:event_btnAddOrSaveMousePressed
