@@ -47,6 +47,7 @@ public class Card extends javax.swing.JFrame {
             
             dashboard.setEnabled(false);
             initComponents();
+            txtPassword.putClientProperty("JPasswordField.cutCopyAllowed", true);
             load();
             this.setVisible(true);
         } else {
