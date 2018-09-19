@@ -326,8 +326,10 @@ public class Card extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String cardTitle = txtCardTitle.getText().trim(), username = txtUsername.getText().trim(),
-                   password = String.valueOf(txtPassword.getPassword()).trim();
+        String cardTitle = txtCardTitle.getText().trim(),
+               filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1),
+               username = txtUsername.getText().trim(),
+               password = String.valueOf(txtPassword.getPassword()).trim();
         
         if(cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()){
             Customization.displayWarningMessage(
@@ -347,7 +349,7 @@ public class Card extends javax.swing.JFrame {
                     PreparedStatement statement = connection.prepareStatement(
                         "INSERT INTO Cards (title, username, password, favorite) VALUES (?, ?, ?, ?)"
                     );
-                    statement.setString(1, encryptor.encrypt(cardTitle));
+                    statement.setString(1, encryptor.encrypt(filteredTitle));
                     statement.setString(2, encryptor.encrypt(username));
                     statement.setString(3, encryptor.encrypt(password));
                     statement.setInt(4, 0);
@@ -358,7 +360,7 @@ public class Card extends javax.swing.JFrame {
                     ex.printStackTrace();
                 }
             } else {
-                String[] values = {cardTitle, username, password};
+                String[] values = {filteredTitle, username, password};
                 Connection connection = DatabaseHandler.getConnection();
                 PreparedStatement statement;
                 

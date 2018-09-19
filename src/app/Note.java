@@ -259,6 +259,7 @@ public class Note extends javax.swing.JFrame {
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
         String noteTitle = txtNoteTitle.getText().trim(),
+               filteredTitle = noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1),
                description = txtNoteDescription.getText().trim();
         
         if(noteTitle.isEmpty() || description.isEmpty()){
@@ -279,7 +280,7 @@ public class Note extends javax.swing.JFrame {
                     PreparedStatement statement = connection.prepareStatement(
                         "INSERT INTO Notes (title, description) VALUES (?, ?)"
                     );
-                    statement.setString(1, encryptor.encrypt(noteTitle));
+                    statement.setString(1, encryptor.encrypt(filteredTitle));
                     statement.setString(2, encryptor.encrypt(description));
                     statement.executeUpdate();
                     statement.close();
@@ -288,7 +289,7 @@ public class Note extends javax.swing.JFrame {
                     ex.printStackTrace();
                 }
             } else {
-                String[] values = {noteTitle, description};
+                String[] values = {filteredTitle, description};
                 Connection connection = DatabaseHandler.getConnection();
                 PreparedStatement statement;
                 
