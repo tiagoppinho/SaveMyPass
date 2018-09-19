@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1452,6 +1453,12 @@ public class Dashboard extends javax.swing.JFrame {
         JCheckBox checkBox = (JCheckBox) evt.getSource();
         int arrayIndex = Integer.parseInt(checkBox.getName());
         boolean isSelected = checkBox.isSelected();
+        int numOfActive = 0;
+        
+        for(JCheckBox passwordGeneratorSettingsCheckBox : passwordGeneratorSettingsCheckBoxes){
+            if(passwordGeneratorSettingsCheckBox.isSelected())
+                numOfActive++;
+        }
         
         if(isSelected != (oldSettings[arrayIndex] == 1)) {
             this.newSettings[arrayIndex] = (isSelected) ? 1 : 0;
@@ -1460,6 +1467,11 @@ public class Dashboard extends javax.swing.JFrame {
             this.newSettings[arrayIndex] = -1;
             deactivateSaveSettingsButton();
         }
+        
+        if(numOfActive < 1 && !uppercaseCharacters.isSelected())
+            uppercaseCharacters.doClick();
+        else if(numOfActive < 1 && !lowercaseCharacters.isSelected())
+            lowercaseCharacters.doClick();
     }
     
     /**
