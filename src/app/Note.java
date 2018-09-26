@@ -43,6 +43,7 @@ public class Note extends javax.swing.JFrame {
             }
             
             dashboard.setEnabled(false);
+            Customization.applyCustomIcons(this);
             initComponents();
             load();
             this.setVisible(true);

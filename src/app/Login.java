@@ -5,10 +5,13 @@ import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
+import java.awt.Image;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import sql.SQLScriptFileRunner;
 
@@ -28,6 +31,7 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         load();
         if(!isFirstTime) {
+            Customization.applyCustomIcons(this);
             initComponents();
             this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};

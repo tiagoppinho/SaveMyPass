@@ -34,6 +34,7 @@ public class NewPin extends javax.swing.JFrame {
     public NewPin(int index) {
         this.index = index;
         this.connection = DatabaseHandler.getConnection();
+        Customization.applyCustomIcons(this);
         initComponents();
         this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
                                    lblNum4, lblNum5, lblNum6, lblNum7, lblNum8, lblNum9};

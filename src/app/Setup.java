@@ -18,6 +18,7 @@ public class Setup extends javax.swing.JFrame {
     private String pin = null, salt = null;
     
     public Setup(String pin, String salt) {
+        Customization.applyCustomIcons(this);
         initComponents();
         this.pin = pin;
         this.salt = salt;

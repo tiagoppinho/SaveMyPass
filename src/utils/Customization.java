@@ -1,8 +1,12 @@
 package utils;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.font.TextAttribute;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +30,24 @@ public class Customization {
         Map attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         jLabel.setFont(font.deriveFont(attributes));
+    }
+    
+    /**
+     * Applies custom app icons to a JFrame (small, medium and large).
+     * @param jFrame JFrame to apply the custom app icons.
+     */
+    public static void applyCustomIcons(JFrame jFrame) {
+        ArrayList<Image> images = new ArrayList<>();
+        
+        try{
+            images.add(ImageIO.read(jFrame.getClass().getResource("img/Privacy_Filled_16px.png")));
+            images.add(ImageIO.read(jFrame.getClass().getResource("img/Privacy_Filled_32px.png")));
+            images.add(ImageIO.read(jFrame.getClass().getResource("img/Privacy_Filled_64px.png")));
+            images.add(ImageIO.read(jFrame.getClass().getResource("img/Privacy_Filled_96px.png")));
+        } catch(IOException ex){
+            ex.printStackTrace();
+        }
+        jFrame.setIconImages(images);
     }
     
     /**

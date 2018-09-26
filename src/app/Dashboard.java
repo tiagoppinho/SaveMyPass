@@ -86,6 +86,7 @@ public class Dashboard extends javax.swing.JFrame {
     };
     
     public Dashboard() {
+        Customization.applyCustomIcons(this);
         initComponents();
         this.sidePanelButtons = new Component[]{btnAllCards, btnFavourites, btnNotes, btnSettings};
         this.sidePanelButtonsMarker = new JLabel[]{

@@ -17,6 +17,7 @@ public class ForgotPin extends javax.swing.JFrame {
     private String firstAnswer = null, secondAnswer = null;
     
     public ForgotPin() {
+        Customization.applyCustomIcons(this);
         initComponents();
         load();
     }
