@@ -5,13 +5,10 @@ import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
-import java.awt.Image;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import sql.SQLScriptFileRunner;
 
