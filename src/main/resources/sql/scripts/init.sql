@@ -1,0 +1,5 @@
+CREATE TABLE "User" ( `pin` TEXT NOT NULL UNIQUE, `salt` TEXT NOT NULL, `firstSecurity` TEXT NOT NULL UNIQUE, `firstAnswer` TEXT NOT NULL UNIQUE, `secondSecurity` TEXT NOT NULL UNIQUE, `secondAnswer` TEXT NOT NULL UNIQUE )
+CREATE TABLE "Cards" ( `title` TEXT NOT NULL, `username` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`title`,`username`) )
+CREATE TABLE "Notes" ( `title` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`title`,`description`) )
+CREATE TABLE "Settings" ( `passwordLength` INTEGER NOT NULL, `passwordUppercase` INTEGER NOT NULL, `passwordLowercase` INTEGER NOT NULL, `passwordNumbers` INTEGER NOT NULL, `passwordSpecialCharacters` INTEGER NOT NULL, `autoLogoutEnabled` INTEGER NOT NULL, `autoLogoutTimerIndex` INTEGER NOT NULL )
+CREATE TABLE "Locker" ( `locker` TEXT NOT NULL UNIQUE, `salt` TEXT NOT NULL UNIQUE, PRIMARY KEY(`locker`,`salt`) )
