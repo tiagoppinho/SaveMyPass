@@ -1,6 +1,10 @@
 package handlers;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -10,7 +14,13 @@ import java.sql.SQLException;
  */
 public class DatabaseHandler {
     
-    private static final String CONNECTION_PATH = "jdbc:sqlite:db/passwordmanager.sqlite";
+    private static final String CONNECTION_PATH_FORMAT = "jdbc:sqlite:%s";
+    private static final String CONNECTION_PATH;
+    
+    static {
+        Path homeDirPath = Paths.get(System.getProperty("user.home")).resolve(".passwordmanager.sqlite");
+        CONNECTION_PATH = String.format(CONNECTION_PATH_FORMAT, homeDirPath.toAbsolutePath().toString());
+    }
     
     /**
      * Gets the database connection and returns it.
@@ -24,5 +34,30 @@ public class DatabaseHandler {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Initializes database in case tables are missing.
+     * This operation does NOT close the database connection.
+     * @return Integer Number of tables in database.
+     */
+    public static int getTablesCount(){
+        Connection connection = DatabaseHandler.getConnection();
+        int tableCount = 0;
+        try{
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(
+            "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';"
+            );
+
+            tableCount = resultSet.getInt(1);
+
+            statement.close();
+            resultSet.close();
+            connection.close();
+        } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return tableCount;
     }
 }
