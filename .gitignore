@@ -1,8 +1,10 @@
 manifest.mf
-nbproject/private/
+nbproject/
 build/
 dist/
 test/
 db/
 store/
 target/
+.idea/
+*.iml
