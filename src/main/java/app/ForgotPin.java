@@ -67,8 +67,10 @@ public class ForgotPin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SaveMyPass - Forgot PIN");
-        setMinimumSize(new java.awt.Dimension(377, 430));
+        setMaximumSize(new java.awt.Dimension(377, 439));
+        setMinimumSize(new java.awt.Dimension(377, 439));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(377, 439));
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -215,10 +217,7 @@ public class ForgotPin extends javax.swing.JFrame {
             .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
                 .addGroup(securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(gotoLogin))
-                    .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
+                        .addGap(60, 60, 60)
                         .addGroup(securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, securityQuestionsPanelLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -232,13 +231,16 @@ public class ForgotPin extends javax.swing.JFrame {
                                 .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(txtSecurityAnswer1)
                                 .addComponent(txtSecondSecurityQuestion)
-                                .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(66, Short.MAX_VALUE))
+                                .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(gotoLogin)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         securityQuestionsPanelLayout.setVerticalGroup(
             securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -256,13 +258,13 @@ public class ForgotPin extends javax.swing.JFrame {
                 .addComponent(txtSecurityAnswer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(gotoLogin)
-                .addContainerGap())
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         getContentPane().add(securityQuestionsPanel);
-        securityQuestionsPanel.setBounds(0, 120, 380, 360);
+        securityQuestionsPanel.setBounds(0, 120, 380, 320);
 
         pack();
         setLocationRelativeTo(null);
