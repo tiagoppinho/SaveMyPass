@@ -22,7 +22,7 @@ Simple offline password manager initially made for my own use and as an academic
 
 ## How to use this software
 
-* Download the latest [release](https://github.com/tiagoppinho/PasswordManager/releases).
+* Download the [latest release](https://github.com/tiagoppinho/PasswordManager/releases/latest).
 * Place it where you want and just run it.
 
 ## Setup for development
