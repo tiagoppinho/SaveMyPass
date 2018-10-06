@@ -20,7 +20,38 @@ Simple offline password manager initially made for my own use and as an academic
 
 * AES-256 data encryption.
 
-### Icons
+## How to use this software
+
+* Download the latest [release](https://github.com/tiagoppinho/PasswordManager/releases).
+* Place it where you want and just run it.
+
+## Setup for development
+
+**Install** (Unix, *nix systems):
+
+```
+$ ./mvnw clean install
+```
+
+or (Batch)
+
+```
+$ ./mvnw.cmd clean install
+```
+
+**Run** (Unix, *nix systems):
+
+```
+$ ./mvnw exec:java
+```
+
+or (Batch)
+
+```
+$ ./mvnw.cmd exec:java
+```
+
+## Icons
 
 All the icons used in this project are provided by icons8.
 [Check them out](https://icons8.com).
