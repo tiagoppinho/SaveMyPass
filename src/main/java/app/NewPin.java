@@ -88,9 +88,9 @@ public class NewPin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("SaveMyPass - New PIN");
-        setMinimumSize(new java.awt.Dimension(377, 385));
+        setMinimumSize(new java.awt.Dimension(377, 409));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(377, 385));
+        setPreferredSize(new java.awt.Dimension(377, 409));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 formComponentShown(evt);
@@ -320,11 +320,11 @@ public class NewPin extends javax.swing.JFrame {
                     .addComponent(lblNum0, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCloseKeyboard)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         getContentPane().add(keyboardMainPanel);
-        keyboardMainPanel.setBounds(380, 120, 240, 265);
+        keyboardMainPanel.setBounds(380, 120, 240, 290);
 
         keyboardHeaderPanel.setBackground(new java.awt.Color(0, 39, 255));
 
@@ -377,6 +377,7 @@ public class NewPin extends javax.swing.JFrame {
                 mainPanelMousePressed(evt);
             }
         });
+        mainPanel.setLayout(null);
 
         txtMasterPin.setEditable(false);
         txtMasterPin.setBackground(new java.awt.Color(255, 255, 255));
@@ -388,16 +389,22 @@ public class NewPin extends javax.swing.JFrame {
                 txtMasterPinMousePressed(evt);
             }
         });
+        mainPanel.add(txtMasterPin);
+        txtMasterPin.setBounds(103, 61, 173, 27);
 
         title1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         title1.setForeground(new java.awt.Color(51, 153, 255));
         title1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         title1.setText("New master PIN");
+        mainPanel.add(title1);
+        title1.setBounds(103, 38, 170, 17);
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(51, 153, 255));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel10.setText("Confirm master PIN");
+        mainPanel.add(jLabel10);
+        jLabel10.setBounds(103, 118, 173, 17);
 
         txtConfirmationMasterPin.setEditable(false);
         txtConfirmationMasterPin.setBackground(new java.awt.Color(255, 255, 255));
@@ -409,6 +416,8 @@ public class NewPin extends javax.swing.JFrame {
                 txtConfirmationMasterPinMousePressed(evt);
             }
         });
+        mainPanel.add(txtConfirmationMasterPin);
+        txtConfirmationMasterPin.setBounds(103, 141, 173, 27);
 
         btnNextOrFinish.setBackground(new java.awt.Color(51, 153, 255));
         btnNextOrFinish.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -421,96 +430,51 @@ public class NewPin extends javax.swing.JFrame {
         btnNextOrFinish.setOpaque(true);
         btnNextOrFinish.setPreferredSize(new java.awt.Dimension(61, 37));
         btnNextOrFinish.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnNextOrFinishMouseEntered(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnNextOrFinishMousePressed(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnNextOrFinishMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnNextOrFinishMousePressed(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnNextOrFinishMouseEntered(evt);
             }
         });
+        mainPanel.add(btnNextOrFinish);
+        btnNextOrFinish.setBounds(154, 186, 61, 37);
 
         backToLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         backToLogin.setForeground(new java.awt.Color(51, 153, 255));
         backToLogin.setText("Back to login");
         backToLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         backToLogin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                backToLoginMouseEntered(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                backToLoginMousePressed(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 backToLoginMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                backToLoginMousePressed(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                backToLoginMouseEntered(evt);
             }
         });
+        mainPanel.add(backToLogin);
+        backToLogin.setBounds(21, 255, 91, 15);
 
         separator.setBackground(new java.awt.Color(255, 255, 255));
         separator.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         separator.setOpaque(true);
+        mainPanel.add(separator);
+        separator.setBounds(366, 12, 2, 266);
 
         jLabel4.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(51, 153, 255));
         jLabel4.setText("6-Digit Pin");
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(157, 157, 157)
-                                .addComponent(btnNextOrFinish, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(backToLogin)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .addGap(0, 101, Short.MAX_VALUE)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtConfirmationMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(title1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel4))
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(94, 94, 94)))
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(title1)
-                        .addGap(6, 6, 6)
-                        .addComponent(txtMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(4, 4, 4)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel10)
-                        .addGap(6, 6, 6)
-                        .addComponent(txtConfirmationMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnNextOrFinish, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(backToLogin)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(separator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
+        mainPanel.add(jLabel4);
+        jLabel4.setBounds(103, 92, 57, 14);
 
         getContentPane().add(mainPanel);
-        mainPanel.setBounds(0, 120, 380, 265);
+        mainPanel.setBounds(0, 120, 380, 290);
 
         changePINPanel.setBackground(new java.awt.Color(255, 255, 255));
         changePINPanel.setMinimumSize(new java.awt.Dimension(380, 265));
@@ -563,14 +527,14 @@ public class NewPin extends javax.swing.JFrame {
         btnFinishNewPin.setOpaque(true);
         btnFinishNewPin.setPreferredSize(new java.awt.Dimension(61, 37));
         btnFinishNewPin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnFinishNewPinMouseEntered(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnFinishNewPinMousePressed(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnFinishNewPinMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnFinishNewPinMousePressed(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnFinishNewPinMouseEntered(evt);
             }
         });
 
@@ -615,24 +579,28 @@ public class NewPin extends javax.swing.JFrame {
         changePINPanelLayout.setHorizontalGroup(
             changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(changePINPanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                        .addComponent(gotoLogin)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
-                        .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(151, 151, 151))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                    .addGroup(changePINPanelLayout.createSequentialGroup()
+                        .addContainerGap(100, Short.MAX_VALUE)
                         .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(title2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(changePINPanelLayout.createSequentialGroup()
-                                .addGap(1, 1, 1)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(title3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(91, 91, 91)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
+                                .addGap(52, 52, 52)
+                                .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(60, 60, 60))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(title2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(changePINPanelLayout.createSequentialGroup()
+                                    .addGap(1, 1, 1)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(title3, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(93, 93, 93))
+                    .addGroup(changePINPanelLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(gotoLogin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(separator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -641,34 +609,30 @@ public class NewPin extends javax.swing.JFrame {
             .addGroup(changePINPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(separator2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                        .addComponent(separator2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                        .addGap(0, 14, Short.MAX_VALUE)
-                        .addGroup(changePINPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                                .addComponent(title3)
-                                .addGap(6, 6, 6)
-                                .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(title2)
-                                .addGap(6, 6, 6)
-                                .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel11)
-                                .addGap(6, 6, 6)
-                                .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(17, 17, 17))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, changePINPanelLayout.createSequentialGroup()
-                                .addComponent(gotoLogin)
-                                .addContainerGap())))))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(title3)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtCurrentPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(title2)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel11)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtConfirmationNewMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnFinishNewPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(4, 4, 4)
+                        .addComponent(gotoLogin)
+                        .addGap(8, 8, 8)))
+                .addContainerGap())
         );
 
         getContentPane().add(changePINPanel);
-        changePINPanel.setBounds(0, 120, 380, 284);
+        changePINPanel.setBounds(0, 120, 380, 290);
 
         pack();
         setLocationRelativeTo(null);

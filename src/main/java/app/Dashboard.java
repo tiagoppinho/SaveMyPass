@@ -269,14 +269,12 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsPanel = new javax.swing.JPanel();
         scrollPaneAllCardsTable = new javax.swing.JScrollPane();
         allCardsTable = new javax.swing.JTable();
-        noCardsInfo = new javax.swing.JLabel();
         favouritesPanel = new javax.swing.JPanel();
         scrollPaneFavoritesTable = new javax.swing.JScrollPane();
         favoritesTable = new javax.swing.JTable();
         notesPanel = new javax.swing.JPanel();
         scrollPaneNotesTable = new javax.swing.JScrollPane();
         notesTable = new javax.swing.JTable();
-        noNotesInfo = new javax.swing.JLabel();
         settingsPanel = new javax.swing.JPanel();
         passwordGeneratorTitle = new javax.swing.JLabel();
         autoLogOffTitle = new javax.swing.JLabel();
@@ -577,7 +575,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         titlePanel.add(btnAddNewCard);
-        btnAddNewCard.setBounds(553, 93, 125, 17);
+        btnAddNewCard.setBounds(540, 90, 125, 17);
 
         btnAddNewNote.setBackground(new java.awt.Color(255, 255, 255));
         btnAddNewNote.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
@@ -596,7 +594,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
         titlePanel.add(btnAddNewNote);
-        btnAddNewNote.setBounds(553, 93, 126, 17);
+        btnAddNewNote.setBounds(540, 90, 126, 17);
 
         getContentPane().add(titlePanel);
         titlePanel.setBounds(240, 40, 670, 120);
@@ -648,16 +646,6 @@ public class Dashboard extends javax.swing.JFrame {
 
         allCardsPanel.add(scrollPaneAllCardsTable);
         scrollPaneAllCardsTable.setBounds(0, -10, 670, 490);
-
-        noCardsInfo.setBackground(new java.awt.Color(255, 255, 255));
-        noCardsInfo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        noCardsInfo.setForeground(new java.awt.Color(51, 153, 255));
-        noCardsInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        noCardsInfo.setText("You don't have any card yet.");
-        noCardsInfo.setToolTipText("");
-        noCardsInfo.setOpaque(true);
-        allCardsPanel.add(noCardsInfo);
-        noCardsInfo.setBounds(0, 0, 670, 270);
 
         getContentPane().add(allCardsPanel);
         allCardsPanel.setBounds(240, 160, 670, 480);
@@ -759,16 +747,6 @@ public class Dashboard extends javax.swing.JFrame {
 
         notesPanel.add(scrollPaneNotesTable);
         scrollPaneNotesTable.setBounds(0, -10, 670, 500);
-
-        noNotesInfo.setBackground(new java.awt.Color(255, 255, 255));
-        noNotesInfo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        noNotesInfo.setForeground(new java.awt.Color(51, 153, 255));
-        noNotesInfo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        noNotesInfo.setText("You don't have any note yet.");
-        noNotesInfo.setToolTipText("");
-        noNotesInfo.setOpaque(true);
-        notesPanel.add(noNotesInfo);
-        noNotesInfo.setBounds(0, 0, 670, 270);
 
         getContentPane().add(notesPanel);
         notesPanel.setBounds(240, 160, 670, 480);
@@ -903,14 +881,14 @@ public class Dashboard extends javax.swing.JFrame {
         btnChangeMasterPin.setOpaque(true);
         btnChangeMasterPin.setPreferredSize(new java.awt.Dimension(61, 37));
         btnChangeMasterPin.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                accountButtonsMouseEntered(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnChangeMasterPinMousePressed(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseExited(evt);
             }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnChangeMasterPinMousePressed(evt);
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                accountButtonsMouseEntered(evt);
             }
         });
 
@@ -1177,6 +1155,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
         
         if(confirm == JOptionPane.YES_OPTION){
+            this.autoLogoutTimer.stop();
             NewPin changePin = new NewPin(2);
             changePin.setVisible(true);
             changePin.requestFocusInWindow();
@@ -1625,8 +1604,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JSlider lengthSlider;
     private javax.swing.JCheckBox lowercaseCharacters;
     private javax.swing.JLabel mainTitle;
-    private javax.swing.JLabel noCardsInfo;
-    private javax.swing.JLabel noNotesInfo;
     private javax.swing.JPanel notesPanel;
     private javax.swing.JTable notesTable;
     private javax.swing.JCheckBox numberCharacters;
