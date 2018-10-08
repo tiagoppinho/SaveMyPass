@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 /**
- * Class responsable for holding important constants to reduce the amount of repeated code.
- * The porpuse of this class is to change values only in one place to avoid conflicts.
+ * Class responsible for holding important constants to reduce the amount of repeated code.
+ * The purpose of this class is to change values only in one place to avoid conflicts.
  * @author Tiago Pinho
  */
 public class Constants {
