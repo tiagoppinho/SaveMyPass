@@ -2,12 +2,9 @@ package sql;
 
 import handlers.DatabaseHandler;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,7 +17,7 @@ import utils.Customization;
  */
 public class SQLScriptFileRunner {
     
-    private static final String SCRIPT_FILE_START_PATH = "/sql/scripts/",
+    private static final String SCRIPT_FILE_START_PATH = "/scripts/",
                                 SCRIPT_FILE_EXTENSION = ".sql";
     
     /**
@@ -51,7 +48,7 @@ public class SQLScriptFileRunner {
      */
     private static ArrayList<String> getScripts(String scriptFileName){
         try{
-            InputStream file = new FileInputStream(new File(SQLScriptFileRunner.class.getResource(SCRIPT_FILE_START_PATH + scriptFileName + SCRIPT_FILE_EXTENSION).toURI()));
+            InputStream file = SQLScriptFileRunner.class.getResourceAsStream(SCRIPT_FILE_START_PATH + scriptFileName + SCRIPT_FILE_EXTENSION);
             BufferedReader reader = new BufferedReader(new InputStreamReader(file));
             String line;
             ArrayList<String> scripts = new ArrayList<>(); 
@@ -60,7 +57,7 @@ public class SQLScriptFileRunner {
             }
             reader.close();
             return scripts;
-        }catch(IOException | URISyntaxException ex){
+        }catch(IOException ex){
             System.out.println(ex.toString());
             Customization.displayWarningMessage(ex.toString(), "Error");
         }
