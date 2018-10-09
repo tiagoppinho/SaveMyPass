@@ -1,6 +1,6 @@
 # Password Manager - SaveMyPass
 
-Simple offline password manager initially made for my own use and as an academic project.
+Simple offline password manager initially made for my own use and as an academic project. Developed with Java and NetBeans/Intellij IDEA.
 
 ## Features
 
