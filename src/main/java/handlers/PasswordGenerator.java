@@ -16,7 +16,7 @@ public class PasswordGenerator {
     private final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
                          LOWERCASE = "abcdefghijklmnopqrstuvwxyz",
                          NUMBERS = "0123456789",
-                         SPECIAL_CHARACTERS = "#$%&/!=.,[]{}-+*";
+                         SPECIAL_CHARACTERS = "#$%&/!=.,[]{}-+*;<>()@:_?^~\\\'\"";
     
     //Settings
     private int length;
