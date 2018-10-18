@@ -18,7 +18,7 @@ public class DatabaseHandler {
     private static final String CONNECTION_PATH;
     
     static {
-        Path homeDirPath = Paths.get(System.getProperty("user.home")).resolve(".passwordmanager.sqlite");
+        Path homeDirPath = Paths.get(System.getProperty("user.home")).resolve(".passwordmanager-savemypass.sqlite");
         CONNECTION_PATH = String.format(CONNECTION_PATH_FORMAT, homeDirPath.toAbsolutePath().toString());
     }
     
