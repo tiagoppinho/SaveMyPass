@@ -4,6 +4,7 @@ import crypto.Encryptor;
 import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+
 import sql.SQLScriptFileRunner;
 
 /**
@@ -26,84 +28,77 @@ import sql.SQLScriptFileRunner;
  */
 public class Dashboard extends javax.swing.JFrame {
 
-    private final String[] TITLES = new String[]{"All cards", "Favorites", "Notes", "Settings"};
+    private final String[] TITLES = new String[] { "All cards", "Favorites", "Notes", "Settings" };
     private JLabel[] titleButtons = new JLabel[4];
-    
+
     private Encryptor encryptor = new Encryptor();
-    
-    private ArrayList<Integer> cardIdentifiers = new ArrayList<>(),
-                               favoriteIdentifiers = new ArrayList<>(),
-                               noteIdentifiers = new ArrayList<>();
-    
+
+    private ArrayList<Integer> cardIdentifiers = new ArrayList<>(), favoriteIdentifiers = new ArrayList<>(), noteIdentifiers =
+            new ArrayList<>();
+
     /* -------------------- Side Panel ---------------------- */
-    private Component sidePanelButtons[] = new JPanel[4], 
-                      activeSidePanelButton;
+    private Component sidePanelButtons[] = new JPanel[4], activeSidePanelButton;
     private JLabel[] sidePanelButtonsMarker = new JLabel[4];
     /* ------------------------------------------------------ */
-    
+
     /* -------------------- Main Panels --------------------- */
     private JPanel[] mainPanels = new JPanel[4];
     /* ------------------------------------------------------ */
-        
+
     /* -------------------- Auto Logout --------------------- */
     public final Timer autoLogoutTimer;
     //Represents the number of seconds without activity.
-    private int autoLogoutCounter = 0, 
-                //Number of seconds defined by the user.
-                expectedAutoLogoutCounter;
+    private int autoLogoutCounter = 0, //Number of seconds defined by the user.
+            expectedAutoLogoutCounter;
     /* ------------------------------------------------------ */
-     
+
     /* -------------------------------- Settings ----------------------------------- */
-    private final String[] SETTINGS_COLUMNS = {
-        "passwordLength", "passwordUppercase", "passwordLowercase", "passwordNumbers",
-        "passwordSpecialCharacters", "autoLogoutEnabled", "autoLogoutTimerIndex"
-    };
+    private final String[] SETTINGS_COLUMNS =
+            { "passwordLength", "passwordUppercase", "passwordLowercase", "passwordNumbers", "passwordSpecialCharacters",
+                    "autoLogoutEnabled", "autoLogoutTimerIndex" };
     private JCheckBox[] passwordGeneratorSettingsCheckBoxes = new JCheckBox[4];
     private int[] oldSettings = new int[7], newSettings = new int[7];
-    private boolean isSaveSettingsActive = false; 
+    private boolean isSaveSettingsActive = false;
     /* ----------------------------------------------------------------------------- */
-    
+
     //All cards table model.
     private final DefaultTableModel customModelAllCards = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
-    
+
     //Favorites table model.
     private final DefaultTableModel customModelFavorites = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
-    
+
     //Notes table model.
     private final DefaultTableModel customModelNotes = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
-    
+
     public Dashboard() {
         Customization.applyCustomIcons(this);
         initComponents();
-        this.sidePanelButtons = new Component[]{btnAllCards, btnFavourites, btnNotes, btnSettings};
-        this.sidePanelButtonsMarker = new JLabel[]{
-            btnAllCardsMarker, btnFavouritesMarker, btnNotesMarker, btnSettingsMarker
-        };
-        this.mainPanels = new JPanel[]{allCardsPanel, favouritesPanel, notesPanel, settingsPanel};
-        this.titleButtons = new JLabel[]{btnAddNewCard, null, btnAddNewNote, null};
+        this.sidePanelButtons = new Component[] { btnAllCards, btnFavourites, btnNotes, btnSettings };
+        this.sidePanelButtonsMarker = new JLabel[] { btnAllCardsMarker, btnFavouritesMarker, btnNotesMarker, btnSettingsMarker };
+        this.mainPanels = new JPanel[] { allCardsPanel, favouritesPanel, notesPanel, settingsPanel };
+        this.titleButtons = new JLabel[] { btnAddNewCard, null, btnAddNewNote, null };
         this.activeSidePanelButton = sidePanelButtons[0];
         this.autoLogoutTimer = new Timer(1000, incrementAutoLogoutCounter);
-        this.passwordGeneratorSettingsCheckBoxes = new JCheckBox[]{
-            uppercaseCharacters, lowercaseCharacters, numberCharacters, specialCharacters
-        };
-        this.newSettings = new int[]{-1, -1, -1, -1, -1, -1, -1};
+        this.passwordGeneratorSettingsCheckBoxes =
+                new JCheckBox[] { uppercaseCharacters, lowercaseCharacters, numberCharacters, specialCharacters };
+        this.newSettings = new int[] { -1, -1, -1, -1, -1, -1, -1 };
         btnAddNewNote.setVisible(false);
         scrollPaneAllCardsTable.getViewport().setBackground(Color.WHITE);
         scrollPaneFavoritesTable.getViewport().setBackground(Color.WHITE);
         scrollPaneNotesTable.getViewport().setBackground(Color.WHITE);
-        String tableHeaders[] = {""};
+        String tableHeaders[] = { "" };
         customModelAllCards.setColumnIdentifiers(tableHeaders);
         customModelFavorites.setColumnIdentifiers(tableHeaders);
         customModelNotes.setColumnIdentifiers(tableHeaders);
@@ -120,121 +115,119 @@ public class Dashboard extends javax.swing.JFrame {
         btnSaveSettings.setVisible(false);
         this.autoLogoutTimer.start();
     }
-    
+
     /**
      * Loads all the data from database needed for Dashboard.
      */
-    private void loadData(){
+    private void loadData() {
         loadCards();
         loadNotes();
-        
+
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Settings");
             resultSet.next();
-            
-            for(int i = 0; i < this.oldSettings.length; i++)
+
+            for (int i = 0; i < this.oldSettings.length; i++)
                 this.oldSettings[i] = resultSet.getInt(SETTINGS_COLUMNS[i]);
-            
+
             resultSet.close();
             statement.close();
             connection.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
         setOldSettings();
     }
-    
+
     /**
      * Loads and updates cards related data.
      */
-    public void loadCards(){
+    public void loadCards() {
         this.cardIdentifiers.clear();
         this.favoriteIdentifiers.clear();
         customModelAllCards.setRowCount(0);
         customModelFavorites.setRowCount(0);
-        
+
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT ID, title, username, favorite FROM Cards ORDER BY ID DESC");
-            
-            while(resultSet.next()){
+
+            while (resultSet.next()) {
                 int identifier = resultSet.getInt("ID");
-                
+
                 this.cardIdentifiers.add(identifier);
-                
-                String title = encryptor.decrypt(resultSet.getString("title")),
-                       username = encryptor.decrypt(resultSet.getString("username"));
-                
-                addNewTableRow(customModelAllCards, new String[]{title, username});
-                
-                if(resultSet.getBoolean("favorite")){
+
+                String title = encryptor.decrypt(resultSet.getString("title")), username =
+                        encryptor.decrypt(resultSet.getString("username"));
+
+                addNewTableRow(customModelAllCards, new String[] { title, username });
+
+                if (resultSet.getBoolean("favorite")) {
                     this.favoriteIdentifiers.add(identifier);
-                    addNewTableRow(customModelFavorites, new String[]{title, username});
+                    addNewTableRow(customModelFavorites, new String[] { title, username });
                 }
             }
-            
+
             resultSet.close();
             statement.close();
             connection.close();
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * Loads and updates notes related data.
      */
-    public void loadNotes(){
+    public void loadNotes() {
         this.noteIdentifiers.clear();
         customModelNotes.setRowCount(0);
-        
+
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Notes ORDER BY ID DESC");
             String title, description;
-            
-            while(resultSet.next()){
+
+            while (resultSet.next()) {
                 this.noteIdentifiers.add(resultSet.getInt("ID"));
-                
+
                 title = encryptor.decrypt(resultSet.getString("title"));
                 description = encryptor.decrypt(resultSet.getString("description"));
-                
-                addNewTableRow(customModelNotes, new String[]{
-                    title,
-                    (description.length() > 60) ? description.substring(0, 61) + "..." : description
-                });
+
+                addNewTableRow(customModelNotes,
+                        new String[] { title, (description.length() > 60) ? description.substring(0, 61) + "..." : description });
             }
-            
+
             resultSet.close();
             statement.close();
             connection.close();
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     /**
      * ActionListener responsible for incrementing the auto logout counter.
      * Works with autoLogoutTimer each second.
      */
-    private final ActionListener incrementAutoLogoutCounter = new ActionListener(){
+    private final ActionListener incrementAutoLogoutCounter = new ActionListener() {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            if(oldSettings[5] == 1){
-                if(autoLogoutCounter + 1 == expectedAutoLogoutCounter){
+            if (oldSettings[5] == 1) {
+                if (autoLogoutCounter + 1 == expectedAutoLogoutCounter) {
                     logout();
                 } else
                     autoLogoutCounter++;
             }
         }
     };
-    
+
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Init components">
     private void initComponents() {
 
         headerPanel = new javax.swing.JPanel();
@@ -405,26 +398,25 @@ public class Dashboard extends javax.swing.JFrame {
 
         javax.swing.GroupLayout btnAllCardsLayout = new javax.swing.GroupLayout(btnAllCards);
         btnAllCards.setLayout(btnAllCardsLayout);
-        btnAllCardsLayout.setHorizontalGroup(
-            btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnAllCardsLayout.createSequentialGroup()
-                .addComponent(btnAllCardsMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        btnAllCardsLayout.setVerticalGroup(
-            btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnAllCardsLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addComponent(btnAllCardsMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        btnAllCardsLayout.setHorizontalGroup(btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnAllCardsLayout.createSequentialGroup()
+                        .addComponent(btnAllCardsMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE).addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(29, 29, 29)
+                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+        btnAllCardsLayout.setVerticalGroup(btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(btnAllCardsLayout.createSequentialGroup().addGap(19, 19, 19).addGroup(
+                        btnAllCardsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(btnAllCardsMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE));
 
         sidePanel.add(btnAllCards);
         btnAllCards.setBounds(0, 150, 240, 68);
@@ -444,26 +436,25 @@ public class Dashboard extends javax.swing.JFrame {
 
         javax.swing.GroupLayout btnFavouritesLayout = new javax.swing.GroupLayout(btnFavourites);
         btnFavourites.setLayout(btnFavouritesLayout);
-        btnFavouritesLayout.setHorizontalGroup(
-            btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnFavouritesLayout.createSequentialGroup()
-                .addComponent(btnFavouritesMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        btnFavouritesLayout.setVerticalGroup(
-            btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnFavouritesLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addComponent(btnFavouritesMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        btnFavouritesLayout.setHorizontalGroup(btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnFavouritesLayout.createSequentialGroup()
+                        .addComponent(btnFavouritesMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(29, 29, 29)
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+        btnFavouritesLayout.setVerticalGroup(btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(btnFavouritesLayout.createSequentialGroup().addGap(19, 19, 19).addGroup(
+                        btnFavouritesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(btnFavouritesMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE));
 
         sidePanel.add(btnFavourites);
         btnFavourites.setBounds(0, 230, 240, 68);
@@ -483,26 +474,25 @@ public class Dashboard extends javax.swing.JFrame {
 
         javax.swing.GroupLayout btnNotesLayout = new javax.swing.GroupLayout(btnNotes);
         btnNotes.setLayout(btnNotesLayout);
-        btnNotesLayout.setHorizontalGroup(
-            btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnNotesLayout.createSequentialGroup()
-                .addComponent(btnNotesMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        btnNotesLayout.setVerticalGroup(
-            btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnNotesLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addComponent(btnNotesMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        btnNotesLayout.setHorizontalGroup(btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnNotesLayout.createSequentialGroup()
+                        .addComponent(btnNotesMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18)
+                        .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+        btnNotesLayout.setVerticalGroup(btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                btnNotesLayout.createSequentialGroup().addGap(19, 19, 19).addGroup(
+                        btnNotesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(btnNotesMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE));
 
         sidePanel.add(btnNotes);
         btnNotes.setBounds(0, 310, 240, 68);
@@ -522,26 +512,25 @@ public class Dashboard extends javax.swing.JFrame {
 
         javax.swing.GroupLayout btnSettingsLayout = new javax.swing.GroupLayout(btnSettings);
         btnSettings.setLayout(btnSettingsLayout);
-        btnSettingsLayout.setHorizontalGroup(
-            btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnSettingsLayout.createSequentialGroup()
-                .addComponent(btnSettingsMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
-                .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        btnSettingsLayout.setVerticalGroup(
-            btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnSettingsLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(19, Short.MAX_VALUE))
-            .addComponent(btnSettingsMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        btnSettingsLayout.setHorizontalGroup(btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, btnSettingsLayout.createSequentialGroup()
+                        .addComponent(btnSettingsMarker, javax.swing.GroupLayout.PREFERRED_SIZE, 8,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 30,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(29, 29, 29)
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+        btnSettingsLayout.setVerticalGroup(btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(btnSettingsLayout.createSequentialGroup().addGap(19, 19, 19).addGroup(
+                        btnSettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(btnSettingsMarker, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE));
 
         sidePanel.add(btnSettings);
         btnSettings.setBounds(0, 390, 240, 68);
@@ -567,9 +556,11 @@ public class Dashboard extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 titleButtonsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 titleButtonsMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddNewCardMousePressed(evt);
             }
@@ -586,9 +577,11 @@ public class Dashboard extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 titleButtonsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 titleButtonsMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddNewNoteMousePressed(evt);
             }
@@ -606,20 +599,13 @@ public class Dashboard extends javax.swing.JFrame {
         scrollPaneAllCardsTable.setBorder(null);
 
         allCardsTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        allCardsTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        allCardsTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-            },
-            new String [] {
-                ""
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false
-            };
+        }, new String[] { "" }) {
+            boolean[] canEdit = new boolean[] { false };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         allCardsTable.setGridColor(new java.awt.Color(0, 0, 0));
@@ -656,20 +642,13 @@ public class Dashboard extends javax.swing.JFrame {
         scrollPaneFavoritesTable.setBorder(null);
 
         favoritesTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        favoritesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        favoritesTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
-            },
-            new String [] {
-                ""
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false
-            };
+        }, new String[] { "" }) {
+            boolean[] canEdit = new boolean[] { false };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         favoritesTable.setGridColor(new java.awt.Color(0, 0, 0));
@@ -706,21 +685,12 @@ public class Dashboard extends javax.swing.JFrame {
         scrollPaneNotesTable.setBorder(null);
 
         notesTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        notesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "", ""
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
+        notesTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] { { null, null }, { null, null } },
+                new String[] { "", "" }) {
+            boolean[] canEdit = new boolean[] { false, false };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+                return canEdit[columnIndex];
             }
         });
         notesTable.setGridColor(new java.awt.Color(0, 0, 0));
@@ -854,7 +824,8 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel9.setText("Timer:");
 
         autoLogoutTimerComboBox.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        autoLogoutTimerComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1 min", "2 min", "5 min", "10 min", "15 min", "20 min" }));
+        autoLogoutTimerComboBox.setModel(
+                new javax.swing.DefaultComboBoxModel<>(new String[] { "1 min", "2 min", "5 min", "10 min", "15 min", "20 min" }));
         autoLogoutTimerComboBox.setFocusable(false);
         autoLogoutTimerComboBox.setName("6"); // NOI18N
         autoLogoutTimerComboBox.setRequestFocusEnabled(false);
@@ -884,9 +855,11 @@ public class Dashboard extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnChangeMasterPinMousePressed(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseExited(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseEntered(evt);
             }
@@ -906,9 +879,11 @@ public class Dashboard extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 buttonsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 buttonsMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnSaveSettingsMousePressed(evt);
             }
@@ -932,9 +907,11 @@ public class Dashboard extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 accountButtonsMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnDeleteAllDataMousePressed(evt);
             }
@@ -946,138 +923,139 @@ public class Dashboard extends javax.swing.JFrame {
 
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
-        settingsPanelLayout.setHorizontalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(passwordGeneratorTitle)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingsPanelLayout.createSequentialGroup()
-                                    .addComponent(uppercaseCharacters)
-                                    .addGap(82, 82, 82)
-                                    .addComponent(lowercaseCharacters)
-                                    .addGap(84, 84, 84)
-                                    .addComponent(numberCharacters)
-                                    .addGap(66, 66, 66)
-                                    .addComponent(specialCharacters))))
-                        .addContainerGap(48, Short.MAX_VALUE))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(settingsPanelLayout.createSequentialGroup()
-                                .addComponent(autoLogoutEnabled)
-                                .addGap(75, 75, 75)
-                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(autoLogOffTitle)
-                            .addComponent(accountTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
-        );
-        settingsPanelLayout.setVerticalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(passwordGeneratorTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10)
-                .addGap(18, 18, 18)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(numberCharacters)
-                            .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(uppercaseCharacters)
-                                .addComponent(lowercaseCharacters)
-                                .addComponent(specialCharacters))))
-                    .addComponent(txtSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(autoLogOffTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addGap(18, 18, 18)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(autoLogoutEnabled)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(accountTitle)
-                .addGap(18, 18, 18)
-                .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
-        );
+        settingsPanelLayout.setHorizontalGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(settingsPanelLayout.createSequentialGroup().addGap(21, 21, 21).addGroup(
+                        settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                settingsPanelLayout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 95,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(25, 25, 25)).addGroup(
+                                settingsPanelLayout.createSequentialGroup().addGroup(
+                                        settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(passwordGeneratorTitle)
+                                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 601,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(settingsPanelLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                                        settingsPanelLayout.createSequentialGroup()
+                                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 57,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE).addPreferredGap(
+                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(lengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addPreferredGap(
+                                                                        javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addComponent(txtSliderValue,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 31,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
+                                                        settingsPanelLayout.createSequentialGroup()
+                                                                .addComponent(uppercaseCharacters).addGap(82, 82, 82)
+                                                                .addComponent(lowercaseCharacters).addGap(84, 84, 84)
+                                                                .addComponent(numberCharacters).addGap(66, 66, 66)
+                                                                .addComponent(specialCharacters))))
+                                        .addContainerGap(48, Short.MAX_VALUE)).addGroup(
+                                settingsPanelLayout.createSequentialGroup().addGroup(
+                                        settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel6).addComponent(jLabel1)
+                                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 601,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(
+                                                settingsPanelLayout.createSequentialGroup().addComponent(autoLogoutEnabled)
+                                                        .addGap(75, 75, 75)
+                                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 49,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(autoLogoutTimerComboBox,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 81,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(autoLogOffTitle)
+                                                .addComponent(accountTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 97,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 144,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 145,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE)))));
+        settingsPanelLayout.setVerticalGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(settingsPanelLayout.createSequentialGroup().addGap(19, 19, 19).addComponent(passwordGeneratorTitle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel10)
+                        .addGap(18, 18, 18).addGroup(
+                                settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                        settingsPanelLayout.createSequentialGroup().addGroup(settingsPanelLayout
+                                                .createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(18, 18, 18).addGroup(
+                                                settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(numberCharacters).addGroup(settingsPanelLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(uppercaseCharacters).addComponent(lowercaseCharacters)
+                                                        .addComponent(specialCharacters))))
+                                        .addComponent(txtSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 26,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(18, 18, 18)
+                        .addComponent(autoLogOffTitle).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11).addGap(18, 18, 18).addGroup(
+                                settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(autoLogoutEnabled)
+                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(autoLogoutTimerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18).addComponent(accountTitle).addGap(18, 18, 18)
+                        .addComponent(btnChangeMasterPin, javax.swing.GroupLayout.PREFERRED_SIZE, 27,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnDeleteAllData, javax.swing.GroupLayout.PREFERRED_SIZE, 27,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                Short.MAX_VALUE).addComponent(btnSaveSettings, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)));
 
         getContentPane().add(settingsPanel);
         settingsPanel.setBounds(240, 160, 670, 480);
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {
         int i = 0;
-        
+
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(btnAddNewCard);
         Customization.underlineText(btnAddNewNote);
-        
+
         //Sets all the main panels off, except the default active.
-        for(JPanel mainPanel : mainPanels) {
-            if(i != Integer.valueOf(activeSidePanelButton.getName()))
+        for (JPanel mainPanel : mainPanels) {
+            if (i != Integer.valueOf(activeSidePanelButton.getName()))
                 mainPanel.setVisible(false);
             i++;
         }
-        
+
         //Adds mouse events to the side panel buttons.
-        for(Component sidePanelButton : sidePanelButtons) {
-            sidePanelButton.addMouseListener(new java.awt.event.MouseAdapter(){
+        for (Component sidePanelButton : sidePanelButtons) {
+            sidePanelButton.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     sidePanelButtonMouseEntered(evt);
                 }
+
                 @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     sidePanelButtonMouseExited(evt);
                 }
+
                 @Override
                 public void mousePressed(java.awt.event.MouseEvent evt) {
                     sidePanelButtonMousePressed(evt);
                 }
             });
         }
-        
+
         //Adds action listener to the password generator settings checkboxes.
-        for(JCheckBox checkBox : passwordGeneratorSettingsCheckBoxes){
+        for (JCheckBox checkBox : passwordGeneratorSettingsCheckBoxes) {
             checkBox.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1085,154 +1063,149 @@ public class Dashboard extends javax.swing.JFrame {
                 }
             });
         }
-    }//GEN-LAST:event_formComponentShown
+    }
 
-    private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCloseMousePressed
-        if(isSaveSettingsActive)
+    private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {
+        if (isSaveSettingsActive)
             confirmSettings();
-        
+
         this.autoLogoutTimer.stop();
         System.exit(0);
-    }//GEN-LAST:event_btnCloseMousePressed
+    }
 
-    private void btnLogoutMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLogoutMousePressed
-        if(isSaveSettingsActive)
+    private void btnLogoutMousePressed(java.awt.event.MouseEvent evt) {
+        if (isSaveSettingsActive)
             confirmSettings();
-        
+
         logout();
-    }//GEN-LAST:event_btnLogoutMousePressed
+    }
 
-    private void btnMinimizeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMinimizeMousePressed
+    private void btnMinimizeMousePressed(java.awt.event.MouseEvent evt) {
         this.setState(Dashboard.ICONIFIED);
-    }//GEN-LAST:event_btnMinimizeMousePressed
+    }
 
-    private void lengthSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_lengthSliderStateChanged
-        int value = lengthSlider.getValue(), 
-            arrayIndex = Integer.parseInt(lengthSlider.getName());
-        
+    private void lengthSliderStateChanged(javax.swing.event.ChangeEvent evt) {
+        int value = lengthSlider.getValue(), arrayIndex = Integer.parseInt(lengthSlider.getName());
+
         txtSliderValue.setText(String.valueOf(value));
-        
-        if(value != oldSettings[arrayIndex]) {
+
+        if (value != oldSettings[arrayIndex]) {
             this.newSettings[arrayIndex] = value;
             activateSaveSettingsButton();
         } else {
             this.newSettings[arrayIndex] = -1;
             deactivateSaveSettingsButton();
         }
-    }//GEN-LAST:event_lengthSliderStateChanged
+    }
 
-    private void autoLogoutEnabledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoLogoutEnabledActionPerformed
+    private void autoLogoutEnabledActionPerformed(java.awt.event.ActionEvent evt) {
         boolean isAutoLogoutEnabled = autoLogoutEnabled.isSelected();
         int arrayIndex = Integer.parseInt(autoLogoutEnabled.getName());
-                
-        if(isAutoLogoutEnabled != (oldSettings[arrayIndex] == 1)) {
+
+        if (isAutoLogoutEnabled != (oldSettings[arrayIndex] == 1)) {
             this.newSettings[arrayIndex] = (isAutoLogoutEnabled) ? 1 : 0;
             activateSaveSettingsButton();
         } else {
             this.newSettings[arrayIndex] = -1;
             deactivateSaveSettingsButton();
         }
-        
-        if(isAutoLogoutEnabled)
+
+        if (isAutoLogoutEnabled)
             autoLogoutTimerComboBox.setEnabled(true);
         else
             autoLogoutTimerComboBox.setEnabled(false);
-        
-    }//GEN-LAST:event_autoLogoutEnabledActionPerformed
 
-    private void accountButtonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseEntered
+    }
+
+    private void accountButtonsMouseEntered(java.awt.event.MouseEvent evt) {
         evt.getComponent().setBackground(Constants.ACCOUNT_BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_accountButtonsMouseEntered
+    }
 
-    private void accountButtonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_accountButtonsMouseExited
+    private void accountButtonsMouseExited(java.awt.event.MouseEvent evt) {
         evt.getComponent().setBackground(Constants.ACCOUNT_BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_accountButtonsMouseExited
+    }
 
-    private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnChangeMasterPinMousePressed
-        int confirm = Customization.displayConfirmMessage(
-            "If you proceed you'll be logged out. Are you sure you want to proceed?", 
-            "Change master PIN"
-        );
-        
-        if(confirm == JOptionPane.YES_OPTION){
+    private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {
+        int confirm = Customization
+                .displayConfirmMessage("If you proceed you'll be logged out. Are you sure you want to proceed?",
+                        "Change master PIN");
+
+        if (confirm == JOptionPane.YES_OPTION) {
             this.autoLogoutTimer.stop();
             NewPin changePin = new NewPin(2);
             changePin.setVisible(true);
             changePin.requestFocusInWindow();
             this.dispose();
         }
-    }//GEN-LAST:event_btnChangeMasterPinMousePressed
+    }
 
-    private void btnSaveSettingsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveSettingsMousePressed
+    private void btnSaveSettingsMousePressed(java.awt.event.MouseEvent evt) {
         saveUserSettings();
-    }//GEN-LAST:event_btnSaveSettingsMousePressed
+    }
 
-    private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allCardsTableMousePressed
+    private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {
         viewItem(0, cardIdentifiers.get(allCardsTable.getSelectedRow()));
-    }//GEN-LAST:event_allCardsTableMousePressed
+    }
 
-    private void buttonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonsMouseEntered
+    private void buttonsMouseEntered(java.awt.event.MouseEvent evt) {
         evt.getComponent().setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_buttonsMouseEntered
+    }
 
-    private void buttonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_buttonsMouseExited
+    private void buttonsMouseExited(java.awt.event.MouseEvent evt) {
         evt.getComponent().setBackground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_buttonsMouseExited
+    }
 
-    private void autoLogoutTimerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoLogoutTimerComboBoxActionPerformed
-        int index = autoLogoutTimerComboBox.getSelectedIndex(),
-            arrayIndex = Integer.parseInt(autoLogoutTimerComboBox.getName());
-        
-        if(index != oldSettings[arrayIndex]) {
+    private void autoLogoutTimerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+        int index = autoLogoutTimerComboBox.getSelectedIndex(), arrayIndex = Integer.parseInt(autoLogoutTimerComboBox.getName());
+
+        if (index != oldSettings[arrayIndex]) {
             this.newSettings[arrayIndex] = index;
             activateSaveSettingsButton();
         } else {
             this.newSettings[arrayIndex] = -1;
             deactivateSaveSettingsButton();
         }
-    }//GEN-LAST:event_autoLogoutTimerComboBoxActionPerformed
+    }
 
-    private void titleButtonsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_titleButtonsMouseEntered
+    private void titleButtonsMouseEntered(java.awt.event.MouseEvent evt) {
         evt.getComponent().setForeground(Constants.TITLE_BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_titleButtonsMouseEntered
+    }
 
-    private void titleButtonsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_titleButtonsMouseExited
+    private void titleButtonsMouseExited(java.awt.event.MouseEvent evt) {
         evt.getComponent().setForeground(Constants.TITLE_BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_titleButtonsMouseExited
+    }
 
-    private void btnAddNewCardMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewCardMousePressed
+    private void btnAddNewCardMousePressed(java.awt.event.MouseEvent evt) {
         addNewItem(0);
-    }//GEN-LAST:event_btnAddNewCardMousePressed
+    }
 
-    private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddNewNoteMousePressed
+    private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {
         addNewItem(1);
-    }//GEN-LAST:event_btnAddNewNoteMousePressed
+    }
 
-    private void autoLogoutTrackingHandlersMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autoLogoutTrackingHandlersMouseMoved
+    private void autoLogoutTrackingHandlersMouseMoved(java.awt.event.MouseEvent evt) {
         autoLogoutCounter = 0;
-    }//GEN-LAST:event_autoLogoutTrackingHandlersMouseMoved
+    }
 
-    private void btnDeleteAllDataMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteAllDataMousePressed
+    private void btnDeleteAllDataMousePressed(java.awt.event.MouseEvent evt) {
         int confirm = Customization.displayConfirmMessage(
-            "This will delete all your data and logout. The app will act like the first time running.\n" +
-            "Are you sure you want to continue?",
-            "Delete all data"
-        );
-        
-        if(confirm == JOptionPane.YES_OPTION){
+                "This will delete all your data and logout. The app will act like the first time running.\n"
+                        + "Are you sure you want to continue?", "Delete all data");
+
+        if (confirm == JOptionPane.YES_OPTION) {
             SQLScriptFileRunner.runScriptFile("panic");
             logout();
         }
-    }//GEN-LAST:event_btnDeleteAllDataMousePressed
+    }
 
-    private void notesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_notesTableMousePressed
+    private void notesTableMousePressed(java.awt.event.MouseEvent evt) {
         viewItem(1, noteIdentifiers.get(notesTable.getSelectedRow()));
-    }//GEN-LAST:event_notesTableMousePressed
+    }
 
-    private void favoritesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_favoritesTableMousePressed
+    private void favoritesTableMousePressed(java.awt.event.MouseEvent evt) {
         viewItem(0, favoriteIdentifiers.get(favoritesTable.getSelectedRow()));
-    }//GEN-LAST:event_favoritesTableMousePressed
-     
+    }
+
     /**
      * Sends the user to Login frame.
      */
@@ -1242,48 +1215,51 @@ public class Dashboard extends javax.swing.JFrame {
         Login login = new Login();
         login.setState(this.getState());
     }
-    
+
     /**
      * Pops up the correspondent item frame (Add/New mode).
+     *
      * @param index Integer - Specifies the type of item to add.
-     * <br>
-     * 0 - New Card.
-     * <br>
-     * 1 - New Note.
+     *              <br>
+     *              0 - New Card.
+     *              <br>
+     *              1 - New Note.
      */
     private void addNewItem(int index) {
-        if(index == 0){
+        if (index == 0) {
             Card newCard = new Card(this, -1);
             newCard.setVisible(true);
-        } else if(index == 1) {
+        } else if (index == 1) {
             Note newNote = new Note(this, -1);
             newNote.setVisible(true);
         }
     }
-    
-     /**
+
+    /**
      * Pops up the correspondent item frame (View/Change mode).
-     * @param index Integer - Specifies the type of item to view/change.
+     *
+     * @param index      Integer - Specifies the type of item to view/change.
      * @param identifier Integer - Card identifier to match the item data.
-     * <br>
-     * 0 - View/change existing card.
-     * <br>
-     * 1 - View/change existing note.
+     *                   <br>
+     *                   0 - View/change existing card.
+     *                   <br>
+     *                   1 - View/change existing note.
      */
     private void viewItem(int index, int identifier) {
-        if(index == 0){
+        if (index == 0) {
             Card viewCard = new Card(this, identifier);
             viewCard.setVisible(true);
-        } else if(index == 1) {
+        } else if (index == 1) {
             Note viewNote = new Note(this, identifier);
             viewNote.setVisible(true);
         }
     }
-    
+
     /**
      * Adds new styled data to a table model and sends the new row of data to the top.
+     *
      * @param model Table model to add data.
-     * @param data Data to be added.
+     * @param data  Data to be added.
      */
     public void addNewTableRow(DefaultTableModel model, String[] data) {
         StringBuilder sb = new StringBuilder();
@@ -1292,103 +1268,104 @@ public class Dashboard extends javax.swing.JFrame {
         sb.append("</b></font><br><br>");
         sb.append(data[1]).append("</html>");
         String finalData = sb.toString();
-        model.addRow(new Object[]{finalData});
+        model.addRow(new Object[] { finalData });
     }
-    
+
     /**
      * Returns the "All Cards" table model.
+     *
      * @return DefaultTableModel
      */
     public DefaultTableModel getAllCardsTableModel() {
         return customModelAllCards;
     }
-    
+
     /**
      * Returns the "Favorites" table model.
+     *
      * @return DefaultTableModel
      */
     public DefaultTableModel getFavoritesTableModel() {
         return customModelFavorites;
     }
-    
+
     /**
      * Returns the "Notes" table model.
+     *
      * @return DefaultTableModel
      */
     public DefaultTableModel getNotesTableModel() {
         return customModelNotes;
     }
-    
+
     /**
      * Sets the save settings button visible if not visible.
      */
     private void activateSaveSettingsButton() {
-        if(!isSaveSettingsActive){
+        if (!isSaveSettingsActive) {
             btnSaveSettings.setVisible(true);
             isSaveSettingsActive = true;
         }
     }
-    
+
     /**
      * Sets the save settings button not visible.
      * Applies only if visible and all settings have their own default value.
      */
-    private void deactivateSaveSettingsButton(){
-        if(isSaveSettingsActive){
+    private void deactivateSaveSettingsButton() {
+        if (isSaveSettingsActive) {
             int i = 0;
-            
-            for(int value : newSettings)
-                if(value != -1)
+
+            for (int value : newSettings)
+                if (value != -1)
                     i++;
-            
-            if(i == 0){
+
+            if (i == 0) {
                 btnSaveSettings.setVisible(false);
                 isSaveSettingsActive = false;
             }
         }
     }
-    
+
     /**
      * Saves the user's new settings on database.
      * Only saves the settings that were changed.
      * Updates old settings and resets new settings.
      */
-    private void saveUserSettings(){
+    private void saveUserSettings() {
         Connection connection = DatabaseHandler.getConnection();
         PreparedStatement statement;
-        
-        for(int i = 0; i < newSettings.length; i++){
-            if(newSettings[i] != -1){
+
+        for (int i = 0; i < newSettings.length; i++) {
+            if (newSettings[i] != -1) {
                 try {
-                    statement = connection.prepareStatement(
-                        "UPDATE Settings SET " + SETTINGS_COLUMNS[i] + " = ?"
-                    );
+                    statement = connection.prepareStatement("UPDATE Settings SET " + SETTINGS_COLUMNS[i] + " = ?");
                     statement.setInt(1, newSettings[i]);
                     statement.executeUpdate();
                     statement.close();
                     this.oldSettings[i] = newSettings[i];
                     this.newSettings[i] = -1;
-                    if(i == 6)
+                    if (i == 6)
                         updateExpectedAutoLogoutCounter();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
         }
-        
-        try{
-           connection.close(); 
-        } catch(SQLException ex){
+
+        try {
+            connection.close();
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        
+
         deactivateSaveSettingsButton();
     }
-    
+
     /**
      * Resets settings to their old value.
      */
-    private void setOldSettings(){
+    private void setOldSettings() {
         int i = 0;
         lengthSlider.setValue(oldSettings[i++]);
         uppercaseCharacters.setSelected(oldSettings[i++] == 1);
@@ -1399,137 +1376,140 @@ public class Dashboard extends javax.swing.JFrame {
         autoLogoutTimerComboBox.setSelectedIndex(oldSettings[i]);
         updateExpectedAutoLogoutCounter();
     }
-    
+
     /**
      * Confirms the unsaved settings.
      */
-    private void confirmSettings(){
-        int confirmSettings = Customization.displayConfirmMessage(
-                "You have unsaved settings. Do you want to save them now?", "Unsaved Settings!"
-        );
-            
-        if(confirmSettings == JOptionPane.YES_OPTION)
+    private void confirmSettings() {
+        int confirmSettings = Customization
+                .displayConfirmMessage("You have unsaved settings. Do you want to save them now?", "Unsaved Settings!");
+
+        if (confirmSettings == JOptionPane.YES_OPTION)
             saveUserSettings();
         else
             setOldSettings();
 
     }
-    
+
     /**
      * Updates the expected auto logout counter.
      */
-    private void updateExpectedAutoLogoutCounter(){
+    private void updateExpectedAutoLogoutCounter() {
         String autoLogoutComboBoxSelectedItem = autoLogoutTimerComboBox.getSelectedItem().toString().trim();
-        this.expectedAutoLogoutCounter = Integer.parseInt(
-            autoLogoutComboBoxSelectedItem.substring(0, autoLogoutComboBoxSelectedItem.indexOf(" "))
-        ) * 60;
+        this.expectedAutoLogoutCounter =
+                Integer.parseInt(autoLogoutComboBoxSelectedItem.substring(0, autoLogoutComboBoxSelectedItem.indexOf(" "))) * 60;
     }
-    
+
     /**
      * Handles the action event of the password generator settings checkboxes.
+     *
      * @param evt ActionEvent
      */
-    private void passwordGeneratorSettingsCheckBoxActionPerformed(java.awt.event.ActionEvent evt){
+    private void passwordGeneratorSettingsCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
         JCheckBox checkBox = (JCheckBox) evt.getSource();
         int arrayIndex = Integer.parseInt(checkBox.getName());
         boolean isSelected = checkBox.isSelected();
         int numOfActive = 0;
-        
-        for(JCheckBox passwordGeneratorSettingsCheckBox : passwordGeneratorSettingsCheckBoxes){
-            if(passwordGeneratorSettingsCheckBox.isSelected())
+
+        for (JCheckBox passwordGeneratorSettingsCheckBox : passwordGeneratorSettingsCheckBoxes) {
+            if (passwordGeneratorSettingsCheckBox.isSelected())
                 numOfActive++;
         }
-        
-        if(isSelected != (oldSettings[arrayIndex] == 1)) {
+
+        if (isSelected != (oldSettings[arrayIndex] == 1)) {
             this.newSettings[arrayIndex] = (isSelected) ? 1 : 0;
             activateSaveSettingsButton();
         } else {
             this.newSettings[arrayIndex] = -1;
             deactivateSaveSettingsButton();
         }
-        
-        if(numOfActive < 1 && !uppercaseCharacters.isSelected())
+
+        if (numOfActive < 1 && !uppercaseCharacters.isSelected())
             uppercaseCharacters.doClick();
-        else if(numOfActive < 1 && !lowercaseCharacters.isSelected())
+        else if (numOfActive < 1 && !lowercaseCharacters.isSelected())
             lowercaseCharacters.doClick();
     }
-    
+
     /**
      * Handles the mouse entered event of the side panel buttons.
+     *
      * @param evt MouseEvent
      */
     private void sidePanelButtonMouseEntered(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
-        
-        if(!button.getName().equals(activeSidePanelButton.getName()))
+
+        if (!button.getName().equals(activeSidePanelButton.getName()))
             button.setBackground(Constants.SIDE_PANEL_BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
-    
+
     /**
      * Handles the mouse exited event of the side panel buttons.
+     *
      * @param evt MouseEvent
      */
     private void sidePanelButtonMouseExited(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
-        
-        if(!button.getName().equals(activeSidePanelButton.getName()))
+
+        if (!button.getName().equals(activeSidePanelButton.getName()))
             button.setBackground(Constants.SIDE_PANEL_BUTTONS_DEFAULT_COLOR);
     }
-    
+
     /**
      * Handles the mouse pressed event of the side panel buttons.
+     *
      * @param evt MouseEvent
      */
     private void sidePanelButtonMousePressed(java.awt.event.MouseEvent evt) {
         Component button = evt.getComponent();
-        
-        if(!button.getName().equals(activeSidePanelButton.getName()) && !isSaveSettingsActive) {
+
+        if (!button.getName().equals(activeSidePanelButton.getName()) && !isSaveSettingsActive) {
             closeActiveSidePanelButton();
             activateNewSidePanelButton(button);
-        } else if(!button.getName().equals(activeSidePanelButton.getName()) && isSaveSettingsActive) {
+        } else if (!button.getName().equals(activeSidePanelButton.getName()) && isSaveSettingsActive) {
             confirmSettings();
             closeActiveSidePanelButton();
             activateNewSidePanelButton(button);
         }
     }
-    
+
     /**
      * Closes the active side panel button.
      * Removes the respective properties of an active side panel button, based on it's number..
      */
     private void closeActiveSidePanelButton() {
         int activeSidePanelNumber = Integer.valueOf(activeSidePanelButton.getName());
-        
+
         mainPanels[activeSidePanelNumber].setVisible(false);
         sidePanelButtons[activeSidePanelNumber].setBackground(Constants.SIDE_PANEL_BUTTONS_DEFAULT_COLOR);
         sidePanelButtonsMarker[activeSidePanelNumber].setOpaque(false);
-        if(titleButtons[activeSidePanelNumber] != null)
+        if (titleButtons[activeSidePanelNumber] != null)
             titleButtons[activeSidePanelNumber].setVisible(false);
     }
-    
+
     /**
      * Activates a new side panel button.
      * Applies the respective properties of an active side panel button, based on it's number.
+     *
      * @param button Given button (Component) to set as active.
      */
     private void activateNewSidePanelButton(Component button) {
         int buttonNumber = Integer.valueOf(button.getName());
-        
+
         mainTitle.setText(TITLES[buttonNumber]);
         mainPanels[buttonNumber].setVisible(true);
         sidePanelButtons[buttonNumber].setBackground(Constants.SIDE_PANEL_BUTTONS_COLOR_ON_MOUSE_CLICK);
         sidePanelButtonsMarker[buttonNumber].setOpaque(true);
-        if(titleButtons[buttonNumber] != null)
+        if (titleButtons[buttonNumber] != null)
             titleButtons[buttonNumber].setVisible(true);
-        
+
         activeSidePanelButton = button;
     }
-    
+
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -1557,7 +1537,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JLabel accountTitle;
     private javax.swing.JPanel allCardsPanel;
     private javax.swing.JTable allCardsTable;
@@ -1617,5 +1597,5 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel titlePanel;
     private javax.swing.JLabel txtSliderValue;
     private javax.swing.JCheckBox uppercaseCharacters;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }

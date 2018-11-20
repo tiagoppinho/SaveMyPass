@@ -5,6 +5,7 @@ import handlers.PasswordGenerator;
 import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,33 +19,32 @@ import javax.swing.JOptionPane;
  * @author Tiago Pinho
  */
 public class Card extends javax.swing.JFrame {
-    
+
     private Dashboard dashboard = null;
     private int cardIdentifier = -1, index = 0;
     private final Encryptor encryptor = new Encryptor();
-    
-    private ArrayList<String> cardTitles = new ArrayList<>(),
-                              cardUsernames = new ArrayList<>();
-    
-    private final String[] VALUES_COLUMNS = {"title", "username", "password"};
-    
+
+    private ArrayList<String> cardTitles = new ArrayList<>(), cardUsernames = new ArrayList<>();
+
+    private final String[] VALUES_COLUMNS = { "title", "username", "password" };
+
     //View mode only.
     private String[] oldValues = new String[3];
     private String oldCardTitle, oldCardUsername, oldCardPassword;
     private boolean isFavorite = false;
-       
+
     public Card(Dashboard dashboard, int cardIdentifier) {
-        if(dashboard != null){
+        if (dashboard != null) {
             this.dashboard = dashboard;
             dashboard.autoLogoutTimer.stop();
-            
-            if(cardIdentifier == -1){
+
+            if (cardIdentifier == -1) {
                 this.index = 0;
             } else {
                 this.index = 1;
                 this.cardIdentifier = cardIdentifier;
             }
-            
+
             dashboard.setEnabled(false);
             Customization.applyCustomIcons(this);
             initComponents();
@@ -55,9 +55,9 @@ public class Card extends javax.swing.JFrame {
             throw new IllegalArgumentException("Dashboard instance is required.");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Init components">
     private void initComponents() {
 
         headerPanel = new javax.swing.JPanel();
@@ -114,22 +114,16 @@ public class Card extends javax.swing.JFrame {
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        headerPanelLayout.setHorizontalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(headerPanelLayout.createSequentialGroup().addGap(50, 50, 50)
+                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19).addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap()));
+        headerPanelLayout.setVerticalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(
+                        headerPanelLayout.createSequentialGroup().addGap(14, 14, 14)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)));
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 380, 50);
@@ -176,46 +170,40 @@ public class Card extends javax.swing.JFrame {
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtCardTitle)
-                        .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(showHidePassword)
+        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createSequentialGroup().addGap(28, 28, 28).addGroup(
+                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 171,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(txtCardTitle)
+                                        .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 177,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(
+                                mainPanelLayout.createSequentialGroup()
+                                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 256,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(showHidePassword)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(generatePassword))).addContainerGap(28, Short.MAX_VALUE)));
+        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                mainPanelLayout.createSequentialGroup().addGap(22, 22, 22).addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(generatePassword)))
-                .addContainerGap(28, Short.MAX_VALUE))
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtCardTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(txtCardTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(generatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(showHidePassword))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addGroup(
+                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING).addGroup(
+                                mainPanelLayout.createSequentialGroup().addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(generatePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(showHidePassword))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         getContentPane().add(mainPanel);
         mainPanel.setBounds(0, 50, 380, 230);
@@ -237,9 +225,11 @@ public class Card extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMousePressed(evt);
             }
@@ -254,9 +244,11 @@ public class Card extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnDeleteMousePressed(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnDeleteMouseExited(evt);
             }
+
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnDeleteMouseEntered(evt);
             }
@@ -280,13 +272,13 @@ public class Card extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
-    private void showHidePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showHidePasswordMousePressed
-        if(showHidePassword.getName().equals("Show")) {
+    private void showHidePasswordMousePressed(java.awt.event.MouseEvent evt) {
+        if (showHidePassword.getName().equals("Show")) {
             ImageIcon img = new ImageIcon(getClass().getResource("/img/Hide_24px.png"));
             showHidePassword.setIcon(img);
-            txtPassword.setEchoChar((char)0);
+            txtPassword.setEchoChar((char) 0);
             showHidePassword.setName("Hide");
             showHidePassword.setToolTipText("Hide Password");
         } else {
@@ -296,28 +288,28 @@ public class Card extends javax.swing.JFrame {
             showHidePassword.setName("Show");
             showHidePassword.setToolTipText("Show Password");
         }
-    }//GEN-LAST:event_showHidePasswordMousePressed
+    }
 
-    private void btnCancelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCancelMousePressed
+    private void btnCancelMousePressed(java.awt.event.MouseEvent evt) {
         close();
-    }//GEN-LAST:event_btnCancelMousePressed
+    }
 
-    private void btnAddOrSaveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMouseEntered
+    private void btnAddOrSaveMouseEntered(java.awt.event.MouseEvent evt) {
         btnAddOrSave.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnAddOrSaveMouseEntered
+    }
 
-    private void btnAddOrSaveMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMouseExited
+    private void btnAddOrSaveMouseExited(java.awt.event.MouseEvent evt) {
         btnAddOrSave.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnAddOrSaveMouseExited
+    }
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {
         Customization.applyDraggability(headerPanel, this);
-        
-        if(index == 1){
+
+        if (index == 1) {
             this.setTitle("SaveMyPass - View Card");
             title.setText("View Card");
             btnAddOrSave.setText("Save");
-            if(isFavorite){
+            if (isFavorite) {
                 btnFavorite.setIcon(new ImageIcon(getClass().getResource("/img/Star_Filled_27px_gold.png")));
                 showHidePassword.setToolTipText("Remove from favorites");
             }
@@ -325,32 +317,25 @@ public class Card extends javax.swing.JFrame {
             btnFavorite.setVisible(false);
             btnDelete.setVisible(false);
         }
-    }//GEN-LAST:event_formComponentShown
+    }
 
-    private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String cardTitle = txtCardTitle.getText().trim(),
-               filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1),
-               username = txtUsername.getText().trim(),
-               password = String.valueOf(txtPassword.getPassword()).trim();
-        
-        if(cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()){
-            Customization.displayWarningMessage(
-                "Please fill all the card fields.",
-                "Empty field(s)!"
-            );
-        }else if(exists(cardTitle, username)){
-            Customization.displayWarningMessage(
-                "This card already exists. Make sure you're inserting the right values.",
-                "Duplicated card!"
-            );
+    private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {
+        String cardTitle = txtCardTitle.getText().trim(), filteredTitle =
+                cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1), username = txtUsername.getText().trim(),
+                password = String.valueOf(txtPassword.getPassword()).trim();
+
+        if (cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()) {
+            Customization.displayWarningMessage("Please fill all the card fields.", "Empty field(s)!");
+        } else if (exists(cardTitle, username)) {
+            Customization.displayWarningMessage("This card already exists. Make sure you're inserting the right values.",
+                    "Duplicated card!");
         } else {
-            if(index == 0){
+            if (index == 0) {
                 Connection connection = DatabaseHandler.getConnection();
 
-                try{
-                    PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO Cards (title, username, password, favorite) VALUES (?, ?, ?, ?)"
-                    );
+                try {
+                    PreparedStatement statement = connection
+                            .prepareStatement("INSERT INTO Cards (title, username, password, favorite) VALUES (?, ?, ?, ?)");
                     statement.setString(1, encryptor.encrypt(filteredTitle));
                     statement.setString(2, encryptor.encrypt(username));
                     statement.setString(3, encryptor.encrypt(password));
@@ -358,20 +343,19 @@ public class Card extends javax.swing.JFrame {
                     statement.executeUpdate();
                     statement.close();
                     connection.close();
-                } catch(SQLException ex) {
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             } else {
-                String[] values = {filteredTitle, username, password};
+                String[] values = { filteredTitle, username, password };
                 Connection connection = DatabaseHandler.getConnection();
                 PreparedStatement statement;
-                
-                for(int i = 0; i < values.length; i++){
-                    if(!values[i].equals(oldValues[i])){
+
+                for (int i = 0; i < values.length; i++) {
+                    if (!values[i].equals(oldValues[i])) {
                         try {
-                            statement = connection.prepareStatement(
-                                "UPDATE Cards SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?"
-                            );
+                            statement =
+                                    connection.prepareStatement("UPDATE Cards SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?");
                             statement.setString(1, encryptor.encrypt(values[i]));
                             statement.setInt(2, cardIdentifier);
                             statement.executeUpdate();
@@ -381,25 +365,25 @@ public class Card extends javax.swing.JFrame {
                         }
                     }
                 }
-                
-                try{
+
+                try {
                     connection.close();
-                } catch(SQLException ex){
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
             dashboard.loadCards();
             close();
         }
-    }//GEN-LAST:event_btnAddOrSaveMousePressed
+    }
 
-    private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_generatePasswordMousePressed
+    private void generatePasswordMousePressed(java.awt.event.MouseEvent evt) {
         String generatedPassword = new PasswordGenerator().generateRandomSecurePassword();
         txtPassword.setText(generatedPassword);
-    }//GEN-LAST:event_generatePasswordMousePressed
+    }
 
-    private void btnFavoriteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFavoriteMousePressed
-        if(!isFavorite){
+    private void btnFavoriteMousePressed(java.awt.event.MouseEvent evt) {
+        if (!isFavorite) {
             btnFavorite.setIcon(new ImageIcon(getClass().getResource("/img/Star_Filled_27px_gold.png")));
             showHidePassword.setToolTipText("Remove from favorites");
             isFavorite = true;
@@ -408,149 +392,138 @@ public class Card extends javax.swing.JFrame {
             showHidePassword.setToolTipText("Add to favorites");
             isFavorite = false;
         }
-        
+
         Connection connection = DatabaseHandler.getConnection();
-        try{
-            PreparedStatement statement = connection.prepareStatement(
-                "UPDATE Cards SET favorite = ? WHERE ID = ?"
-            );
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE Cards SET favorite = ? WHERE ID = ?");
             statement.setInt(1, (isFavorite) ? 1 : 0);
             statement.setInt(2, cardIdentifier);
             statement.executeUpdate();
             statement.close();
             connection.close();
-        } catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
         dashboard.loadCards();
-    }//GEN-LAST:event_btnFavoriteMousePressed
+    }
 
-    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
-        int confirm = Customization.displayConfirmMessage(
-            "Are you sure you want to delete this card?",
-            "Delete card"
-        );
-        
-        if(confirm == JOptionPane.YES_OPTION){
+    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {
+        int confirm = Customization.displayConfirmMessage("Are you sure you want to delete this card?", "Delete card");
+
+        if (confirm == JOptionPane.YES_OPTION) {
             Connection connection = DatabaseHandler.getConnection();
-            try{
-                PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM Cards WHERE ID = ?"
-                );
+            try {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM Cards WHERE ID = ?");
                 statement.setInt(1, cardIdentifier);
                 statement.executeUpdate();
                 statement.close();
                 connection.close();
-            } catch(SQLException ex){
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             dashboard.loadCards();
             close();
         }
-    }//GEN-LAST:event_btnDeleteMousePressed
+    }
 
-    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseEntered
+    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {
         btnDelete.setIcon(new ImageIcon(getClass().getResource("/img/Waste_Filled_25px.png")));
-    }//GEN-LAST:event_btnDeleteMouseEntered
+    }
 
-    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseExited
+    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {
         btnDelete.setIcon(new ImageIcon(getClass().getResource("/img/Waste_25px.png")));
-    }//GEN-LAST:event_btnDeleteMouseExited
+    }
 
     /**
      * Closes this frame and enables dashboard.
      */
-    private void close(){
+    private void close() {
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
         dashboard.autoLogoutTimer.start();
     }
-    
+
     /**
      * Checks if card already exist based on it's title and username.
      * Helps preventing duplicated cards.
      */
-    private boolean exists(String title, String username){
+    private boolean exists(String title, String username) {
         boolean titleExists = false, usernameExists = false;
-        
-        for (String cardTitle : cardTitles){
-            if(cardTitle.equals(title)){
+
+        for (String cardTitle : cardTitles) {
+            if (cardTitle.equals(title)) {
                 titleExists = true;
                 break;
             }
         }
-    
-        for(String cardUsername : cardUsernames){
-            if(cardUsername.equals(username)){
+
+        for (String cardUsername : cardUsernames) {
+            if (cardUsername.equals(username)) {
                 usernameExists = true;
                 break;
             }
         }
-        
+
         return titleExists && usernameExists;
     }
-    
+
     /**
      * Loads all the needed data to compare with new values.
      */
-    private void load(){
+    private void load() {
         Connection connection = DatabaseHandler.getConnection();
-        
-        try{
-            if(index == 0){
+
+        try {
+            if (index == 0) {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT title, username FROM Cards");
-                
-                while(resultSet.next()){
+
+                while (resultSet.next()) {
                     cardTitles.add(encryptor.decrypt(resultSet.getString("title")));
                     cardUsernames.add(encryptor.decrypt(resultSet.getString("username")));
                 }
-                
+
                 resultSet.close();
                 statement.close();
             } else {
-                PreparedStatement statement = connection.prepareStatement(
-                    "SELECT title, username FROM Cards WHERE ID <> ?"
-                );
+                PreparedStatement statement = connection.prepareStatement("SELECT title, username FROM Cards WHERE ID <> ?");
                 statement.setInt(1, cardIdentifier);
-                
+
                 ResultSet resultSet = statement.executeQuery();
-                
-                while(resultSet.next()){
+
+                while (resultSet.next()) {
                     cardTitles.add(encryptor.decrypt(resultSet.getString("title")));
                     cardUsernames.add(encryptor.decrypt(resultSet.getString("username")));
                 }
-                
+
                 resultSet.close();
                 statement.close();
-                
-                statement = connection.prepareStatement(
-                    "SELECT title, username, password, favorite FROM Cards WHERE ID = ?"
-                );
+
+                statement = connection.prepareStatement("SELECT title, username, password, favorite FROM Cards WHERE ID = ?");
                 statement.setInt(1, cardIdentifier);
-                
+
                 resultSet = statement.executeQuery();
-                
-                for(int i = 0; i < oldValues.length; i++)
+
+                for (int i = 0; i < oldValues.length; i++)
                     oldValues[i] = encryptor.decrypt(resultSet.getString(VALUES_COLUMNS[i]));
-                                
+
                 this.isFavorite = resultSet.getBoolean("favorite");
-                
+
                 txtCardTitle.setText(oldValues[0]);
                 txtUsername.setText(oldValues[1]);
                 txtPassword.setText(oldValues[2]);
-                
+
                 resultSet.close();
                 statement.close();
             }
-            
+
             connection.close();
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }    
-    
+    }
+
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -571,12 +544,9 @@ public class Card extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Card.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JLabel btnAddOrSave;
     private javax.swing.JLabel btnCancel;
     private javax.swing.JLabel btnDelete;
@@ -593,5 +563,5 @@ public class Card extends javax.swing.JFrame {
     private javax.swing.JTextField txtCardTitle;
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }

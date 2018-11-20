@@ -4,6 +4,7 @@ import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,24 +14,24 @@ import java.sql.Statement;
  * @author Tiago Pinho
  */
 public class ForgotPin extends javax.swing.JFrame {
-    
+
     private String firstAnswer = null, secondAnswer = null;
-    
+
     public ForgotPin() {
         Customization.applyCustomIcons(this);
         initComponents();
         load();
     }
-    
+
     /**
      * Loads all the needed from database.
      */
-    private void load(){
+    private void load() {
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT firstSecurity, firstAnswer, "
-                                                         + "secondSecurity, secondAnswer FROM User");
+            ResultSet resultSet =
+                    statement.executeQuery("SELECT firstSecurity, firstAnswer, " + "secondSecurity, secondAnswer FROM User");
             resultSet.next();
             txtFirstSecurityQuestion.setText(resultSet.getString("firstSecurity"));
             this.firstAnswer = resultSet.getString("firstAnswer");
@@ -39,13 +40,13 @@ public class ForgotPin extends javax.swing.JFrame {
             resultSet.close();
             statement.close();
             connection.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Init components">
     private void initComponents() {
 
         headerPanel = new javax.swing.JPanel();
@@ -105,41 +106,28 @@ public class ForgotPin extends javax.swing.JFrame {
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
-                        .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19))
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(headerPanelLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel1)
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel2))))
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
+        headerPanelLayout.setHorizontalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup().addGap(28, 28, 28)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8).addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(headerPanelLayout.createSequentialGroup().addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                                        .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(19, 19, 19)).addGroup(
+                                        headerPanelLayout.createSequentialGroup().addGap(21, 21, 21).addComponent(jLabel2)
+                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))));
+        headerPanelLayout.setVerticalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(headerPanelLayout.createSequentialGroup().addGroup(
+                        headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(29, 29, 29).addGroup(
+                                        headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 48,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(
+                                                headerPanelLayout.createSequentialGroup().addGap(2, 2, 2).addComponent(jLabel1)
+                                                        .addGap(2, 2, 2).addComponent(jLabel2)))).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(19, 19, 19)
+                                        .addComponent(close, javax.swing.GroupLayout.PREFERRED_SIZE, 24,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))).addContainerGap(43, Short.MAX_VALUE)));
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 380, 120);
@@ -182,9 +170,11 @@ public class ForgotPin extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnNextMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnNextMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnNextMousePressed(evt);
             }
@@ -202,9 +192,11 @@ public class ForgotPin extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 gotoLoginMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 gotoLoginMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 gotoLoginMousePressed(evt);
             }
@@ -213,117 +205,122 @@ public class ForgotPin extends javax.swing.JFrame {
         javax.swing.GroupLayout securityQuestionsPanelLayout = new javax.swing.GroupLayout(securityQuestionsPanel);
         securityQuestionsPanel.setLayout(securityQuestionsPanelLayout);
         securityQuestionsPanelLayout.setHorizontalGroup(
-            securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                .addGroup(securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addGroup(securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, securityQuestionsPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(96, 96, 96))
-                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtSecurityAnswer2)
-                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtSecurityAnswer1)
-                                .addComponent(txtSecondSecurityQuestion)
-                                .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(gotoLogin)))
-                .addContainerGap(62, Short.MAX_VALUE))
-        );
+                securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                        securityQuestionsPanelLayout.createSequentialGroup().addGroup(
+                                securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(securityQuestionsPanelLayout.createSequentialGroup().addGap(60, 60, 60)
+                                                .addGroup(securityQuestionsPanelLayout
+                                                        .createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                securityQuestionsPanelLayout.createSequentialGroup()
+                                                                        .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                                101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(btnNext,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(96, 96, 96))
+                                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 172,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(
+                                                                securityQuestionsPanelLayout.createParallelGroup(
+                                                                        javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(jLabel15,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 172,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(txtSecurityAnswer2).addComponent(jLabel12,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE, 172,
+                                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(jLabel13,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 172,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(txtSecurityAnswer1)
+                                                                        .addComponent(txtSecondSecurityQuestion)
+                                                                        .addComponent(txtFirstSecurityQuestion,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE, 258,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(securityQuestionsPanelLayout.createSequentialGroup().addGap(21, 21, 21)
+                                                .addComponent(gotoLogin))).addContainerGap(62, Short.MAX_VALUE)));
         securityQuestionsPanelLayout.setVerticalGroup(
-            securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(securityQuestionsPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel13)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSecurityAnswer1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel16)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSecondSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSecurityAnswer2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(gotoLogin)
-                .addContainerGap(17, Short.MAX_VALUE))
-        );
+                securityQuestionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                        securityQuestionsPanelLayout.createSequentialGroup().addGap(28, 28, 28).addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFirstSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel13)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSecurityAnswer1, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18).addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSecondSecurityQuestion, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSecurityAnswer2, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18).addComponent(gotoLogin).addContainerGap(17, Short.MAX_VALUE)));
 
         getContentPane().add(securityQuestionsPanel);
         securityQuestionsPanel.setBounds(0, 120, 380, 320);
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(gotoLogin);
-    }//GEN-LAST:event_formComponentShown
+    }
 
-    private void btnNextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMouseEntered
+    private void btnNextMouseEntered(java.awt.event.MouseEvent evt) {
         btnNext.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_btnNextMouseEntered
+    }
 
-    private void btnNextMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMouseExited
+    private void btnNextMouseExited(java.awt.event.MouseEvent evt) {
         btnNext.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_btnNextMouseExited
+    }
 
-    private void closeMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeMousePressed
+    private void closeMousePressed(java.awt.event.MouseEvent evt) {
         System.exit(0);
-    }//GEN-LAST:event_closeMousePressed
+    }
 
-    private void btnNextMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextMousePressed
-        String firstSecurityAnswer = txtSecurityAnswer1.getText().trim(),
-               secondSecurityAnswer = txtSecurityAnswer2.getText().trim(),
-               hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
-               hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
-        
-        if(firstSecurityAnswer.length() == 0 || secondSecurityAnswer.length() == 0) {
+    private void btnNextMousePressed(java.awt.event.MouseEvent evt) {
+        String firstSecurityAnswer = txtSecurityAnswer1.getText().trim(), secondSecurityAnswer =
+                txtSecurityAnswer2.getText().trim(), hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
+                hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
+
+        if (firstSecurityAnswer.length() == 0 || secondSecurityAnswer.length() == 0) {
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
-        }else if(!hashedFirstSecurityAnswer.equals(firstAnswer) || !hashedSecondSecurityAnswer.equals(secondAnswer)){
+        } else if (!hashedFirstSecurityAnswer.equals(firstAnswer) || !hashedSecondSecurityAnswer.equals(secondAnswer)) {
             Customization.displayWarningMessage("Check your answer(s). They are not correct.", "Invalid answer(s)!");
         } else {
             NewPin forgotNewPIN = new NewPin(0);
             forgotNewPIN.setVisible(true);
             this.dispose();
         }
-    }//GEN-LAST:event_btnNextMousePressed
+    }
 
-    private void gotoLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMousePressed
+    private void gotoLoginMousePressed(java.awt.event.MouseEvent evt) {
         Login login = new Login();
         login.setVisible(true);
         this.dispose();
-    }//GEN-LAST:event_gotoLoginMousePressed
+    }
 
-    private void gotoLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseEntered
+    private void gotoLoginMouseEntered(java.awt.event.MouseEvent evt) {
         gotoLogin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
-    }//GEN-LAST:event_gotoLoginMouseEntered
+    }
 
-    private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gotoLoginMouseExited
+    private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {
         gotoLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
-    }//GEN-LAST:event_gotoLoginMouseExited
-    
+    }
+
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -341,10 +338,9 @@ public class ForgotPin extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify
     private javax.swing.JLabel btnNext;
     private javax.swing.JLabel close;
     private javax.swing.JLabel gotoLogin;
@@ -361,5 +357,5 @@ public class ForgotPin extends javax.swing.JFrame {
     private javax.swing.JTextField txtSecondSecurityQuestion;
     private javax.swing.JTextField txtSecurityAnswer1;
     private javax.swing.JTextField txtSecurityAnswer2;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration
 }
