@@ -13,11 +13,11 @@ import java.util.Random;
  */
 public class PasswordGenerator {
 
-    //Characters
+    // Characters
     private final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ", LOWERCASE = "abcdefghijklmnopqrstuvwxyz", NUMBERS =
             "0123456789", SPECIAL_CHARACTERS = "#$%&/!=.,[]{}-+*;<>()@:_?^~\\\'\"";
 
-    //Settings
+    // Settings
     private int length;
     private boolean uppercase, lowercase, numbers, specialCharacters;
 
@@ -67,6 +67,7 @@ public class PasswordGenerator {
     private void loadSettings() {
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(
                     "SELECT passwordLength, passwordUppercase," + " passwordLowercase, passwordNumbers, "

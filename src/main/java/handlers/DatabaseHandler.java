@@ -48,6 +48,7 @@ public class DatabaseHandler {
         Connection connection = DatabaseHandler.getConnection();
         int tableCount = 0;
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(
                     "SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';");

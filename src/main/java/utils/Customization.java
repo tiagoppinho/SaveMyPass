@@ -18,7 +18,7 @@ import javax.swing.JPanel;
  */
 public class Customization {
     
-    //Variables to handle the draggability of the window.
+    // Variables to handle the draggability of the window.
     private static int xx = 0, xy = 0;
     
     /**

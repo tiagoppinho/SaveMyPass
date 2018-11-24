@@ -3,6 +3,7 @@ package app;
 import crypto.Encryptor;
 import handlers.DatabaseHandler;
 
+import java.awt.Font;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,17 +21,32 @@ import utils.Customization;
  */
 public class Note extends javax.swing.JFrame {
 
-    private Dashboard dashboard = null;
-    private int noteIdentifier = -1, index = 0;
     private final Encryptor encryptor = new Encryptor();
-
-    private ArrayList<String> noteTitles = new ArrayList<>();
 
     private final String[] VALUES_COLUMNS = { "title", "description" };
 
-    //View mode only.
+    private Dashboard dashboard;
+    private int noteIdentifier = -1, index;
+    private ArrayList<String> noteTitles = new ArrayList<>();
+
+    // View mode only.
     private String[] oldValues = new String[2];
-    private String oldNoteTitle, oldNoteDescription;
+
+    // Components variables declaration - do not modify
+    // DO NOT convert any of the components variables to a local variable or field.
+    private javax.swing.JLabel btnAddOrSave;
+    private javax.swing.JLabel btnCancel;
+    private javax.swing.JLabel btnDelete;
+    private javax.swing.JPanel footerPanel;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel title;
+    private javax.swing.JTextArea txtNoteDescription;
+    private javax.swing.JTextField txtNoteTitle;
+    // End of components variables declaration
 
     public Note(Dashboard dashboard, int noteIdentifier) {
         if (dashboard != null) {
@@ -78,21 +94,21 @@ public class Note extends javax.swing.JFrame {
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
+                formComponentShown();
             }
         });
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
 
-        title.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        title.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
         title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         title.setText("New Note");
 
-        btnCancel.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        btnCancel.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png"))); // NOI18N
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png")));
         btnCancel.setToolTipText("Close/Cancel");
         btnCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnCancel.setMaximumSize(new java.awt.Dimension(61, 37));
@@ -100,7 +116,7 @@ public class Note extends javax.swing.JFrame {
         btnCancel.setPreferredSize(new java.awt.Dimension(61, 37));
         btnCancel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnCancelMousePressed(evt);
+                btnCancelMousePressed();
             }
         });
 
@@ -118,20 +134,20 @@ public class Note extends javax.swing.JFrame {
                                         javax.swing.GroupLayout.PREFERRED_SIZE)));
 
         mainPanel.setBackground(new java.awt.Color(250, 250, 250));
-        mainPanel.setName(""); // NOI18N
+        mainPanel.setName("");
 
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         jLabel5.setForeground(new java.awt.Color(51, 128, 255));
         jLabel5.setText("Note Title");
 
-        txtNoteTitle.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        txtNoteTitle.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
 
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         jLabel6.setForeground(new java.awt.Color(51, 128, 255));
         jLabel6.setText("Description");
 
         txtNoteDescription.setColumns(20);
-        txtNoteDescription.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        txtNoteDescription.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         txtNoteDescription.setLineWrap(true);
         txtNoteDescription.setRows(5);
         txtNoteDescription.setTabSize(0);
@@ -163,7 +179,7 @@ public class Note extends javax.swing.JFrame {
         footerPanel.setLayout(null);
 
         btnAddOrSave.setBackground(new java.awt.Color(51, 153, 255));
-        btnAddOrSave.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        btnAddOrSave.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         btnAddOrSave.setForeground(new java.awt.Color(255, 255, 255));
         btnAddOrSave.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnAddOrSave.setText("Add");
@@ -174,34 +190,34 @@ public class Note extends javax.swing.JFrame {
         btnAddOrSave.setPreferredSize(new java.awt.Dimension(61, 37));
         btnAddOrSave.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnAddOrSaveMouseEntered(evt);
+                btnAddOrSaveMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnAddOrSaveMouseExited(evt);
+                btnAddOrSaveMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnAddOrSaveMousePressed(evt);
+                btnAddOrSaveMousePressed();
             }
         });
         footerPanel.add(btnAddOrSave);
         btnAddOrSave.setBounds(133, 11, 108, 31);
 
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Waste_25px.png"))); // NOI18N
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Waste_25px.png")));
         btnDelete.setToolTipText("Delete card");
         btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnDeleteMouseEntered(evt);
+                btnDeleteMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnDeleteMouseExited(evt);
+                btnDeleteMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteMousePressed(evt);
+                btnDeleteMousePressed();
             }
         });
         footerPanel.add(btnDelete);
@@ -238,24 +254,24 @@ public class Note extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>
 
-    private void btnCancelMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnCancelMousePressed() {
         close();
     }
 
-    private void btnAddOrSaveMouseEntered(java.awt.event.MouseEvent evt) {
+    private void btnAddOrSaveMouseEntered() {
         btnAddOrSave.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void btnAddOrSaveMouseExited(java.awt.event.MouseEvent evt) {
+    private void btnAddOrSaveMouseExited() {
         btnAddOrSave.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
-    private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnAddOrSaveMousePressed() {
         String noteTitle = txtNoteTitle.getText().trim(), filteredTitle =
                 noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1), description =
                 txtNoteDescription.getText().trim();
 
-        if (noteTitle.isEmpty() || description.isEmpty()) {
+        if (description.isEmpty()) {
             Customization.displayWarningMessage("Please fill all the note fields.", "Empty field(s)!");
         } else if (exists(noteTitle)) {
             Customization.displayWarningMessage("This note already exists. Make sure you're inserting the right values.",
@@ -265,6 +281,7 @@ public class Note extends javax.swing.JFrame {
                 Connection connection = DatabaseHandler.getConnection();
 
                 try {
+                    assert connection != null;
                     PreparedStatement statement =
                             connection.prepareStatement("INSERT INTO Notes (title, description) VALUES (?, ?)");
                     statement.setString(1, encryptor.encrypt(filteredTitle));
@@ -283,6 +300,7 @@ public class Note extends javax.swing.JFrame {
                 for (int i = 0; i < values.length; i++) {
                     if (!values[i].equals(oldValues[i])) {
                         try {
+                            assert connection != null;
                             statement =
                                     connection.prepareStatement("UPDATE Notes SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?");
                             statement.setString(1, encryptor.encrypt(values[i]));
@@ -296,6 +314,7 @@ public class Note extends javax.swing.JFrame {
                 }
 
                 try {
+                    assert connection != null;
                     connection.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -306,7 +325,7 @@ public class Note extends javax.swing.JFrame {
         }
     }
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {
+    private void formComponentShown() {
         Customization.applyDraggability(headerPanel, this);
 
         if (index == 1) {
@@ -318,20 +337,21 @@ public class Note extends javax.swing.JFrame {
         }
     }
 
-    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {
+    private void btnDeleteMouseEntered() {
         btnDelete.setIcon(new ImageIcon(getClass().getResource("/img/Waste_Filled_25px.png")));
     }
 
-    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {
+    private void btnDeleteMouseExited() {
         btnDelete.setIcon(new ImageIcon(getClass().getResource("/img/Waste_25px.png")));
     }
 
-    private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnDeleteMousePressed() {
         int confirm = Customization.displayConfirmMessage("Are you sure you want to delete this note?", "Delete note");
 
         if (confirm == JOptionPane.YES_OPTION) {
             Connection connection = DatabaseHandler.getConnection();
             try {
+                assert connection != null;
                 PreparedStatement statement = connection.prepareStatement("DELETE FROM Notes WHERE ID = ?");
                 statement.setInt(1, noteIdentifier);
                 statement.executeUpdate();
@@ -380,6 +400,7 @@ public class Note extends javax.swing.JFrame {
 
         try {
             if (index == 0) {
+                assert connection != null;
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT title FROM Notes");
 
@@ -390,6 +411,7 @@ public class Note extends javax.swing.JFrame {
                 resultSet.close();
                 statement.close();
             } else {
+                assert connection != null;
                 PreparedStatement statement = connection.prepareStatement("SELECT title FROM Notes WHERE ID <> ?");
                 statement.setInt(1, noteIdentifier);
 
@@ -425,7 +447,7 @@ public class Note extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the theme look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -433,30 +455,10 @@ public class Note extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Note.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Note.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Note.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Note.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JLabel btnAddOrSave;
-    private javax.swing.JLabel btnCancel;
-    private javax.swing.JLabel btnDelete;
-    private javax.swing.JPanel footerPanel;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JLabel title;
-    private javax.swing.JTextArea txtNoteDescription;
-    private javax.swing.JTextField txtNoteTitle;
-    // End of variables declaration
 }

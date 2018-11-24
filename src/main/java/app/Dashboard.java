@@ -8,6 +8,7 @@ import utils.Constants;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +30,7 @@ import sql.SQLScriptFileRunner;
 public class Dashboard extends javax.swing.JFrame {
 
     private final String[] TITLES = new String[] { "All cards", "Favorites", "Notes", "Settings" };
-    private JLabel[] titleButtons = new JLabel[4];
+    private JLabel[] titleButtons;
 
     private Encryptor encryptor = new Encryptor();
 
@@ -37,50 +38,113 @@ public class Dashboard extends javax.swing.JFrame {
             new ArrayList<>();
 
     /* -------------------- Side Panel ---------------------- */
-    private Component sidePanelButtons[] = new JPanel[4], activeSidePanelButton;
-    private JLabel[] sidePanelButtonsMarker = new JLabel[4];
+    private Component sidePanelButtons[], activeSidePanelButton;
+    private JLabel[] sidePanelButtonsMarker;
     /* ------------------------------------------------------ */
 
     /* -------------------- Main Panels --------------------- */
-    private JPanel[] mainPanels = new JPanel[4];
+    private JPanel[] mainPanels;
     /* ------------------------------------------------------ */
 
     /* -------------------- Auto Logout --------------------- */
-    public final Timer autoLogoutTimer;
-    //Represents the number of seconds without activity.
-    private int autoLogoutCounter = 0, //Number of seconds defined by the user.
-            expectedAutoLogoutCounter;
+    final Timer autoLogoutTimer;
+    // Represents the number of seconds without activity.
+    private int autoLogoutCounter = 0,
+            expectedAutoLogoutCounter; // Number of seconds defined by the user.
     /* ------------------------------------------------------ */
 
     /* -------------------------------- Settings ----------------------------------- */
     private final String[] SETTINGS_COLUMNS =
             { "passwordLength", "passwordUppercase", "passwordLowercase", "passwordNumbers", "passwordSpecialCharacters",
                     "autoLogoutEnabled", "autoLogoutTimerIndex" };
-    private JCheckBox[] passwordGeneratorSettingsCheckBoxes = new JCheckBox[4];
-    private int[] oldSettings = new int[7], newSettings = new int[7];
+    private JCheckBox[] passwordGeneratorSettingsCheckBoxes;
+    private int[] oldSettings = new int[7], newSettings;
     private boolean isSaveSettingsActive = false;
     /* ----------------------------------------------------------------------------- */
 
-    //All cards table model.
+    // All cards table model.
     private final DefaultTableModel customModelAllCards = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
 
-    //Favorites table model.
+    // Favorites table model.
     private final DefaultTableModel customModelFavorites = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
 
-    //Notes table model.
+    // Notes table model.
     private final DefaultTableModel customModelNotes = new DefaultTableModel() {
         public Class getColumnClass(int columnIndex) {
             return String.class;
         }
     };
+
+    // Components variables declaration - do not modify
+    // DO NOT convert any of the components variables to a local variable or field.
+    private javax.swing.JLabel accountTitle;
+    private javax.swing.JPanel allCardsPanel;
+    private javax.swing.JTable allCardsTable;
+    private javax.swing.JLabel autoLogOffTitle;
+    private javax.swing.JCheckBox autoLogoutEnabled;
+    private javax.swing.JComboBox<String> autoLogoutTimerComboBox;
+    private javax.swing.JLabel btnAddNewCard;
+    private javax.swing.JLabel btnAddNewNote;
+    private javax.swing.JPanel btnAllCards;
+    private javax.swing.JLabel btnAllCardsMarker;
+    private javax.swing.JLabel btnChangeMasterPin;
+    private javax.swing.JLabel btnClose;
+    private javax.swing.JLabel btnDeleteAllData;
+    private javax.swing.JPanel btnFavourites;
+    private javax.swing.JLabel btnFavouritesMarker;
+    private javax.swing.JLabel btnLogout;
+    private javax.swing.JLabel btnMinimize;
+    private javax.swing.JPanel btnNotes;
+    private javax.swing.JLabel btnNotesMarker;
+    private javax.swing.JLabel btnSaveSettings;
+    private javax.swing.JPanel btnSettings;
+    private javax.swing.JLabel btnSettingsMarker;
+    private javax.swing.JTable favoritesTable;
+    private javax.swing.JPanel favouritesPanel;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel29;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSlider lengthSlider;
+    private javax.swing.JCheckBox lowercaseCharacters;
+    private javax.swing.JLabel mainTitle;
+    private javax.swing.JPanel notesPanel;
+    private javax.swing.JTable notesTable;
+    private javax.swing.JCheckBox numberCharacters;
+    private javax.swing.JLabel passwordGeneratorTitle;
+    private javax.swing.JScrollPane scrollPaneAllCardsTable;
+    private javax.swing.JScrollPane scrollPaneFavoritesTable;
+    private javax.swing.JScrollPane scrollPaneNotesTable;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JPanel sidePanel;
+    private javax.swing.JCheckBox specialCharacters;
+    private javax.swing.JPanel titlePanel;
+    private javax.swing.JLabel txtSliderValue;
+    private javax.swing.JCheckBox uppercaseCharacters;
+    // End of components variables declaration
 
     public Dashboard() {
         Customization.applyCustomIcons(this);
@@ -125,6 +189,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Settings");
             resultSet.next();
@@ -144,7 +209,7 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Loads and updates cards related data.
      */
-    public void loadCards() {
+    void loadCards() {
         this.cardIdentifiers.clear();
         this.favoriteIdentifiers.clear();
         customModelAllCards.setRowCount(0);
@@ -152,6 +217,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT ID, title, username, favorite FROM Cards ORDER BY ID DESC");
 
@@ -182,12 +248,13 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Loads and updates notes related data.
      */
-    public void loadNotes() {
+    void loadNotes() {
         this.noteIdentifiers.clear();
         customModelNotes.setRowCount(0);
 
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Notes ORDER BY ID DESC");
             String title, description;
@@ -297,12 +364,12 @@ public class Dashboard extends javax.swing.JFrame {
         setResizable(false);
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
+                formComponentShown();
             }
         });
         getContentPane().setLayout(null);
@@ -310,17 +377,17 @@ public class Dashboard extends javax.swing.JFrame {
         headerPanel.setBackground(new java.awt.Color(255, 255, 255));
         headerPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         headerPanel.setLayout(null);
 
-        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Logout Rounded Left_24px.png"))); // NOI18N
+        btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Logout Rounded Left_24px.png")));
         btnLogout.setToolTipText("Logout");
         btnLogout.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLogout.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnLogoutMousePressed(evt);
+                btnLogoutMousePressed();
             }
         });
         headerPanel.add(btnLogout);
@@ -331,23 +398,23 @@ public class Dashboard extends javax.swing.JFrame {
         headerPanel.add(jPanel1);
         jPanel1.setBounds(0, 0, 240, 40);
 
-        btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px.png"))); // NOI18N
+        btnClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px.png")));
         btnClose.setToolTipText("Close");
         btnClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnCloseMousePressed(evt);
+                btnCloseMousePressed();
             }
         });
         headerPanel.add(btnClose);
         btnClose.setBounds(870, 10, 24, 24);
 
-        btnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Minus_24px.png"))); // NOI18N
+        btnMinimize.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Minus_24px.png")));
         btnMinimize.setToolTipText("Minimize");
         btnMinimize.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMinimize.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnMinimizeMousePressed(evt);
+                btnMinimizeMousePressed();
             }
         });
         headerPanel.add(btnMinimize);
@@ -359,24 +426,24 @@ public class Dashboard extends javax.swing.JFrame {
         sidePanel.setBackground(new java.awt.Color(0, 39, 255));
         sidePanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         sidePanel.setLayout(null);
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png")));
         sidePanel.add(jLabel3);
         jLabel3.setBounds(20, 20, 48, 48);
 
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", Font.BOLD, 22));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("SaveMyPass");
         sidePanel.add(jLabel2);
         jLabel2.setBounds(70, 20, 153, 27);
 
-        jLabel8.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Password Manager");
         sidePanel.add(jLabel8);
@@ -384,16 +451,16 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnAllCards.setBackground(new java.awt.Color(51, 144, 255));
         btnAllCards.setMinimumSize(new java.awt.Dimension(240, 68));
-        btnAllCards.setName("0"); // NOI18N
+        btnAllCards.setName("0");
 
-        jLabel21.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel21.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
         jLabel21.setForeground(new java.awt.Color(255, 255, 255));
         jLabel21.setText("All cards");
 
-        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Grid_30px.png"))); // NOI18N
+        jLabel22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Data Grid_30px.png")));
 
         btnAllCardsMarker.setBackground(new java.awt.Color(255, 255, 255));
-        btnAllCardsMarker.setName("btnAllCardsMarker"); // NOI18N
+        btnAllCardsMarker.setName("btnAllCardsMarker");
         btnAllCardsMarker.setOpaque(true);
 
         javax.swing.GroupLayout btnAllCardsLayout = new javax.swing.GroupLayout(btnAllCards);
@@ -423,16 +490,16 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnFavourites.setBackground(new java.awt.Color(0, 39, 255));
         btnFavourites.setMinimumSize(new java.awt.Dimension(240, 68));
-        btnFavourites.setName("1"); // NOI18N
+        btnFavourites.setName("1");
 
-        jLabel23.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel23.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
         jLabel23.setForeground(new java.awt.Color(255, 255, 255));
         jLabel23.setText("Favorites");
 
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Star Filled_30px.png"))); // NOI18N
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Star Filled_30px.png")));
 
         btnFavouritesMarker.setBackground(new java.awt.Color(255, 255, 255));
-        btnFavouritesMarker.setName("btnFavouritesMarker"); // NOI18N
+        btnFavouritesMarker.setName("btnFavouritesMarker");
 
         javax.swing.GroupLayout btnFavouritesLayout = new javax.swing.GroupLayout(btnFavourites);
         btnFavourites.setLayout(btnFavouritesLayout);
@@ -461,16 +528,16 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnNotes.setBackground(new java.awt.Color(0, 39, 255));
         btnNotes.setMinimumSize(new java.awt.Dimension(240, 68));
-        btnNotes.setName("2"); // NOI18N
+        btnNotes.setName("2");
 
-        jLabel29.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel29.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
         jLabel29.setForeground(new java.awt.Color(255, 255, 255));
         jLabel29.setText("Notes");
 
-        jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Edit Property_30px.png"))); // NOI18N
+        jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Edit Property_30px.png")));
 
         btnNotesMarker.setBackground(new java.awt.Color(255, 255, 255));
-        btnNotesMarker.setName("btnNotesMarker"); // NOI18N
+        btnNotesMarker.setName("btnNotesMarker");
 
         javax.swing.GroupLayout btnNotesLayout = new javax.swing.GroupLayout(btnNotes);
         btnNotes.setLayout(btnNotesLayout);
@@ -499,16 +566,16 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnSettings.setBackground(new java.awt.Color(0, 39, 255));
         btnSettings.setMinimumSize(new java.awt.Dimension(240, 68));
-        btnSettings.setName("3"); // NOI18N
+        btnSettings.setName("3");
 
-        jLabel31.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel31.setFont(new java.awt.Font("Arial", Font.BOLD, 18));
         jLabel31.setForeground(new java.awt.Color(255, 255, 255));
         jLabel31.setText("Settings");
 
-        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Settings_30px.png"))); // NOI18N
+        jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Settings_30px.png")));
 
         btnSettingsMarker.setBackground(new java.awt.Color(255, 255, 255));
-        btnSettingsMarker.setName("btnNotesMarker"); // NOI18N
+        btnSettingsMarker.setName("btnNotesMarker");
 
         javax.swing.GroupLayout btnSettingsLayout = new javax.swing.GroupLayout(btnSettings);
         btnSettings.setLayout(btnSettingsLayout);
@@ -541,14 +608,14 @@ public class Dashboard extends javax.swing.JFrame {
         titlePanel.setBackground(new java.awt.Color(51, 144, 255));
         titlePanel.setLayout(null);
 
-        mainTitle.setFont(new java.awt.Font("Arial", 1, 28)); // NOI18N
+        mainTitle.setFont(new java.awt.Font("Arial", Font.BOLD, 28));
         mainTitle.setForeground(new java.awt.Color(255, 255, 255));
         mainTitle.setText("All cards");
         titlePanel.add(mainTitle);
         mainTitle.setBounds(110, 50, 245, 33);
 
         btnAddNewCard.setBackground(new java.awt.Color(255, 255, 255));
-        btnAddNewCard.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnAddNewCard.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         btnAddNewCard.setForeground(new java.awt.Color(255, 255, 255));
         btnAddNewCard.setText("Add new card...");
         btnAddNewCard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -562,14 +629,14 @@ public class Dashboard extends javax.swing.JFrame {
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnAddNewCardMousePressed(evt);
+                btnAddNewCardMousePressed();
             }
         });
         titlePanel.add(btnAddNewCard);
         btnAddNewCard.setBounds(540, 90, 125, 17);
 
         btnAddNewNote.setBackground(new java.awt.Color(255, 255, 255));
-        btnAddNewNote.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnAddNewNote.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         btnAddNewNote.setForeground(new java.awt.Color(255, 255, 255));
         btnAddNewNote.setText("Add new note...");
         btnAddNewNote.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -583,7 +650,7 @@ public class Dashboard extends javax.swing.JFrame {
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnAddNewNoteMousePressed(evt);
+                btnAddNewNoteMousePressed();
             }
         });
         titlePanel.add(btnAddNewNote);
@@ -593,12 +660,12 @@ public class Dashboard extends javax.swing.JFrame {
         titlePanel.setBounds(240, 40, 670, 120);
 
         allCardsPanel.setBackground(new java.awt.Color(255, 255, 255));
-        allCardsPanel.setName(""); // NOI18N
+        allCardsPanel.setName("");
         allCardsPanel.setLayout(null);
 
         scrollPaneAllCardsTable.setBorder(null);
 
-        allCardsTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        allCardsTable.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         allCardsTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
         }, new String[] { "" }) {
@@ -610,7 +677,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
         allCardsTable.setGridColor(new java.awt.Color(0, 0, 0));
         allCardsTable.setIntercellSpacing(new java.awt.Dimension(10, 4));
-        allCardsTable.setName(""); // NOI18N
+        allCardsTable.setName("");
         allCardsTable.setRowHeight(100);
         allCardsTable.setSelectionBackground(new java.awt.Color(255, 255, 255));
         allCardsTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
@@ -620,12 +687,12 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsTable.getTableHeader().setReorderingAllowed(false);
         allCardsTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         allCardsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                allCardsTableMousePressed(evt);
+                allCardsTableMousePressed();
             }
         });
         scrollPaneAllCardsTable.setViewportView(allCardsTable);
@@ -641,7 +708,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         scrollPaneFavoritesTable.setBorder(null);
 
-        favoritesTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        favoritesTable.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         favoritesTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {
 
         }, new String[] { "" }) {
@@ -653,7 +720,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
         favoritesTable.setGridColor(new java.awt.Color(0, 0, 0));
         favoritesTable.setIntercellSpacing(new java.awt.Dimension(10, 4));
-        favoritesTable.setName(""); // NOI18N
+        favoritesTable.setName("");
         favoritesTable.setRowHeight(100);
         favoritesTable.setSelectionBackground(new java.awt.Color(255, 255, 255));
         favoritesTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
@@ -663,12 +730,12 @@ public class Dashboard extends javax.swing.JFrame {
         favoritesTable.getTableHeader().setReorderingAllowed(false);
         favoritesTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         favoritesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                favoritesTableMousePressed(evt);
+                favoritesTableMousePressed();
             }
         });
         scrollPaneFavoritesTable.setViewportView(favoritesTable);
@@ -684,7 +751,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         scrollPaneNotesTable.setBorder(null);
 
-        notesTable.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        notesTable.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         notesTable.setModel(new javax.swing.table.DefaultTableModel(new Object[][] { { null, null }, { null, null } },
                 new String[] { "", "" }) {
             boolean[] canEdit = new boolean[] { false, false };
@@ -695,7 +762,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
         notesTable.setGridColor(new java.awt.Color(0, 0, 0));
         notesTable.setIntercellSpacing(new java.awt.Dimension(10, 4));
-        notesTable.setName(""); // NOI18N
+        notesTable.setName("");
         notesTable.setRowHeight(100);
         notesTable.setSelectionBackground(new java.awt.Color(255, 255, 255));
         notesTable.setSelectionForeground(new java.awt.Color(0, 0, 0));
@@ -705,12 +772,12 @@ public class Dashboard extends javax.swing.JFrame {
         notesTable.getTableHeader().setReorderingAllowed(false);
         notesTable.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
         notesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                notesTableMousePressed(evt);
+                notesTableMousePressed();
             }
         });
         scrollPaneNotesTable.setViewportView(notesTable);
@@ -724,23 +791,23 @@ public class Dashboard extends javax.swing.JFrame {
         settingsPanel.setBackground(new java.awt.Color(255, 255, 255));
         settingsPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
-                autoLogoutTrackingHandlersMouseMoved(evt);
+                autoLogoutTrackingHandlersMouseMoved();
             }
         });
 
-        passwordGeneratorTitle.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        passwordGeneratorTitle.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         passwordGeneratorTitle.setForeground(new java.awt.Color(51, 153, 255));
         passwordGeneratorTitle.setText("Password Generator");
 
-        autoLogOffTitle.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        autoLogOffTitle.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         autoLogOffTitle.setForeground(new java.awt.Color(51, 153, 255));
         autoLogOffTitle.setText("Auto Logout");
 
-        accountTitle.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        accountTitle.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         accountTitle.setForeground(new java.awt.Color(51, 153, 255));
         accountTitle.setText("Account");
 
-        jLabel4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         jLabel4.setLabelFor(lengthSlider);
         jLabel4.setText("Length:");
 
@@ -752,97 +819,85 @@ public class Dashboard extends javax.swing.JFrame {
         lengthSlider.setSnapToTicks(true);
         lengthSlider.setValue(18);
         lengthSlider.setFocusable(false);
-        lengthSlider.setName("0"); // NOI18N
+        lengthSlider.setName("0");
         lengthSlider.setRequestFocusEnabled(false);
-        lengthSlider.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                lengthSliderStateChanged(evt);
-            }
-        });
+        lengthSlider.addChangeListener(evt -> lengthSliderStateChanged());
 
-        txtSliderValue.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtSliderValue.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         txtSliderValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtSliderValue.setText("18");
 
         uppercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
-        uppercaseCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        uppercaseCharacters.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         uppercaseCharacters.setSelected(true);
         uppercaseCharacters.setText("A - Z  ");
         uppercaseCharacters.setFocusable(false);
         uppercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         uppercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        uppercaseCharacters.setName("1"); // NOI18N
+        uppercaseCharacters.setName("1");
         uppercaseCharacters.setRequestFocusEnabled(false);
 
         lowercaseCharacters.setBackground(new java.awt.Color(255, 255, 255));
-        lowercaseCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        lowercaseCharacters.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         lowercaseCharacters.setSelected(true);
         lowercaseCharacters.setText("a - z  ");
         lowercaseCharacters.setFocusable(false);
         lowercaseCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         lowercaseCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        lowercaseCharacters.setName("2"); // NOI18N
+        lowercaseCharacters.setName("2");
         lowercaseCharacters.setRequestFocusEnabled(false);
 
         numberCharacters.setBackground(new java.awt.Color(255, 255, 255));
-        numberCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        numberCharacters.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         numberCharacters.setSelected(true);
         numberCharacters.setText("0 - 9  ");
         numberCharacters.setFocusable(false);
         numberCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         numberCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        numberCharacters.setName("3"); // NOI18N
+        numberCharacters.setName("3");
         numberCharacters.setRequestFocusEnabled(false);
 
         specialCharacters.setBackground(new java.awt.Color(255, 255, 255));
-        specialCharacters.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        specialCharacters.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         specialCharacters.setSelected(true);
         specialCharacters.setText("Special Characters  ");
         specialCharacters.setFocusable(false);
         specialCharacters.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         specialCharacters.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        specialCharacters.setName("4"); // NOI18N
+        specialCharacters.setName("4");
         specialCharacters.setRequestFocusEnabled(false);
 
         autoLogoutEnabled.setBackground(new java.awt.Color(255, 255, 255));
-        autoLogoutEnabled.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        autoLogoutEnabled.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         autoLogoutEnabled.setSelected(true);
         autoLogoutEnabled.setText("Enabled  ");
         autoLogoutEnabled.setFocusable(false);
         autoLogoutEnabled.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         autoLogoutEnabled.setMargin(new java.awt.Insets(2, 0, 2, 2));
-        autoLogoutEnabled.setName("5"); // NOI18N
+        autoLogoutEnabled.setName("5");
         autoLogoutEnabled.setRequestFocusEnabled(false);
-        autoLogoutEnabled.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoLogoutEnabledActionPerformed(evt);
-            }
-        });
+        autoLogoutEnabled.addActionListener(evt -> autoLogoutEnabledActionPerformed());
 
-        jLabel9.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Arial", Font.PLAIN, 14));
         jLabel9.setLabelFor(lengthSlider);
         jLabel9.setText("Timer:");
 
-        autoLogoutTimerComboBox.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        autoLogoutTimerComboBox.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         autoLogoutTimerComboBox.setModel(
                 new javax.swing.DefaultComboBoxModel<>(new String[] { "1 min", "2 min", "5 min", "10 min", "15 min", "20 min" }));
         autoLogoutTimerComboBox.setFocusable(false);
-        autoLogoutTimerComboBox.setName("6"); // NOI18N
+        autoLogoutTimerComboBox.setName("6");
         autoLogoutTimerComboBox.setRequestFocusEnabled(false);
-        autoLogoutTimerComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                autoLogoutTimerComboBoxActionPerformed(evt);
-            }
-        });
+        autoLogoutTimerComboBox.addActionListener(evt -> autoLogoutTimerComboBoxActionPerformed());
 
-        jLabel10.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Arial", Font.PLAIN, 11));
         jLabel10.setText("Security options for the generated password.");
 
-        jLabel11.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel11.setFont(new java.awt.Font("Arial", Font.PLAIN, 11));
         jLabel11.setText("When the app is not being used for the amount of time set, it will automatically logout.");
 
         btnChangeMasterPin.setBackground(new java.awt.Color(230, 230, 230));
-        btnChangeMasterPin.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        btnChangeMasterPin.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         btnChangeMasterPin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnChangeMasterPin.setText("Change master PIN");
         btnChangeMasterPin.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
@@ -853,7 +908,7 @@ public class Dashboard extends javax.swing.JFrame {
         btnChangeMasterPin.setPreferredSize(new java.awt.Dimension(61, 37));
         btnChangeMasterPin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnChangeMasterPinMousePressed(evt);
+                btnChangeMasterPinMousePressed();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
@@ -866,7 +921,7 @@ public class Dashboard extends javax.swing.JFrame {
         });
 
         btnSaveSettings.setBackground(new java.awt.Color(51, 153, 255));
-        btnSaveSettings.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        btnSaveSettings.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         btnSaveSettings.setForeground(new java.awt.Color(255, 255, 255));
         btnSaveSettings.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnSaveSettings.setText("Save");
@@ -885,16 +940,16 @@ public class Dashboard extends javax.swing.JFrame {
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnSaveSettingsMousePressed(evt);
+                btnSaveSettingsMousePressed();
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         jLabel1.setForeground(new java.awt.Color(255, 0, 0));
         jLabel1.setText("DANGER ZONE");
 
         btnDeleteAllData.setBackground(new java.awt.Color(230, 230, 230));
-        btnDeleteAllData.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        btnDeleteAllData.setFont(new java.awt.Font("Arial", Font.PLAIN, 13));
         btnDeleteAllData.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnDeleteAllData.setText("Delete all data");
         btnDeleteAllData.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
@@ -913,11 +968,11 @@ public class Dashboard extends javax.swing.JFrame {
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnDeleteAllDataMousePressed(evt);
+                btnDeleteAllDataMousePressed();
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Arial", Font.PLAIN, 11));
         jLabel6.setForeground(new java.awt.Color(255, 0, 0));
         jLabel6.setText("Deletes all database, use for emergencies only!");
 
@@ -1020,21 +1075,21 @@ public class Dashboard extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {
+    private void formComponentShown() {
         int i = 0;
 
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(btnAddNewCard);
         Customization.underlineText(btnAddNewNote);
 
-        //Sets all the main panels off, except the default active.
+        // Sets all the main panels off, except the default active.
         for (JPanel mainPanel : mainPanels) {
             if (i != Integer.valueOf(activeSidePanelButton.getName()))
                 mainPanel.setVisible(false);
             i++;
         }
 
-        //Adds mouse events to the side panel buttons.
+        // Adds mouse events to the side panel buttons.
         for (Component sidePanelButton : sidePanelButtons) {
             sidePanelButton.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
@@ -1054,18 +1109,13 @@ public class Dashboard extends javax.swing.JFrame {
             });
         }
 
-        //Adds action listener to the password generator settings checkboxes.
+        // Adds action listener to the password generator settings checkboxes.
         for (JCheckBox checkBox : passwordGeneratorSettingsCheckBoxes) {
-            checkBox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    passwordGeneratorSettingsCheckBoxActionPerformed(evt);
-                }
-            });
+            checkBox.addActionListener(this::passwordGeneratorSettingsCheckBoxActionPerformed);
         }
     }
 
-    private void btnCloseMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnCloseMousePressed() {
         if (isSaveSettingsActive)
             confirmSettings();
 
@@ -1073,18 +1123,18 @@ public class Dashboard extends javax.swing.JFrame {
         System.exit(0);
     }
 
-    private void btnLogoutMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnLogoutMousePressed() {
         if (isSaveSettingsActive)
             confirmSettings();
 
         logout();
     }
 
-    private void btnMinimizeMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnMinimizeMousePressed() {
         this.setState(Dashboard.ICONIFIED);
     }
 
-    private void lengthSliderStateChanged(javax.swing.event.ChangeEvent evt) {
+    private void lengthSliderStateChanged() {
         int value = lengthSlider.getValue(), arrayIndex = Integer.parseInt(lengthSlider.getName());
 
         txtSliderValue.setText(String.valueOf(value));
@@ -1098,7 +1148,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
     }
 
-    private void autoLogoutEnabledActionPerformed(java.awt.event.ActionEvent evt) {
+    private void autoLogoutEnabledActionPerformed() {
         boolean isAutoLogoutEnabled = autoLogoutEnabled.isSelected();
         int arrayIndex = Integer.parseInt(autoLogoutEnabled.getName());
 
@@ -1125,7 +1175,7 @@ public class Dashboard extends javax.swing.JFrame {
         evt.getComponent().setBackground(Constants.ACCOUNT_BUTTONS_DEFAULT_COLOR);
     }
 
-    private void btnChangeMasterPinMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnChangeMasterPinMousePressed() {
         int confirm = Customization
                 .displayConfirmMessage("If you proceed you'll be logged out. Are you sure you want to proceed?",
                         "Change master PIN");
@@ -1139,11 +1189,11 @@ public class Dashboard extends javax.swing.JFrame {
         }
     }
 
-    private void btnSaveSettingsMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnSaveSettingsMousePressed() {
         saveUserSettings();
     }
 
-    private void allCardsTableMousePressed(java.awt.event.MouseEvent evt) {
+    private void allCardsTableMousePressed() {
         viewItem(0, cardIdentifiers.get(allCardsTable.getSelectedRow()));
     }
 
@@ -1155,7 +1205,7 @@ public class Dashboard extends javax.swing.JFrame {
         evt.getComponent().setBackground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
-    private void autoLogoutTimerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {
+    private void autoLogoutTimerComboBoxActionPerformed() {
         int index = autoLogoutTimerComboBox.getSelectedIndex(), arrayIndex = Integer.parseInt(autoLogoutTimerComboBox.getName());
 
         if (index != oldSettings[arrayIndex]) {
@@ -1175,19 +1225,19 @@ public class Dashboard extends javax.swing.JFrame {
         evt.getComponent().setForeground(Constants.TITLE_BUTTONS_DEFAULT_COLOR);
     }
 
-    private void btnAddNewCardMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnAddNewCardMousePressed() {
         addNewItem(0);
     }
 
-    private void btnAddNewNoteMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnAddNewNoteMousePressed() {
         addNewItem(1);
     }
 
-    private void autoLogoutTrackingHandlersMouseMoved(java.awt.event.MouseEvent evt) {
+    private void autoLogoutTrackingHandlersMouseMoved() {
         autoLogoutCounter = 0;
     }
 
-    private void btnDeleteAllDataMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnDeleteAllDataMousePressed() {
         int confirm = Customization.displayConfirmMessage(
                 "This will delete all your data and logout. The app will act like the first time running.\n"
                         + "Are you sure you want to continue?", "Delete all data");
@@ -1198,11 +1248,11 @@ public class Dashboard extends javax.swing.JFrame {
         }
     }
 
-    private void notesTableMousePressed(java.awt.event.MouseEvent evt) {
+    private void notesTableMousePressed() {
         viewItem(1, noteIdentifiers.get(notesTable.getSelectedRow()));
     }
 
-    private void favoritesTableMousePressed(java.awt.event.MouseEvent evt) {
+    private void favoritesTableMousePressed() {
         viewItem(0, favoriteIdentifiers.get(favoritesTable.getSelectedRow()));
     }
 
@@ -1261,41 +1311,9 @@ public class Dashboard extends javax.swing.JFrame {
      * @param model Table model to add data.
      * @param data  Data to be added.
      */
-    public void addNewTableRow(DefaultTableModel model, String[] data) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<html><font color=\"#3399ff\"><b>");
-        sb.append(data[0]);
-        sb.append("</b></font><br><br>");
-        sb.append(data[1]).append("</html>");
-        String finalData = sb.toString();
+    private void addNewTableRow(DefaultTableModel model, String[] data) {
+        String finalData = "<html><font color=\"#3399ff\"><b>" + data[0] + "</b></font><br><br>" + data[1] + "</html>";
         model.addRow(new Object[] { finalData });
-    }
-
-    /**
-     * Returns the "All Cards" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getAllCardsTableModel() {
-        return customModelAllCards;
-    }
-
-    /**
-     * Returns the "Favorites" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getFavoritesTableModel() {
-        return customModelFavorites;
-    }
-
-    /**
-     * Returns the "Notes" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getNotesTableModel() {
-        return customModelNotes;
     }
 
     /**
@@ -1339,6 +1357,7 @@ public class Dashboard extends javax.swing.JFrame {
         for (int i = 0; i < newSettings.length; i++) {
             if (newSettings[i] != -1) {
                 try {
+                    assert connection != null;
                     statement = connection.prepareStatement("UPDATE Settings SET " + SETTINGS_COLUMNS[i] + " = ?");
                     statement.setInt(1, newSettings[i]);
                     statement.executeUpdate();
@@ -1354,6 +1373,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
         try {
+            assert connection != null;
             connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -1507,7 +1527,7 @@ public class Dashboard extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the theme look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
@@ -1518,84 +1538,13 @@ public class Dashboard extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | javax.swing.UnsupportedLookAndFeelException | IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Dashboard().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JLabel accountTitle;
-    private javax.swing.JPanel allCardsPanel;
-    private javax.swing.JTable allCardsTable;
-    private javax.swing.JLabel autoLogOffTitle;
-    private javax.swing.JCheckBox autoLogoutEnabled;
-    private javax.swing.JComboBox<String> autoLogoutTimerComboBox;
-    private javax.swing.JLabel btnAddNewCard;
-    private javax.swing.JLabel btnAddNewNote;
-    private javax.swing.JPanel btnAllCards;
-    private javax.swing.JLabel btnAllCardsMarker;
-    private javax.swing.JLabel btnChangeMasterPin;
-    private javax.swing.JLabel btnClose;
-    private javax.swing.JLabel btnDeleteAllData;
-    private javax.swing.JPanel btnFavourites;
-    private javax.swing.JLabel btnFavouritesMarker;
-    private javax.swing.JLabel btnLogout;
-    private javax.swing.JLabel btnMinimize;
-    private javax.swing.JPanel btnNotes;
-    private javax.swing.JLabel btnNotesMarker;
-    private javax.swing.JLabel btnSaveSettings;
-    private javax.swing.JPanel btnSettings;
-    private javax.swing.JLabel btnSettingsMarker;
-    private javax.swing.JTable favoritesTable;
-    private javax.swing.JPanel favouritesPanel;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel29;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JSlider lengthSlider;
-    private javax.swing.JCheckBox lowercaseCharacters;
-    private javax.swing.JLabel mainTitle;
-    private javax.swing.JPanel notesPanel;
-    private javax.swing.JTable notesTable;
-    private javax.swing.JCheckBox numberCharacters;
-    private javax.swing.JLabel passwordGeneratorTitle;
-    private javax.swing.JScrollPane scrollPaneAllCardsTable;
-    private javax.swing.JScrollPane scrollPaneFavoritesTable;
-    private javax.swing.JScrollPane scrollPaneNotesTable;
-    private javax.swing.JPanel settingsPanel;
-    private javax.swing.JPanel sidePanel;
-    private javax.swing.JCheckBox specialCharacters;
-    private javax.swing.JPanel titlePanel;
-    private javax.swing.JLabel txtSliderValue;
-    private javax.swing.JCheckBox uppercaseCharacters;
-    // End of variables declaration
 }

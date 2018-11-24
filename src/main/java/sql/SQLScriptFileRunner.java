@@ -1,6 +1,7 @@
 package sql;
 
 import handlers.DatabaseHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,59 +10,65 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import utils.Customization;
 
 /**
  * Class responsible for running the sql script files.
+ *
  * @author Tiago Pinho
  */
 public class SQLScriptFileRunner {
-    
-    private static final String SCRIPT_FILE_START_PATH = "/scripts/",
-                                SCRIPT_FILE_EXTENSION = ".sql";
-    
+
+    private static final String SCRIPT_FILE_START_PATH = "/scripts/", SCRIPT_FILE_EXTENSION = ".sql";
+
     /**
      * Runs sql scripts inside an sql script file.
+     *
      * @param scriptFileName The sql script file name (without extension).
      */
-    public static void runScriptFile(String scriptFileName){
+    public static void runScriptFile(String scriptFileName) {
         ArrayList scripts = getScripts(scriptFileName);
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
+            assert connection != null;
             Statement statement = connection.createStatement();
-            
-            for(Object script : scripts)
+
+            assert scripts != null;
+            for (Object script : scripts)
                 statement.execute(script.toString());
-            
+
             statement.close();
             connection.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.toString());
             Customization.displayWarningMessage(ex.toString(), "Error");
         }
     }
-    
+
     /**
      * Gets the scripts inside the sql script file.
+     *
      * @param scriptFileName The sql script file name (without extension).
      * @return ArrayList
      */
-    private static ArrayList<String> getScripts(String scriptFileName){
-        try{
-            InputStream file = SQLScriptFileRunner.class.getResourceAsStream(SCRIPT_FILE_START_PATH + scriptFileName + SCRIPT_FILE_EXTENSION);
+    private static ArrayList<String> getScripts(String scriptFileName) {
+        try {
+            InputStream file = SQLScriptFileRunner.class
+                    .getResourceAsStream(SCRIPT_FILE_START_PATH + scriptFileName + SCRIPT_FILE_EXTENSION);
             BufferedReader reader = new BufferedReader(new InputStreamReader(file));
             String line;
-            ArrayList<String> scripts = new ArrayList<>(); 
-            while((line = reader.readLine()) != null){
+            ArrayList<String> scripts = new ArrayList<>();
+            while ((line = reader.readLine()) != null) {
                 scripts.add(line);
             }
             reader.close();
             return scripts;
-        }catch(IOException ex){
+        } catch (IOException ex) {
             System.out.println(ex.toString());
             Customization.displayWarningMessage(ex.toString(), "Error");
         }
         return null;
     }
-    
+
 }

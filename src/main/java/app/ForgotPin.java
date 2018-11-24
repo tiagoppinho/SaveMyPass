@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.awt.Font;
 
 /**
  * @author Tiago Pinho
@@ -16,6 +17,26 @@ import java.sql.Statement;
 public class ForgotPin extends javax.swing.JFrame {
 
     private String firstAnswer = null, secondAnswer = null;
+
+    // Components variables declaration - do not modify
+    // DO NOT convert any of the components variables to a local variable or field.
+    private javax.swing.JLabel btnNext;
+    private javax.swing.JLabel close;
+    private javax.swing.JLabel gotoLogin;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel securityQuestionsPanel;
+    private javax.swing.JTextField txtFirstSecurityQuestion;
+    private javax.swing.JTextField txtSecondSecurityQuestion;
+    private javax.swing.JTextField txtSecurityAnswer1;
+    private javax.swing.JTextField txtSecurityAnswer2;
+    // End of components variables declaration
 
     public ForgotPin() {
         Customization.applyCustomIcons(this);
@@ -29,6 +50,7 @@ public class ForgotPin extends javax.swing.JFrame {
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet =
                     statement.executeQuery("SELECT firstSecurity, firstAnswer, " + "secondSecurity, secondAnswer FROM User");
@@ -75,32 +97,32 @@ public class ForgotPin extends javax.swing.JFrame {
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
+                formComponentShown();
             }
         });
         getContentPane().setLayout(null);
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", Font.BOLD, 22));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SaveMyPass");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Password Manager");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png")));
 
-        close.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
+        close.setFont(new java.awt.Font("Arial", Font.PLAIN, 22));
         close.setForeground(new java.awt.Color(255, 255, 255));
-        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png"))); // NOI18N
+        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png")));
         close.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         close.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                closeMousePressed(evt);
+                closeMousePressed();
             }
         });
 
@@ -136,28 +158,28 @@ public class ForgotPin extends javax.swing.JFrame {
         securityQuestionsPanel.setMinimumSize(new java.awt.Dimension(380, 310));
         securityQuestionsPanel.setPreferredSize(new java.awt.Dimension(380, 310));
 
-        jLabel12.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel12.setForeground(new java.awt.Color(51, 153, 255));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel12.setText("1 - Security question:");
 
-        jLabel13.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel13.setForeground(new java.awt.Color(51, 153, 255));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel13.setText("Answer:");
 
-        jLabel15.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel15.setForeground(new java.awt.Color(51, 153, 255));
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel15.setText("Answer:");
 
-        jLabel16.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel16.setForeground(new java.awt.Color(51, 153, 255));
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel16.setText("2 - Security question:");
 
         btnNext.setBackground(new java.awt.Color(51, 153, 255));
-        btnNext.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btnNext.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         btnNext.setForeground(new java.awt.Color(255, 255, 255));
         btnNext.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnNext.setText("Next");
@@ -168,15 +190,15 @@ public class ForgotPin extends javax.swing.JFrame {
         btnNext.setPreferredSize(new java.awt.Dimension(61, 37));
         btnNext.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnNextMouseEntered(evt);
+                btnNextMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnNextMouseExited(evt);
+                btnNextMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnNextMousePressed(evt);
+                btnNextMousePressed();
             }
         });
 
@@ -184,21 +206,21 @@ public class ForgotPin extends javax.swing.JFrame {
 
         txtFirstSecurityQuestion.setEditable(false);
 
-        gotoLogin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        gotoLogin.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         gotoLogin.setForeground(new java.awt.Color(51, 153, 255));
         gotoLogin.setText("Back to login");
         gotoLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         gotoLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                gotoLoginMouseEntered(evt);
+                gotoLoginMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                gotoLoginMouseExited(evt);
+                gotoLoginMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                gotoLoginMousePressed(evt);
+                gotoLoginMousePressed();
             }
         });
 
@@ -271,24 +293,24 @@ public class ForgotPin extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {
+    private void formComponentShown() {
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(gotoLogin);
     }
 
-    private void btnNextMouseEntered(java.awt.event.MouseEvent evt) {
+    private void btnNextMouseEntered() {
         btnNext.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void btnNextMouseExited(java.awt.event.MouseEvent evt) {
+    private void btnNextMouseExited() {
         btnNext.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
-    private void closeMousePressed(java.awt.event.MouseEvent evt) {
+    private void closeMousePressed() {
         System.exit(0);
     }
 
-    private void btnNextMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnNextMousePressed() {
         String firstSecurityAnswer = txtSecurityAnswer1.getText().trim(), secondSecurityAnswer =
                 txtSecurityAnswer2.getText().trim(), hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
                 hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
@@ -304,23 +326,23 @@ public class ForgotPin extends javax.swing.JFrame {
         }
     }
 
-    private void gotoLoginMousePressed(java.awt.event.MouseEvent evt) {
+    private void gotoLoginMousePressed() {
         Login login = new Login();
         login.setVisible(true);
         this.dispose();
     }
 
-    private void gotoLoginMouseEntered(java.awt.event.MouseEvent evt) {
+    private void gotoLoginMouseEntered() {
         gotoLogin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void gotoLoginMouseExited(java.awt.event.MouseEvent evt) {
+    private void gotoLoginMouseExited() {
         gotoLogin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
     public static void main(String args[]) {
         /* Set the theme look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -328,34 +350,10 @@ public class ForgotPin extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ForgotPin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JLabel btnNext;
-    private javax.swing.JLabel close;
-    private javax.swing.JLabel gotoLogin;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel securityQuestionsPanel;
-    private javax.swing.JTextField txtFirstSecurityQuestion;
-    private javax.swing.JTextField txtSecondSecurityQuestion;
-    private javax.swing.JTextField txtSecurityAnswer1;
-    private javax.swing.JTextField txtSecurityAnswer2;
-    // End of variables declaration
 }

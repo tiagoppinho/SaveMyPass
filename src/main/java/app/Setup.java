@@ -10,13 +10,35 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Base64;
+import java.awt.Font;
 
 /**
  * @author Tiago Pinho
  */
 public class Setup extends javax.swing.JFrame {
 
-    private String pin = null, salt = null;
+    private String pin, salt;
+
+    // Components variables declaration - do not modify
+    // DO NOT convert any of the components variables to a local variable or field.
+    private javax.swing.JPanel btnFinish;
+    private javax.swing.JLabel close;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JTextField securityAnswer1;
+    private javax.swing.JTextField securityAnswer2;
+    private javax.swing.JComboBox<String> securityQuestion1;
+    private javax.swing.JComboBox<String> securityQuestion2;
+    // End of components variables declaration
 
     public Setup(String pin, String salt) {
         Customization.applyCustomIcons(this);
@@ -55,32 +77,32 @@ public class Setup extends javax.swing.JFrame {
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
+                formComponentShown();
             }
         });
         getContentPane().setLayout(null);
 
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", Font.BOLD, 22));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SaveMyPass");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Password Manager");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png")));
 
-        close.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
+        close.setFont(new java.awt.Font("Arial", Font.PLAIN, 22));
         close.setForeground(new java.awt.Color(255, 255, 255));
-        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png"))); // NOI18N
+        close.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png")));
         close.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         close.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                closeMousePressed(evt);
+                closeMousePressed();
             }
         });
 
@@ -116,7 +138,7 @@ public class Setup extends javax.swing.JFrame {
         mainPanel.setMinimumSize(new java.awt.Dimension(380, 320));
         mainPanel.setPreferredSize(new java.awt.Dimension(380, 320));
 
-        jLabel9.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         jLabel9.setForeground(new java.awt.Color(51, 153, 255));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("How can you recover your master PIN?");
@@ -126,19 +148,19 @@ public class Setup extends javax.swing.JFrame {
         btnFinish.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnFinish.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnFinishMouseEntered(evt);
+                btnFinishMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnFinishMouseExited(evt);
+                btnFinishMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnFinishMousePressed(evt);
+                btnFinishMousePressed();
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Finish");
 
@@ -151,7 +173,7 @@ public class Setup extends javax.swing.JFrame {
                 btnFinishLayout.createSequentialGroup().addContainerGap().addComponent(jLabel6)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-        jLabel12.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel12.setForeground(new java.awt.Color(51, 153, 255));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel12.setLabelFor(securityQuestion1);
@@ -164,13 +186,13 @@ public class Setup extends javax.swing.JFrame {
         securityQuestion1.setMinimumSize(new java.awt.Dimension(700, 100));
         securityQuestion1.setPreferredSize(new java.awt.Dimension(404, 20));
 
-        jLabel13.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel13.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel13.setForeground(new java.awt.Color(51, 153, 255));
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel13.setLabelFor(securityAnswer1);
         jLabel13.setText("Answer:");
 
-        jLabel15.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel15.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel15.setForeground(new java.awt.Color(51, 153, 255));
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel15.setText("Answer:");
@@ -181,7 +203,7 @@ public class Setup extends javax.swing.JFrame {
         securityQuestion2.setMinimumSize(new java.awt.Dimension(700, 100));
         securityQuestion2.setPreferredSize(new java.awt.Dimension(404, 20));
 
-        jLabel16.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Arial", Font.BOLD, 13));
         jLabel16.setForeground(new java.awt.Color(51, 153, 255));
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel16.setLabelFor(securityQuestion1);
@@ -250,23 +272,23 @@ public class Setup extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {
+    private void formComponentShown() {
         Customization.applyDraggability(headerPanel, this);
     }
 
-    private void btnFinishMouseEntered(java.awt.event.MouseEvent evt) {
+    private void btnFinishMouseEntered() {
         btnFinish.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void btnFinishMouseExited(java.awt.event.MouseEvent evt) {
+    private void btnFinishMouseExited() {
         btnFinish.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
-    private void closeMousePressed(java.awt.event.MouseEvent evt) {
+    private void closeMousePressed() {
         System.exit(0);
     }
 
-    private void btnFinishMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnFinishMousePressed() {
         String firstSecurityQuestion = String.valueOf(securityQuestion1.getSelectedItem()).trim();
         String secondSecurityQuestion = String.valueOf(securityQuestion2.getSelectedItem()).trim();
         String firstSecurityAnswer = securityAnswer1.getText().trim();
@@ -275,19 +297,20 @@ public class Setup extends javax.swing.JFrame {
         if (firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
         else if (pin != null) {
-            //Hash data.
+            // Hash data.
             String hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer), hashedSecondSecurityAnswer =
                     Hasher.hashSecurityAnswer(secondSecurityAnswer);
 
-            //Locker data.
+            // Locker data.
             byte[] locker = new byte[32], lockerSalt = new byte[16];
             SecureRandom random = new SecureRandom();
             random.nextBytes(locker);
             random.nextBytes(lockerSalt);
 
-            //Send data to database.
+            // Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try {
+                assert connection != null;
                 PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
                 statement.setString(1, pin);
                 statement.setString(2, salt);
@@ -307,7 +330,7 @@ public class Setup extends javax.swing.JFrame {
                 ex.printStackTrace();
             }
 
-            //Proceed to login.
+            // Proceed to login.
             new Login();
             this.dispose();
         }
@@ -315,7 +338,7 @@ public class Setup extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the theme look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -323,35 +346,10 @@ public class Setup extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Setup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Setup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Setup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Setup.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JPanel btnFinish;
-    private javax.swing.JLabel close;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JTextField securityAnswer1;
-    private javax.swing.JTextField securityAnswer2;
-    private javax.swing.JComboBox<String> securityQuestion1;
-    private javax.swing.JComboBox<String> securityQuestion2;
-    // End of variables declaration
 }

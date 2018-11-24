@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.awt.Font;
 import javax.swing.JLabel;
 
 import sql.SQLScriptFileRunner;
@@ -19,13 +20,45 @@ import sql.SQLScriptFileRunner;
  */
 public class Login extends javax.swing.JFrame {
 
-    //Virtual keyboard handler.
+    // Virtual keyboard handler.
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
 
     private String masterPin = null, salt = null;
 
     private boolean isFirstTime = false;
+
+    // Components variables declaration - do not modify
+    // DO NOT convert any of the components variables to a local variable or field.
+    private javax.swing.JLabel btnClear;
+    private javax.swing.JPanel btnLogin;
+    private javax.swing.JLabel btnMainClose;
+    private javax.swing.JLabel btnSecondaryClose;
+    private javax.swing.JLabel closeKeyboard;
+    private javax.swing.JLabel forgotPin;
+    private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel keyboardHeaderPanel;
+    private javax.swing.JPanel keyboardMainPanel;
+    private javax.swing.JLabel lblNum0;
+    private javax.swing.JLabel lblNum1;
+    private javax.swing.JLabel lblNum2;
+    private javax.swing.JLabel lblNum3;
+    private javax.swing.JLabel lblNum4;
+    private javax.swing.JLabel lblNum5;
+    private javax.swing.JLabel lblNum6;
+    private javax.swing.JLabel lblNum7;
+    private javax.swing.JLabel lblNum8;
+    private javax.swing.JLabel lblNum9;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JLabel separator;
+    private javax.swing.JPasswordField txtPin;
+    // End of components variables declaration
 
     public Login() {
         load();
@@ -37,11 +70,11 @@ public class Login extends javax.swing.JFrame {
                             lblNum9 };
             this.setVisible(true);
         } else {
-            //Makes sure that database is cleaned and settings are set as default.
-            //Security reasons.
+            // Makes sure that database is cleaned and settings are set as default.
+            // Security reasons.
             SQLScriptFileRunner.runScriptFile("panic");
 
-            //Proceed to new pin and setup.
+            // Proceed to new pin and setup.
             NewPin firstTimeSetup = new NewPin(1);
             firstTimeSetup.setVisible(true);
         }
@@ -53,6 +86,7 @@ public class Login extends javax.swing.JFrame {
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
 
@@ -111,7 +145,7 @@ public class Login extends javax.swing.JFrame {
         setResizable(false);
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                formComponentShown(evt);
+                formComponentShown();
             }
         });
         getContentPane().setLayout(null);
@@ -119,29 +153,29 @@ public class Login extends javax.swing.JFrame {
         headerPanel.setBackground(new java.awt.Color(0, 39, 255));
         headerPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                headerPanelMouseClicked(evt);
+                headerPanelMouseClicked();
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Arial", 1, 22)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", Font.BOLD, 22));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("SaveMyPass");
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Password Manager");
 
-        jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Privacy_48px_white.png")));
 
-        btnMainClose.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
+        btnMainClose.setFont(new java.awt.Font("Arial", Font.PLAIN, 22));
         btnMainClose.setForeground(new java.awt.Color(255, 255, 255));
-        btnMainClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png"))); // NOI18N
+        btnMainClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png")));
         btnMainClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnMainClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnMainCloseMousePressed(evt);
+                btnMainCloseMousePressed();
             }
         });
 
@@ -172,22 +206,22 @@ public class Login extends javax.swing.JFrame {
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
         mainPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                mainPanelMousePressed(evt);
+                mainPanelMousePressed();
             }
         });
 
         txtPin.setEditable(false);
         txtPin.setBackground(new java.awt.Color(255, 255, 255));
-        txtPin.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtPin.setFont(new java.awt.Font("Arial", Font.PLAIN, 12));
         txtPin.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtPin.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         txtPin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                txtPinMousePressed(evt);
+                txtPinMousePressed();
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         jLabel7.setForeground(new java.awt.Color(51, 153, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("Master PIN");
@@ -197,19 +231,19 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btnLoginMouseEntered(evt);
+                btnLoginMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btnLoginMouseExited(evt);
+                btnLoginMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnLoginMousePressed(evt);
+                btnLoginMousePressed();
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Login");
 
@@ -222,21 +256,21 @@ public class Login extends javax.swing.JFrame {
                 btnLoginLayout.createSequentialGroup().addGap(10, 10, 10).addComponent(jLabel5)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
-        forgotPin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        forgotPin.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         forgotPin.setForeground(new java.awt.Color(51, 153, 255));
         forgotPin.setText("Forgot PIN");
         forgotPin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         forgotPin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                forgotPinMouseEntered(evt);
+                forgotPinMouseEntered();
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                forgotPinMouseExited(evt);
+                forgotPinMouseExited();
             }
 
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                forgotPinMousePressed(evt);
+                forgotPinMousePressed();
             }
         });
 
@@ -289,18 +323,18 @@ public class Login extends javax.swing.JFrame {
 
         keyboardHeaderPanel.setBackground(new java.awt.Color(0, 39, 255));
 
-        jLabel8.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Arial", Font.BOLD, 16));
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Virtual Keyboard");
 
-        btnSecondaryClose.setFont(new java.awt.Font("Arial", 0, 22)); // NOI18N
+        btnSecondaryClose.setFont(new java.awt.Font("Arial", Font.PLAIN, 22));
         btnSecondaryClose.setForeground(new java.awt.Color(255, 255, 255));
-        btnSecondaryClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png"))); // NOI18N
+        btnSecondaryClose.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Cancel_24px_white.png")));
         btnSecondaryClose.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnSecondaryClose.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnSecondaryCloseMousePressed(evt);
+                btnSecondaryCloseMousePressed();
             }
         });
 
@@ -328,95 +362,95 @@ public class Login extends javax.swing.JFrame {
 
         keyboardMainPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        closeKeyboard.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        closeKeyboard.setFont(new java.awt.Font("Arial", Font.BOLD, 12));
         closeKeyboard.setForeground(new java.awt.Color(51, 153, 255));
-        closeKeyboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Back To_24px.png"))); // NOI18N
+        closeKeyboard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Back To_24px.png")));
         closeKeyboard.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         closeKeyboard.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                closeKeyboardMousePressed(evt);
+                closeKeyboardMousePressed();
             }
         });
 
         lblNum1.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum1.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum1.setForeground(new java.awt.Color(255, 255, 255));
         lblNum1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum1.setText("1");
         lblNum1.setOpaque(true);
 
         lblNum2.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum2.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum2.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum2.setForeground(new java.awt.Color(255, 255, 255));
         lblNum2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum2.setText("2");
         lblNum2.setOpaque(true);
 
         lblNum3.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum3.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum3.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum3.setForeground(new java.awt.Color(255, 255, 255));
         lblNum3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum3.setText("3");
         lblNum3.setOpaque(true);
 
         lblNum4.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum4.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum4.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum4.setForeground(new java.awt.Color(255, 255, 255));
         lblNum4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum4.setText("4");
         lblNum4.setOpaque(true);
 
         lblNum5.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum5.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum5.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum5.setForeground(new java.awt.Color(255, 255, 255));
         lblNum5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum5.setText("5");
         lblNum5.setOpaque(true);
 
         lblNum6.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum6.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum6.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum6.setForeground(new java.awt.Color(255, 255, 255));
         lblNum6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum6.setText("6");
         lblNum6.setOpaque(true);
 
         lblNum7.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum7.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum7.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum7.setForeground(new java.awt.Color(255, 255, 255));
         lblNum7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum7.setText("7");
         lblNum7.setOpaque(true);
 
         lblNum8.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum8.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum8.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum8.setForeground(new java.awt.Color(255, 255, 255));
         lblNum8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum8.setText("8");
         lblNum8.setOpaque(true);
 
         lblNum9.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum9.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum9.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum9.setForeground(new java.awt.Color(255, 255, 255));
         lblNum9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum9.setText("9");
         lblNum9.setOpaque(true);
 
         lblNum0.setBackground(new java.awt.Color(51, 153, 255));
-        lblNum0.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        lblNum0.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         lblNum0.setForeground(new java.awt.Color(255, 255, 255));
         lblNum0.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNum0.setText("0");
         lblNum0.setOpaque(true);
 
         btnClear.setBackground(new java.awt.Color(51, 153, 255));
-        btnClear.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnClear.setFont(new java.awt.Font("Arial", Font.BOLD, 14));
         btnClear.setForeground(new java.awt.Color(255, 255, 255));
         btnClear.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnClear.setText("Clear");
         btnClear.setOpaque(true);
         btnClear.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                btnClearMousePressed(evt);
+                btnClearMousePressed();
             }
         });
 
@@ -501,12 +535,12 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>
 
-    private void formComponentShown(java.awt.event.ComponentEvent evt) {
+    private void formComponentShown() {
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(forgotPin);
         KeyboardHandler.applyVirtualKeyboardButtonsProperties(keyboardButtons);
 
-        //Adds the event listener of clicking on the virtual keyboard buttons.
+        // Adds the event listener of clicking on the virtual keyboard buttons.
         /*  Doesn't start on 0 because the first element
         of the array is the clear button and it must NOT have this event listener.  */
         for (int i = 1; i < keyboardButtons.length; i++) {
@@ -519,71 +553,71 @@ public class Login extends javax.swing.JFrame {
         }
     }
 
-    private void headerPanelMouseClicked(java.awt.event.MouseEvent evt) {
+    private void headerPanelMouseClicked() {
         closeVirtualKeyboard();
     }
 
-    private void btnLoginMouseEntered(java.awt.event.MouseEvent evt) {
+    private void btnLoginMouseEntered() {
         btnLogin.setBackground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void btnLoginMouseExited(java.awt.event.MouseEvent evt) {
+    private void btnLoginMouseExited() {
         btnLogin.setBackground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
-    private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnLoginMousePressed() {
         String pin = getCurrentPin(), hashedPin = Hasher.hashPin(pin, salt);
 
         if (pin.isEmpty()) {
-            //Pin field is empty.
+            // Pin field is empty.
             Customization.displayWarningMessage("PIN field is empty.", "Empty PIN!");
         } else if (!hashedPin.equals(masterPin)) {
-            //Wrong PIN.
+            // Wrong PIN.
             Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
             txtPin.setText(null);
         } else {
-            //Session started, user is logged in.
+            // Session started, user is logged in.
             Dashboard dashboard = new Dashboard();
             dashboard.setVisible(true);
             this.dispose();
         }
     }
 
-    private void closeKeyboardMousePressed(java.awt.event.MouseEvent evt) {
+    private void closeKeyboardMousePressed() {
         closeVirtualKeyboard();
     }
 
-    private void txtPinMousePressed(java.awt.event.MouseEvent evt) {
+    private void txtPinMousePressed() {
         openVirtualKeyboard();
     }
 
-    private void forgotPinMousePressed(java.awt.event.MouseEvent evt) {
+    private void forgotPinMousePressed() {
         ForgotPin forgot = new ForgotPin();
         forgot.setVisible(true);
         this.dispose();
     }
 
-    private void mainPanelMousePressed(java.awt.event.MouseEvent evt) {
+    private void mainPanelMousePressed() {
         closeVirtualKeyboard();
     }
 
-    private void btnClearMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnClearMousePressed() {
         txtPin.setText(null);
     }
 
-    private void btnSecondaryCloseMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnSecondaryCloseMousePressed() {
         System.exit(0);
     }
 
-    private void btnMainCloseMousePressed(java.awt.event.MouseEvent evt) {
+    private void btnMainCloseMousePressed() {
         System.exit(0);
     }
 
-    private void forgotPinMouseEntered(java.awt.event.MouseEvent evt) {
+    private void forgotPinMouseEntered() {
         forgotPin.setForeground(Constants.BUTTONS_COLOR_ON_MOUSE_HOVER);
     }
 
-    private void forgotPinMouseExited(java.awt.event.MouseEvent evt) {
+    private void forgotPinMouseExited() {
         forgotPin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
     }
 
@@ -622,7 +656,7 @@ public class Login extends javax.swing.JFrame {
         String buttonNumber = button.getText();
         int pinCurrentLength = txtPin.getPassword().length;
 
-        //Checks if the next number can fit into the 6-digit pin.
+        // Checks if the next number can fit into the 6-digit pin.
         if (pinCurrentLength + 1 < 6)
             addNumberToPin(buttonNumber);
         else if (pinCurrentLength + 1 == 6) {
@@ -653,10 +687,7 @@ public class Login extends javax.swing.JFrame {
 
     public static void main(String args[]) {
         /* Set the theme look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If theme (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -664,56 +695,16 @@ public class Login extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | javax.swing.UnsupportedLookAndFeelException | IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         if (DatabaseHandler.getTablesCount() == 0)
             SQLScriptFileRunner.runScriptFile("init");
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login();
-            }
-        });
+        java.awt.EventQueue.invokeLater(Login::new);
     }
 
-    // Variables declaration - do not modify
-    private javax.swing.JLabel btnClear;
-    private javax.swing.JPanel btnLogin;
-    private javax.swing.JLabel btnMainClose;
-    private javax.swing.JLabel btnSecondaryClose;
-    private javax.swing.JLabel closeKeyboard;
-    private javax.swing.JLabel forgotPin;
-    private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel keyboardHeaderPanel;
-    private javax.swing.JPanel keyboardMainPanel;
-    private javax.swing.JLabel lblNum0;
-    private javax.swing.JLabel lblNum1;
-    private javax.swing.JLabel lblNum2;
-    private javax.swing.JLabel lblNum3;
-    private javax.swing.JLabel lblNum4;
-    private javax.swing.JLabel lblNum5;
-    private javax.swing.JLabel lblNum6;
-    private javax.swing.JLabel lblNum7;
-    private javax.swing.JLabel lblNum8;
-    private javax.swing.JLabel lblNum9;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JLabel separator;
-    private javax.swing.JPasswordField txtPin;
-    // End of variables declaration
 }

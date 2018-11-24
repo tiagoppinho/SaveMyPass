@@ -32,14 +32,14 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Encryptor {
 
-    private String locker, salt;
-
     private final SecretKeySpec key;
 
     private final String KEY_ALGORITHM = "AES", ENCRYPTION_ALGORITHM = "AES/CBC/PKCS5Padding", SECRET_KEY_FACTORY_ALGORITHM =
             "PBKDF2WithHmacSHA256";
 
     private final int ITERATIONS = 10000, KEY_SIZE = 128;
+
+    private String locker, salt;
 
     public Encryptor() {
         load();
@@ -114,6 +114,7 @@ public class Encryptor {
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
         try {
+            assert connection != null;
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Locker");
             resultSet.next();
