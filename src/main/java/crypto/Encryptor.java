@@ -1,9 +1,7 @@
 package crypto;
 
 import handlers.DatabaseHandler;
-import sun.awt.image.GifImageDecoder;
 
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
