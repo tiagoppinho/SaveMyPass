@@ -267,16 +267,16 @@ public class Note extends javax.swing.JFrame {
     }
 
     private void btnAddOrSaveMousePressed() {
-        String noteTitle = txtNoteTitle.getText().trim(), filteredTitle =
-                noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1), description =
-                txtNoteDescription.getText().trim();
+        String noteTitle = txtNoteTitle.getText().trim(), description = txtNoteDescription.getText().trim();
 
-        if (description.isEmpty()) {
+        if (noteTitle.isEmpty() || description.isEmpty()) {
             Customization.displayWarningMessage("Please fill all the note fields.", "Empty field(s)!");
         } else if (exists(noteTitle)) {
             Customization.displayWarningMessage("This note already exists. Make sure you're inserting the right values.",
                     "Duplicated note!");
         } else {
+            String filteredTitle = noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1);
+
             if (index == 0) {
                 Connection connection = DatabaseHandler.getConnection();
 

@@ -340,17 +340,17 @@ public class Card extends javax.swing.JFrame {
     }
 
     private void btnAddOrSaveMousePressed() {
-        String cardTitle = txtCardTitle.getText().trim(),
-                filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1),
-                username = txtUsername.getText().trim(),
+        String cardTitle = txtCardTitle.getText().trim(), username = txtUsername.getText().trim(),
                 password = String.valueOf(txtPassword.getPassword()).trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if ( cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()) {
             Customization.displayWarningMessage("Please fill all the card fields.", "Empty field(s)!");
         } else if (exists(cardTitle, username)) {
             Customization.displayWarningMessage("This card already exists. Make sure you're inserting the right values.",
                     "Duplicated card!");
         } else {
+            String filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1);
+
             if (index == 0) {
                 Connection connection = DatabaseHandler.getConnection();
 
