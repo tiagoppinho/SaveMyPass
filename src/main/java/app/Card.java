@@ -328,10 +328,8 @@ public class Card extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String cardTitle = txtCardTitle.getText().trim(),
-               filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1),
-               username = txtUsername.getText().trim(),
-               password = String.valueOf(txtPassword.getPassword()).trim();
+       String cardTitle = txtCardTitle.getText().trim(), username = txtUsername.getText().trim(),
+              password = String.valueOf(txtPassword.getPassword()).trim();
         
         if(cardTitle.isEmpty() || username.isEmpty() || password.isEmpty()){
             Customization.displayWarningMessage(
@@ -344,6 +342,8 @@ public class Card extends javax.swing.JFrame {
                 "Duplicated card!"
             );
         } else {
+            String filteredTitle = cardTitle.substring(0, 1).toUpperCase() + cardTitle.substring(1);
+
             if(index == 0){
                 Connection connection = DatabaseHandler.getConnection();
 

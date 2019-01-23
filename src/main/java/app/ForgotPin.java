@@ -293,7 +293,7 @@ public class ForgotPin extends javax.swing.JFrame {
                hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
                hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
         
-        if(firstSecurityAnswer.length() == 0 || secondSecurityAnswer.length() == 0) {
+        if(firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty()) {
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
         }else if(!hashedFirstSecurityAnswer.equals(firstAnswer) || !hashedSecondSecurityAnswer.equals(secondAnswer)){
             Customization.displayWarningMessage("Check your answer(s). They are not correct.", "Invalid answer(s)!");

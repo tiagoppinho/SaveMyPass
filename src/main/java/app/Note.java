@@ -259,10 +259,8 @@ public class Note extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddOrSaveMouseExited
 
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
-        String noteTitle = txtNoteTitle.getText().trim(),
-               filteredTitle = noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1),
-               description = txtNoteDescription.getText().trim();
-        
+        String noteTitle = txtNoteTitle.getText().trim(), description = txtNoteDescription.getText().trim();
+
         if(noteTitle.isEmpty() || description.isEmpty()){
             Customization.displayWarningMessage(
                 "Please fill all the note fields.",
@@ -274,6 +272,8 @@ public class Note extends javax.swing.JFrame {
                 "Duplicated note!"
             );
         } else {
+            String filteredTitle = noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1);
+
             if(index == 0){
                 Connection connection = DatabaseHandler.getConnection();
 
