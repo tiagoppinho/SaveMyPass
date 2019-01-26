@@ -16,10 +16,6 @@ Simple offline password manager initially made for my own use and as an academic
 * Notes.
 * Delete all database (for emergencies).
 
-## Future Features (Coming soon)
-
-* AES-256 data encryption.
-
 ## How to use this software
 
 * Download the [latest release](https://github.com/tiagoppinho/PasswordManager/releases/latest).
