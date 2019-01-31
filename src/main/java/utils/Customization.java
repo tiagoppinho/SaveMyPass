@@ -27,6 +27,7 @@ public class Customization {
      *
      * @param jLabel JLabel where the underlined text font will be applied.
      */
+    @SuppressWarnings("unchecked")
     public static void underlineText(JLabel jLabel) {
         Font font = jLabel.getFont();
         Map attributes = font.getAttributes();
