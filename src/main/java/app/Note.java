@@ -20,8 +20,8 @@ import utils.Customization;
  */
 public class Note extends javax.swing.JFrame {
 
-    private Dashboard dashboard = null;
-    private int noteIdentifier = -1, index = 0;
+    private Dashboard dashboard;
+    private int noteIdentifier = -1, index;
     private final Encryptor encryptor = new Encryptor();
 
     private ArrayList<String> noteTitles = new ArrayList<>();
@@ -30,7 +30,6 @@ public class Note extends javax.swing.JFrame {
 
     //View mode only.
     private String[] oldValues = new String[2];
-    private String oldNoteTitle, oldNoteDescription;
 
     public Note(Dashboard dashboard, int noteIdentifier) {
         if (dashboard != null) {

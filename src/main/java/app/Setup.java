@@ -16,7 +16,7 @@ import java.util.Base64;
  */
 public class Setup extends javax.swing.JFrame {
 
-    private String pin = null, salt = null;
+    private String pin, salt;
 
     public Setup(String pin, String salt) {
         Customization.applyCustomIcons(this);

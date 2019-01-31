@@ -678,11 +678,7 @@ public class Login extends javax.swing.JFrame {
             SQLScriptFileRunner.runScriptFile("init");
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login();
-            }
-        });
+        java.awt.EventQueue.invokeLater(Login::new);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

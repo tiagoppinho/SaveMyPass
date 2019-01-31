@@ -20,8 +20,8 @@ import javax.swing.JOptionPane;
  */
 public class Card extends javax.swing.JFrame {
 
-    private Dashboard dashboard = null;
-    private int cardIdentifier = -1, index = 0;
+    private Dashboard dashboard;
+    private int cardIdentifier = -1, index;
     private final Encryptor encryptor = new Encryptor();
 
     private ArrayList<String> cardTitles = new ArrayList<>(), cardUsernames = new ArrayList<>();
@@ -30,7 +30,6 @@ public class Card extends javax.swing.JFrame {
 
     //View mode only.
     private String[] oldValues = new String[3];
-    private String oldCardTitle, oldCardUsername, oldCardPassword;
     private boolean isFavorite = false;
 
     public Card(Dashboard dashboard, int cardIdentifier) {

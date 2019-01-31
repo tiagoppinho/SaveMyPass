@@ -19,15 +19,15 @@ import javax.swing.JPasswordField;
  */
 public class NewPin extends javax.swing.JFrame {
 
-    private int index = 0;
+    private int index;
 
     //Virtual keyboard handler.
     private boolean isKeyboardOpen = false;
-    private JLabel[] keyboardButtons = new JLabel[11];
+    private JLabel[] keyboardButtons;
 
     private String currentMasterPin = null, currentSalt = null;
 
-    private Connection connection = null;
+    private Connection connection;
 
     //0 - Forgot PIN
     //1 - First Time

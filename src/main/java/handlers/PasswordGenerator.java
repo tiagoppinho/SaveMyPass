@@ -38,7 +38,7 @@ public class PasswordGenerator {
         Random rnd = new Random();
         while (generatedPassword.toString().length() < length) {
             int next = rnd.nextInt(characters.length());
-            generatedPassword.append(String.valueOf(characters.charAt(next)));
+            generatedPassword.append(characters.charAt(next));
         }
         return generatedPassword.toString();
     }

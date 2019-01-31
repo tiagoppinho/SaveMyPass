@@ -29,7 +29,7 @@ import sql.SQLScriptFileRunner;
 public class Dashboard extends javax.swing.JFrame {
 
     private final String[] TITLES = new String[] { "All cards", "Favorites", "Notes", "Settings" };
-    private JLabel[] titleButtons = new JLabel[4];
+    private JLabel[] titleButtons;
 
     private Encryptor encryptor = new Encryptor();
 
@@ -38,17 +38,17 @@ public class Dashboard extends javax.swing.JFrame {
                                noteIdentifiers = new ArrayList<>();
 
     /* -------------------- Side Panel ---------------------- */
-    private Component[] sidePanelButtons = new JPanel[4];
+    private Component[] sidePanelButtons;
     private Component activeSidePanelButton;
-    private JLabel[] sidePanelButtonsMarker = new JLabel[4];
+    private JLabel[] sidePanelButtonsMarker;
     /* ------------------------------------------------------ */
 
     /* -------------------- Main Panels --------------------- */
-    private JPanel[] mainPanels = new JPanel[4];
+    private JPanel[] mainPanels;
     /* ------------------------------------------------------ */
 
     /* -------------------- Auto Logout --------------------- */
-    public final Timer autoLogoutTimer;
+    final Timer autoLogoutTimer;
     //Represents the number of seconds without activity.
     private int autoLogoutCounter = 0,
                 //Number of seconds defined by the user.
@@ -60,8 +60,8 @@ public class Dashboard extends javax.swing.JFrame {
         "passwordLength", "passwordUppercase", "passwordLowercase", "passwordNumbers",
         "passwordSpecialCharacters", "autoLogoutEnabled", "autoLogoutTimerIndex"
     };
-    private JCheckBox[] passwordGeneratorSettingsCheckBoxes = new JCheckBox[4];
-    private int[] oldSettings = new int[7], newSettings = new int[7];
+    private JCheckBox[] passwordGeneratorSettingsCheckBoxes;
+    private int[] oldSettings = new int[7], newSettings;
     private boolean isSaveSettingsActive = false;
     /* ----------------------------------------------------------------------------- */
 
@@ -149,7 +149,7 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Loads and updates cards related data.
      */
-    public void loadCards() {
+    void loadCards() {
         this.cardIdentifiers.clear();
         this.favoriteIdentifiers.clear();
         customModelAllCards.setRowCount(0);
@@ -187,7 +187,7 @@ public class Dashboard extends javax.swing.JFrame {
     /**
      * Loads and updates notes related data.
      */
-    public void loadNotes() {
+    void loadNotes() {
         this.noteIdentifiers.clear();
         customModelNotes.setRowCount(0);
 
@@ -1278,33 +1278,6 @@ public class Dashboard extends javax.swing.JFrame {
     }
 
     /**
-     * Returns the "All Cards" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getAllCardsTableModel() {
-        return customModelAllCards;
-    }
-
-    /**
-     * Returns the "Favorites" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getFavoritesTableModel() {
-        return customModelFavorites;
-    }
-
-    /**
-     * Returns the "Notes" table model.
-     *
-     * @return DefaultTableModel
-     */
-    public DefaultTableModel getNotesTableModel() {
-        return customModelNotes;
-    }
-
-    /**
      * Sets the save settings button visible if not visible.
      */
     private void activateSaveSettingsButton() {
@@ -1536,11 +1509,7 @@ public class Dashboard extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Dashboard().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
