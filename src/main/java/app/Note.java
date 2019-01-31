@@ -2,6 +2,7 @@ package app;
 
 import crypto.Encryptor;
 import handlers.DatabaseHandler;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
 import utils.Constants;
 import utils.Customization;
 
@@ -21,27 +23,27 @@ public class Note extends javax.swing.JFrame {
     private Dashboard dashboard = null;
     private int noteIdentifier = -1, index = 0;
     private final Encryptor encryptor = new Encryptor();
-    
+
     private ArrayList<String> noteTitles = new ArrayList<>();
-    
-    private final String[] VALUES_COLUMNS = {"title", "description"};
-    
+
+    private final String[] VALUES_COLUMNS = { "title", "description" };
+
     //View mode only.
     private String[] oldValues = new String[2];
     private String oldNoteTitle, oldNoteDescription;
-       
+
     public Note(Dashboard dashboard, int noteIdentifier) {
-        if(dashboard != null){
+        if (dashboard != null) {
             this.dashboard = dashboard;
             dashboard.autoLogoutTimer.stop();
-            
-            if(noteIdentifier == -1){
+
+            if (noteIdentifier == -1) {
                 this.index = 0;
             } else {
                 this.index = 1;
                 this.noteIdentifier = noteIdentifier;
             }
-            
+
             dashboard.setEnabled(false);
             Customization.applyCustomIcons(this);
             initComponents();
@@ -51,7 +53,7 @@ public class Note extends javax.swing.JFrame {
             throw new IllegalArgumentException("Dashboard instance is required.");
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -104,22 +106,16 @@ public class Note extends javax.swing.JFrame {
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        headerPanelLayout.setHorizontalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(headerPanelLayout.createSequentialGroup().addGap(50, 50, 50)
+                        .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19).addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(21, Short.MAX_VALUE)));
+        headerPanelLayout.setVerticalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE).addGroup(
+                        headerPanelLayout.createSequentialGroup().addGap(14, 14, 14)
+                                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 20,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)));
 
         mainPanel.setBackground(new java.awt.Color(250, 250, 250));
         mainPanel.setName(""); // NOI18N
@@ -144,30 +140,23 @@ public class Note extends javax.swing.JFrame {
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNoteTitle)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtNoteTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
+        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createSequentialGroup().addGap(28, 28, 28).addGroup(
+                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 164,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE).addComponent(txtNoteTitle)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                        .addContainerGap(40, Short.MAX_VALUE)));
+        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                mainPanelLayout.createSequentialGroup().addGap(22, 22, 22).addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtNoteTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(18, 18, 18).addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 90,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(19, Short.MAX_VALUE)));
 
         footerPanel.setBackground(new java.awt.Color(250, 250, 250));
         footerPanel.setMinimumSize(new java.awt.Dimension(380, 70));
@@ -187,9 +176,11 @@ public class Note extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnAddOrSaveMousePressed(evt);
             }
@@ -204,9 +195,11 @@ public class Note extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnDeleteMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnDeleteMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnDeleteMousePressed(evt);
             }
@@ -216,31 +209,30 @@ public class Note extends javax.swing.JFrame {
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(footerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
-                .addComponent(footerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 49, Short.MAX_VALUE)
-                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 69, Short.MAX_VALUE)))
-        );
+        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(footerPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(headerPanel, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))).addGroup(
+                        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                layout.createSequentialGroup().addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))));
+        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                layout.createSequentialGroup()
+                        .addComponent(headerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
+                        .addComponent(footerPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 70,
+                                javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                        layout.createSequentialGroup().addGap(0, 49, Short.MAX_VALUE)
+                                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 69, Short.MAX_VALUE))));
 
         pack();
         setLocationRelativeTo(null);
@@ -261,45 +253,38 @@ public class Note extends javax.swing.JFrame {
     private void btnAddOrSaveMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAddOrSaveMousePressed
         String noteTitle = txtNoteTitle.getText().trim(), description = txtNoteDescription.getText().trim();
 
-        if(noteTitle.isEmpty() || description.isEmpty()){
-            Customization.displayWarningMessage(
-                "Please fill all the note fields.",
-                "Empty field(s)!"
-            );
-        }else if(exists(noteTitle)){
-            Customization.displayWarningMessage(
-                "This note already exists. Make sure you're inserting the right values.",
-                "Duplicated note!"
-            );
+        if (noteTitle.isEmpty() || description.isEmpty()) {
+            Customization.displayWarningMessage("Please fill all the note fields.", "Empty field(s)!");
+        } else if (exists(noteTitle)) {
+            Customization.displayWarningMessage("This note already exists. Make sure you're inserting the right values.",
+                    "Duplicated note!");
         } else {
             String filteredTitle = noteTitle.substring(0, 1).toUpperCase() + noteTitle.substring(1);
 
-            if(index == 0){
+            if (index == 0) {
                 Connection connection = DatabaseHandler.getConnection();
 
-                try{
-                    PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO Notes (title, description) VALUES (?, ?)"
-                    );
+                try {
+                    PreparedStatement statement = connection
+                            .prepareStatement("INSERT INTO Notes (title, description) VALUES (?, ?)");
                     statement.setString(1, encryptor.encrypt(filteredTitle));
                     statement.setString(2, encryptor.encrypt(description));
                     statement.executeUpdate();
                     statement.close();
                     connection.close();
-                } catch(SQLException ex) {
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             } else {
-                String[] values = {filteredTitle, description};
+                String[] values = { filteredTitle, description };
                 Connection connection = DatabaseHandler.getConnection();
                 PreparedStatement statement;
-                
-                for(int i = 0; i < values.length; i++){
-                    if(!values[i].equals(oldValues[i])){
+
+                for (int i = 0; i < values.length; i++) {
+                    if (!values[i].equals(oldValues[i])) {
                         try {
-                            statement = connection.prepareStatement(
-                                "UPDATE Notes SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?"
-                            );
+                            statement = connection
+                                    .prepareStatement("UPDATE Notes SET " + VALUES_COLUMNS[i] + " = ? WHERE ID = ?");
                             statement.setString(1, encryptor.encrypt(values[i]));
                             statement.setInt(2, noteIdentifier);
                             statement.executeUpdate();
@@ -309,10 +294,10 @@ public class Note extends javax.swing.JFrame {
                         }
                     }
                 }
-                
-                try{
+
+                try {
                     connection.close();
-                } catch(SQLException ex){
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -323,8 +308,8 @@ public class Note extends javax.swing.JFrame {
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
-        
-        if(index == 1){
+
+        if (index == 1) {
             this.setTitle("SaveMyPass - View Note");
             title.setText("View Note");
             btnAddOrSave.setText("Save");
@@ -342,22 +327,17 @@ public class Note extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteMouseExited
 
     private void btnDeleteMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMousePressed
-        int confirm = Customization.displayConfirmMessage(
-            "Are you sure you want to delete this note?",
-            "Delete note"
-        );
+        int confirm = Customization.displayConfirmMessage("Are you sure you want to delete this note?", "Delete note");
 
-        if(confirm == JOptionPane.YES_OPTION){
+        if (confirm == JOptionPane.YES_OPTION) {
             Connection connection = DatabaseHandler.getConnection();
-            try{
-                PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM Notes WHERE ID = ?"
-                );
+            try {
+                PreparedStatement statement = connection.prepareStatement("DELETE FROM Notes WHERE ID = ?");
                 statement.setInt(1, noteIdentifier);
                 statement.executeUpdate();
                 statement.close();
                 connection.close();
-            } catch(SQLException ex){
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             dashboard.loadNotes();
@@ -368,88 +348,86 @@ public class Note extends javax.swing.JFrame {
     /**
      * Closes this frame and enables dashboard.
      */
-    private void close(){
+    private void close() {
         this.dispose();
         dashboard.setEnabled(true);
         dashboard.requestFocus();
         dashboard.autoLogoutTimer.start();
     }
-    
+
     /**
      * Checks if note already exist based on it's title.
      * Helps preventing duplicated notes.
      */
-    private boolean exists(String title){
+    private boolean exists(String title) {
         boolean titleExists = false;
-        
-        for (String noteTitle : noteTitles){
-            if(title.equals(noteTitle)){
+
+        for (String noteTitle : noteTitles) {
+            if (title.equals(noteTitle)) {
                 titleExists = true;
                 break;
             }
         }
-        
+
         return titleExists;
     }
-    
+
     /**
      * Loads all the needed data to compare with new values.
      */
-    private void load(){
+    private void load() {
         Connection connection = DatabaseHandler.getConnection();
-        
-        try{
-            if(index == 0){
+
+        try {
+            if (index == 0) {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT title FROM Notes");
-                
-                while(resultSet.next()){
+
+                while (resultSet.next()) {
                     noteTitles.add(encryptor.decrypt(resultSet.getString("title")));
                 }
-                
+
                 resultSet.close();
                 statement.close();
             } else {
-                PreparedStatement statement = connection.prepareStatement(
-                    "SELECT title FROM Notes WHERE ID <> ?"
-                );
+                PreparedStatement statement = connection.prepareStatement("SELECT title FROM Notes WHERE ID <> ?");
                 statement.setInt(1, noteIdentifier);
-                
+
                 ResultSet resultSet = statement.executeQuery();
-                
-                while(resultSet.next()){
+
+                while (resultSet.next()) {
                     noteTitles.add(encryptor.decrypt(resultSet.getString("title")));
                 }
-                
+
                 resultSet.close();
                 statement.close();
-                
+
                 statement = connection.prepareStatement("SELECT title, description FROM Notes WHERE ID = ?");
                 statement.setInt(1, noteIdentifier);
-                
+
                 resultSet = statement.executeQuery();
-                
-                for(int i = 0; i < oldValues.length; i++)
+
+                for (int i = 0; i < oldValues.length; i++)
                     oldValues[i] = encryptor.decrypt(resultSet.getString(VALUES_COLUMNS[i]));
-                                
+
                 txtNoteTitle.setText(oldValues[0]);
                 txtNoteDescription.setText(oldValues[1]);
-                
+
                 resultSet.close();
                 statement.close();
             }
-            
+
             connection.close();
-        } catch(SQLException ex) {
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
-    
+
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

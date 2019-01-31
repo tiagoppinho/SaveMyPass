@@ -1,6 +1,7 @@
 package crypto;
 
 import handlers.DatabaseHandler;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -26,12 +27,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Class responsible for encryption/decryption using AES-128.
+ *
  * @author Tiago Pinho
  */
 public class Encryptor {
-    
+
     private String locker, salt;
-        
+
     private final SecretKeySpec key;
         
     private final String KEY_ALGORITHM = "AES",
@@ -44,15 +46,16 @@ public class Encryptor {
         load();
         this.key = generateKey();
     }
-    
+
     /**
      * Encrypts a string using AES-128.
+     *
      * @param string String to encrypt.
      * @return String - encrypted string.
      */
-    public String encrypt(String string){
+    public String encrypt(String string) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try{
+        try {
             Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV(),
@@ -60,16 +63,17 @@ public class Encryptor {
             
             outputStream.write(iv);
             outputStream.write(encryptedString);
-            
+
             return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-        }catch(IOException | InvalidKeyException | InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException ex){
+        } catch (IOException | InvalidKeyException | InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
             System.out.println(ex.toString());
         }
         return null;
     }
-    
+
     /**
      * Decrypts an AES-128 encrypted string.
+     *
      * @param encryptedString Encrypted string to decrypt.
      * @return String - decrypted string.
      */
@@ -81,37 +85,37 @@ public class Encryptor {
             
             Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
-            
+
             return new String(cipher.doFinal(encrypted));
-        }catch(InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex){
+        } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
             System.out.println(ex.toString());
         }
         return null;
     }
-    
+
     /**
      * Generates the SecretKeySpec based on locker and salt.
+     *
      * @return SecretKeySpec - Generated key.
      */
-    private SecretKeySpec generateKey(){
-        try{
+    private SecretKeySpec generateKey() {
+        try {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(SECRET_KEY_FACTORY_ALGORITHM);
-            PBEKeySpec keySpec = new PBEKeySpec(locker.toCharArray(), salt.getBytes(),
-                                             ITERATIONS, KEY_SIZE);
+            PBEKeySpec keySpec = new PBEKeySpec(locker.toCharArray(), salt.getBytes(), ITERATIONS, KEY_SIZE);
             SecretKey secretKey = keyFactory.generateSecret(keySpec);
             return new SecretKeySpec(secretKey.getEncoded(), KEY_ALGORITHM);
-        }catch(NoSuchAlgorithmException | InvalidKeySpecException ex){
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             System.out.println(ex.toString());
         }
         return null;
     }
-    
+
     /**
      * Loads the data neeeded for encryption/decryption.
      */
-    private void load(){
+    private void load() {
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM Locker");
             resultSet.next();
@@ -120,7 +124,7 @@ public class Encryptor {
             resultSet.close();
             statement.close();
             connection.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.toString());
         }
     }

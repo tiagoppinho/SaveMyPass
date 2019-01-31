@@ -5,29 +5,31 @@ import handlers.DatabaseHandler;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JLabel;
+
 import sql.SQLScriptFileRunner;
 
 /**
  * @author Tiago Pinho
  */
 public class Login extends javax.swing.JFrame {
-    
+
     //Virtual keyboard handler.
     private boolean isKeyboardOpen = false;
     private JLabel[] keyboardButtons = new JLabel[11];
-    
+
     private String masterPin = null, salt = null;
-    
+
     private boolean isFirstTime = false;
-      
+
     public Login() {
         load();
-        if(!isFirstTime) {
+        if (!isFirstTime) {
             Customization.applyCustomIcons(this);
             initComponents();
             this.keyboardButtons = new JLabel[]{btnClear, lblNum0, lblNum1, lblNum2,lblNum3,
@@ -37,33 +39,33 @@ public class Login extends javax.swing.JFrame {
             //Makes sure that database is cleaned and settings are set as default.
             //Security reasons.
             SQLScriptFileRunner.runScriptFile("panic");
-            
+
             //Proceed to new pin and setup.
             NewPin firstTimeSetup = new NewPin(1);
             firstTimeSetup.setVisible(true);
         }
     }
-    
+
     /**
      * Loads the Login data and checks if it's the first time using the app, based on the available database data.
      */
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
-        try{
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM User");
-            
-            if(!resultSet.next())
+
+            if (!resultSet.next())
                 this.isFirstTime = true;
-            else{
+            else {
                 this.masterPin = resultSet.getString("pin");
                 this.salt = resultSet.getString("salt");
             }
-            
+
             resultSet.close();
             statement.close();
             connection.close();
-        }catch(SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
@@ -144,41 +146,24 @@ public class Login extends javax.swing.JFrame {
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
-        headerPanelLayout.setHorizontalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel3)
-                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                        .addComponent(btnMainClose)
-                        .addGap(18, 18, 18))
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel2)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        headerPanelLayout.setVerticalGroup(
-            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(headerPanelLayout.createSequentialGroup()
-                .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addGroup(headerPanelLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel1)
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel2))))
-                    .addGroup(headerPanelLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(btnMainClose)))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
+        headerPanelLayout.setHorizontalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(headerPanelLayout.createSequentialGroup().addGap(28, 28, 28).addComponent(jLabel3).addGroup(
+                        headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(8, 8, 8).addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                                        .addComponent(btnMainClose).addGap(18, 18, 18)).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(29, 29, 29).addComponent(jLabel2)
+                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))));
+        headerPanelLayout.setVerticalGroup(headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(headerPanelLayout.createSequentialGroup().addGroup(
+                        headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(29, 29, 29).addGroup(
+                                        headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel3).addGroup(
+                                                headerPanelLayout.createSequentialGroup().addGap(2, 2, 2).addComponent(jLabel1)
+                                                        .addGap(2, 2, 2).addComponent(jLabel2)))).addGroup(
+                                headerPanelLayout.createSequentialGroup().addGap(19, 19, 19).addComponent(btnMainClose)))
+                        .addContainerGap(43, Short.MAX_VALUE)));
 
         getContentPane().add(headerPanel);
         headerPanel.setBounds(0, 0, 320, 120);
@@ -213,9 +198,11 @@ public class Login extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnLoginMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 btnLoginMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 btnLoginMousePressed(evt);
             }
@@ -227,20 +214,12 @@ public class Login extends javax.swing.JFrame {
 
         javax.swing.GroupLayout btnLoginLayout = new javax.swing.GroupLayout(btnLogin);
         btnLogin.setLayout(btnLoginLayout);
-        btnLoginLayout.setHorizontalGroup(
-            btnLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnLoginLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addContainerGap(17, Short.MAX_VALUE))
-        );
-        btnLoginLayout.setVerticalGroup(
-            btnLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btnLoginLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addComponent(jLabel5)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        btnLoginLayout.setHorizontalGroup(btnLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                btnLoginLayout.createSequentialGroup().addGap(18, 18, 18).addComponent(jLabel5)
+                        .addContainerGap(17, Short.MAX_VALUE)));
+        btnLoginLayout.setVerticalGroup(btnLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                btnLoginLayout.createSequentialGroup().addGap(10, 10, 10).addComponent(jLabel5)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         forgotPin.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         forgotPin.setForeground(new java.awt.Color(51, 153, 255));
@@ -250,9 +229,11 @@ public class Login extends javax.swing.JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 forgotPinMouseEntered(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 forgotPinMouseExited(evt);
             }
+
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 forgotPinMousePressed(evt);
             }
@@ -264,44 +245,43 @@ public class Login extends javax.swing.JFrame {
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel7)
-                            .addComponent(txtPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(forgotPin)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
-                .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mainPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(forgotPin))))
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        mainPanelLayout.setHorizontalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createSequentialGroup().addGroup(
+                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                mainPanelLayout.createSequentialGroup().addGap(69, 69, 69).addGroup(
+                                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                                .addComponent(jLabel7)
+                                                .addComponent(txtPin, javax.swing.GroupLayout.PREFERRED_SIZE, 173,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(mainPanelLayout.createSequentialGroup().addContainerGap().addComponent(forgotPin)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                        .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 2,
+                                javax.swing.GroupLayout.PREFERRED_SIZE).addGap(17, 17, 17)));
+        mainPanelLayout.setVerticalGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                mainPanelLayout.createSequentialGroup().addGroup(
+                        mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addGroup(
+                                mainPanelLayout.createSequentialGroup().addGap(45, 45, 45).addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtPin, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(mainPanelLayout.createSequentialGroup()
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                                        mainPanelLayout.createSequentialGroup().addPreferredGap(
+                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                .addComponent(forgotPin)))).addGroup(
+                                mainPanelLayout.createSequentialGroup().addGap(9, 9, 9)
+                                        .addComponent(separator, javax.swing.GroupLayout.PREFERRED_SIZE, 180,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
         getContentPane().add(mainPanel);
         mainPanel.setBounds(0, 120, 320, 200);
@@ -326,25 +306,21 @@ public class Login extends javax.swing.JFrame {
         javax.swing.GroupLayout keyboardHeaderPanelLayout = new javax.swing.GroupLayout(keyboardHeaderPanel);
         keyboardHeaderPanel.setLayout(keyboardHeaderPanelLayout);
         keyboardHeaderPanelLayout.setHorizontalGroup(
-            keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, keyboardHeaderPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(keyboardHeaderPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSecondaryClose))
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
-                .addGap(20, 20, 20))
-        );
+                keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                keyboardHeaderPanelLayout.createSequentialGroup().addContainerGap().addGroup(
+                                        keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(keyboardHeaderPanelLayout.createSequentialGroup()
+                                                        .addGap(0, 0, Short.MAX_VALUE).addComponent(btnSecondaryClose))
+                                                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 210,
+                                                        Short.MAX_VALUE)).addGap(20, 20, 20)));
         keyboardHeaderPanelLayout.setVerticalGroup(
-            keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, keyboardHeaderPanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(btnSecondaryClose)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                .addComponent(jLabel8)
-                .addContainerGap())
-        );
+                keyboardHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                keyboardHeaderPanelLayout.createSequentialGroup().addGap(19, 19, 19)
+                                        .addComponent(btnSecondaryClose)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                        .addComponent(jLabel8).addContainerGap()));
 
         getContentPane().add(keyboardHeaderPanel);
         keyboardHeaderPanel.setBounds(320, 0, 240, 120);
@@ -446,63 +422,76 @@ public class Login extends javax.swing.JFrame {
         javax.swing.GroupLayout keyboardMainPanelLayout = new javax.swing.GroupLayout(keyboardMainPanel);
         keyboardMainPanel.setLayout(keyboardMainPanelLayout);
         keyboardMainPanelLayout.setHorizontalGroup(
-            keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                .addComponent(closeKeyboard)
-                .addGap(28, 28, 28)
-                .addGroup(keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                        .addComponent(lblNum7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNum8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNum9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                        .addComponent(lblNum4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNum5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNum6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                        .addComponent(lblNum1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(lblNum2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblNum3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                        .addComponent(lblNum0, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(57, Short.MAX_VALUE))
-        );
+                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                        keyboardMainPanelLayout.createSequentialGroup().addComponent(closeKeyboard).addGap(28, 28, 28).addGroup(
+                                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                                        keyboardMainPanelLayout.createSequentialGroup()
+                                                .addComponent(lblNum7, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblNum8, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblNum9, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(
+                                        keyboardMainPanelLayout.createSequentialGroup()
+                                                .addComponent(lblNum4, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblNum5, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblNum6, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(
+                                        keyboardMainPanelLayout.createSequentialGroup()
+                                                .addComponent(lblNum1, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE).addGap(10, 10, 10)
+                                                .addComponent(lblNum2, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(lblNum3, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(
+                                        keyboardMainPanelLayout.createSequentialGroup()
+                                                .addComponent(lblNum0, javax.swing.GroupLayout.PREFERRED_SIZE, 37,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 84,
+                                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(57, Short.MAX_VALUE)));
         keyboardMainPanelLayout.setVerticalGroup(
-            keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(keyboardMainPanelLayout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNum1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum2, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNum4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNum7, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum8, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum9, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(11, 11, 11)
-                .addGroup(keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNum0, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, keyboardMainPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(closeKeyboard)
-                .addContainerGap())
-        );
+                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(
+                        keyboardMainPanelLayout.createSequentialGroup().addGap(27, 27, 27).addGroup(
+                                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblNum1, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum2, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum3, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(
+                                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblNum4, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum5, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum6, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(
+                                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblNum7, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum8, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum9, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(11, 11, 11).addGroup(
+                                keyboardMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblNum0, javax.swing.GroupLayout.PREFERRED_SIZE, 28,
+                                                javax.swing.GroupLayout.PREFERRED_SIZE)).addContainerGap(28, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, keyboardMainPanelLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(closeKeyboard).addContainerGap()));
 
         getContentPane().add(keyboardMainPanel);
         keyboardMainPanel.setBounds(320, 120, 240, 200);
@@ -510,12 +499,12 @@ public class Login extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         Customization.applyDraggability(headerPanel, this);
         Customization.underlineText(forgotPin);
         KeyboardHandler.applyVirtualKeyboardButtonsProperties(keyboardButtons);
-        
+
         //Adds the event listener of clicking on the virtual keyboard buttons.
         /*  Doesn't start on 0 because the first element
         of the array is the clear button and it must NOT have this event listener.  */
@@ -528,7 +517,7 @@ public class Login extends javax.swing.JFrame {
             });
         }
     }//GEN-LAST:event_formComponentShown
-            
+
     private void headerPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_headerPanelMouseClicked
         closeVirtualKeyboard();
     }//GEN-LAST:event_headerPanelMouseClicked
@@ -543,20 +532,20 @@ public class Login extends javax.swing.JFrame {
 
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
         String pin = getCurrentPin(), hashedPin = Hasher.hashPin(pin, salt);
-        
-        if(pin.isEmpty()) {
+
+        if (pin.isEmpty()) {
             //Pin field is empty.
             Customization.displayWarningMessage("PIN field is empty.", "Empty PIN!");
-        }else if(!hashedPin.equals(masterPin)) {
+        } else if (!hashedPin.equals(masterPin)) {
             //Wrong PIN.
             Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
             txtPin.setText(null);
-        }else{
+        } else {
             //Session started, user is logged in.
             Dashboard dashboard = new Dashboard();
             dashboard.setVisible(true);
             this.dispose();
-        }        
+        }
     }//GEN-LAST:event_btnLoginMousePressed
 
     private void closeKeyboardMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeKeyboardMousePressed
@@ -596,12 +585,12 @@ public class Login extends javax.swing.JFrame {
     private void forgotPinMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotPinMouseExited
         forgotPin.setForeground(Constants.BUTTONS_DEFAULT_COLOR);
     }//GEN-LAST:event_forgotPinMouseExited
-    
+
     /**
      * If the virtual keyboard is closed, opens it.
      */
     private void openVirtualKeyboard() {
-        if(!isKeyboardOpen) {
+        if (!isKeyboardOpen) {
             this.setSize(Constants.LOGIN_SIZE_WITH_KEYBOARD);
             btnMainClose.setVisible(false);
             separator.setBackground(Constants.KEYBOARD_SEPARATOR_COLOR_ON_KEYBOARD_OPEN);
@@ -609,60 +598,63 @@ public class Login extends javax.swing.JFrame {
             isKeyboardOpen = true;
         }
     }
-    
+
     /**
      * If the virtual keyboard is opened, closes it.
      */
     private void closeVirtualKeyboard() {
-        if(isKeyboardOpen) {
+        if (isKeyboardOpen) {
             this.setSize(Constants.LOGIN_DEFAULT_SIZE);
             btnMainClose.setVisible(true);
             separator.setBackground(Constants.KEYBOARD_SEPARATOR_COLOR_ON_KEYBOARD_CLOSE);
             isKeyboardOpen = false;
         }
     }
-    
+
     /**
      * Handles the mouse pressed event of keyboard buttons.
+     *
      * @param evt MouseEvent
      */
     private void keyboardButtonsMousePressed(java.awt.event.MouseEvent evt) {
         JLabel button = (JLabel) evt.getComponent();
         String buttonNumber = button.getText();
         int pinCurrentLength = txtPin.getPassword().length;
-        
+
         //Checks if the next number can fit into the 6-digit pin.
-        if(pinCurrentLength + 1 < 6)
+        if (pinCurrentLength + 1 < 6)
             addNumberToPin(buttonNumber);
-        else if(pinCurrentLength + 1 == 6) {
+        else if (pinCurrentLength + 1 == 6) {
             addNumberToPin(buttonNumber);
             closeVirtualKeyboard();
         } else
             closeVirtualKeyboard();
     }
-    
+
     /**
      * Adds the new number entered by the virtual keyboard to the pin field.
+     *
      * @param number Number to be added (String).
      */
     private void addNumberToPin(String number) {
         String currentPin = getCurrentPin();
         txtPin.setText(currentPin + number);
     }
-    
+
     /**
      * Gets the current pin from the pin field and returns it as a string.
+     *
      * @return String
      */
     private String getCurrentPin() {
         return String.valueOf(txtPin.getPassword());
     }
-    
+
     public static void main(String args[]) {
         /* Set the theme look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If theme (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -682,7 +674,7 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        if(DatabaseHandler.getTablesCount() == 0)
+        if (DatabaseHandler.getTablesCount() == 0)
             SQLScriptFileRunner.runScriptFile("init");
 
         /* Create and display the form */
