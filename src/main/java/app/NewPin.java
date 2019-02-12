@@ -666,12 +666,9 @@ public class NewPin extends javax.swing.JFrame {
             loadCurrentPin();
         }
 
-        //Adds the event listener of clicking on the virtual keyboard buttons.
-        /*  Only applies the event listener when i > 0, because the first
-        element of the array is the clear button.  */
-        int i = 0;
+        //Adds the event listener of clicking on the virtual keyboard numbered buttons.
         for (JLabel keyboardButton : keyboardButtons) {
-            if (i > 0) {
+            if (!keyboardButton.getText().toLowerCase().equals("clear")) {
                 keyboardButton.addMouseListener(new java.awt.event.MouseAdapter() {
                     @Override
                     public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -679,7 +676,6 @@ public class NewPin extends javax.swing.JFrame {
                     }
                 });
             }
-            i++;
         }
     }//GEN-LAST:event_formComponentShown
 
