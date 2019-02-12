@@ -39,10 +39,13 @@ public class DatabaseHandler {
     }
 
     /**
-     * Initializes database in case tables are missing.
-     * This operation does NOT close the database connection.
+     * Retrieves the number of tables in database.
      *
-     * @return Integer Number of tables in database.
+     * @return Integer
+     * <br>
+     *     Number of tables in database.
+     * <br>
+     *     Returns 0 if no tables were found.
      */
     public static int getTablesCount() {
         Connection connection = DatabaseHandler.getConnection();
