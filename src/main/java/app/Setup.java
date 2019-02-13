@@ -1,15 +1,16 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.DatabaseHandler;
+import utils.Base64Utils;
 import utils.Customization;
 import utils.Constants;
 import crypto.Hasher;
 
-import java.security.SecureRandom;
+import javax.crypto.spec.SecretKeySpec;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Base64;
 
 /**
  * @author Tiago Pinho
@@ -274,32 +275,31 @@ public class Setup extends javax.swing.JFrame {
 
         if (firstSecurityAnswer.isEmpty() || secondSecurityAnswer.isEmpty())
             Customization.displayWarningMessage("Please fill both answers.", "Empty answer(s)!");
-        else if (pin != null) {
+        else {
             //Hash data.
             String hashedFirstSecurityAnswer = Hasher.hashSecurityAnswer(firstSecurityAnswer),
                     hashedSecondSecurityAnswer = Hasher.hashSecurityAnswer(secondSecurityAnswer);
 
-            //Locker data.
-            byte[] locker = new byte[32], lockerSalt = new byte[16];
-            SecureRandom random = new SecureRandom();
-            random.nextBytes(locker);
-            random.nextBytes(lockerSalt);
+
+
+            //First time crypto data.
+            final String hashedPin = Hasher.hashPin(pin, salt);
+            final SecretKeySpec uKey = Encryptor.generateCustomKey(Hasher.generateSecureRandom(128), Hasher.generateSalt());
+            final String uKeySalt = Hasher.generateSalt();
+            final String uKeyString = Base64Utils.toBase64(uKey.getEncoded());
 
             //Send data to database.
             Connection connection = DatabaseHandler.getConnection();
             try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?)");
-                statement.setString(1, pin);
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                statement.setString(1, Encryptor.customEncrypt(hashedPin, uKey));
                 statement.setString(2, salt);
+                statement.setString(3, Encryptor.customEncrypt(uKeyString, Encryptor.generateCustomKey(pin, uKeySalt)));
+                statement.setString(4, uKeySalt);
                 statement.setString(3, firstSecurityQuestion);
                 statement.setString(4, hashedFirstSecurityAnswer);
                 statement.setString(5, secondSecurityQuestion);
                 statement.setString(6, hashedSecondSecurityAnswer);
-                statement.executeUpdate();
-                statement.close();
-                statement = connection.prepareStatement("INSERT INTO Locker VALUES (?, ?)");
-                statement.setString(1, Base64.getEncoder().encodeToString(locker));
-                statement.setString(2, Base64.getEncoder().encodeToString(lockerSalt));
                 statement.executeUpdate();
                 statement.close();
                 connection.close();

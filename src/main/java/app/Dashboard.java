@@ -31,7 +31,8 @@ public class Dashboard extends javax.swing.JFrame {
     private final String[] TITLES = new String[] { "All cards", "Favorites", "Notes", "Settings" };
     private JLabel[] titleButtons;
 
-    private Encryptor encryptor = new Encryptor();
+    private String locker;
+    private Encryptor encryptor;
 
     private ArrayList<Integer> cardIdentifiers = new ArrayList<>(),
                                favoriteIdentifiers = new ArrayList<>(),
@@ -86,7 +87,15 @@ public class Dashboard extends javax.swing.JFrame {
         }
     };
 
-    public Dashboard() {
+    public Dashboard(String locker) {
+        this();
+        this.locker = locker;
+        this.encryptor = new Encryptor(locker);
+        loadData();
+        this.autoLogoutTimer.start();
+    }
+
+    private Dashboard() {
         Customization.applyCustomIcons(this);
         initComponents();
         this.sidePanelButtons = new Component[] { btnAllCards, btnFavourites, btnNotes, btnSettings };
@@ -116,9 +125,7 @@ public class Dashboard extends javax.swing.JFrame {
         allCardsTable.setModel(customModelAllCards);
         favoritesTable.setModel(customModelFavorites);
         notesTable.setModel(customModelNotes);
-        loadData();
         btnSaveSettings.setVisible(false);
-        this.autoLogoutTimer.start();
     }
 
     /**
@@ -1233,10 +1240,10 @@ public class Dashboard extends javax.swing.JFrame {
      */
     private void addNewItem(int index) {
         if (index == 0) {
-            Card newCard = new Card(this, -1);
+            Card newCard = new Card(this, -1, locker);
             newCard.setVisible(true);
         } else if (index == 1) {
-            Note newNote = new Note(this, -1);
+            Note newNote = new Note(this, -1, locker);
             newNote.setVisible(true);
         }
     }
@@ -1253,10 +1260,10 @@ public class Dashboard extends javax.swing.JFrame {
      */
     private void viewItem(int index, int identifier) {
         if (index == 0) {
-            Card viewCard = new Card(this, identifier);
+            Card viewCard = new Card(this, identifier, locker);
             viewCard.setVisible(true);
         } else if (index == 1) {
-            Note viewNote = new Note(this, identifier);
+            Note viewNote = new Note(this, identifier, locker);
             viewNote.setVisible(true);
         }
     }
@@ -1507,9 +1514,6 @@ public class Dashboard extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Dashboard().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

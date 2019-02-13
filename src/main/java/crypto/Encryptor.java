@@ -1,6 +1,7 @@
 package crypto;
 
 import handlers.DatabaseHandler;
+import utils.Base64Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Base64;
+import java.util.Objects;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -32,43 +33,29 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class Encryptor {
 
-    private String locker, salt;
+    private String encryptedKeyString;
+    private String salt;
 
     private final SecretKeySpec key;
-        
+
     private final String KEY_ALGORITHM = "AES",
                          ENCRYPTION_ALGORITHM = "AES/CBC/PKCS5Padding",
                          SECRET_KEY_FACTORY_ALGORITHM = "PBKDF2WithHmacSHA256";
-    
-    private final int ITERATIONS = 10000, KEY_SIZE = 128;    
-    
-    public Encryptor(){
+
+    private final int ITERATIONS = 10000, KEY_SIZE = 128;
+
+    public Encryptor(String locker){
         load();
-        this.key = generateKey();
+        this.key = generateKey(locker);
     }
 
     /**
      * Encrypts a string using AES-128.
-     *
      * @param string String to encrypt.
-     * @return String - encrypted string.
+     * @return String - encrypted String.
      */
     public String encrypt(String string) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV(),
-                   encryptedString = cipher.doFinal(string.getBytes());
-            
-            outputStream.write(iv);
-            outputStream.write(encryptedString);
-
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-        } catch (IOException | InvalidKeyException | InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            System.out.println(ex.toString());
-        }
-        return null;
+        return this.encrypt(string, this.key);
     }
 
     /**
@@ -78,11 +65,47 @@ public class Encryptor {
      * @return String - decrypted string.
      */
     public String decrypt(String encryptedString){
+        return this.decrypt(encryptedString, this.key);
+    }
+
+    /**
+     * Encrypts a string using AES-128 using a custom key.
+     *
+     * @param string String to encrypt.
+     * @param key Custom key.
+     * @return String - encrypted string.
+     */
+    private String encrypt(String string, SecretKeySpec key) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            byte[] iv = cipher.getParameters().getParameterSpec(IvParameterSpec.class).getIV(),
+                    encryptedString = cipher.doFinal(string.getBytes());
+
+            outputStream.write(iv);
+            outputStream.write(encryptedString);
+
+            return Base64Utils.toBase64(outputStream.toByteArray());
+        } catch (IOException | InvalidKeyException | InvalidParameterSpecException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            System.out.println(ex.toString());
+        }
+        return null;
+    }
+
+    /**
+     * Decrypts an AES-128 encrypted string using a custom key.
+     *
+     * @param encryptedString Encrypted string to decrypt.
+     * @param key Custom key.
+     * @return String - decrypted string.
+     */
+    private String decrypt(String encryptedString, SecretKeySpec key){
         try{
-            byte[] decodedString = Base64.getDecoder().decode(encryptedString),
-                   iv = Arrays.copyOfRange(decodedString, 0, 16),
-                   encrypted = Arrays.copyOfRange(decodedString, 16, decodedString.length);
-            
+            byte[] decodedString = Base64Utils.fromBase64(encryptedString),
+                    iv = Arrays.copyOfRange(decodedString, 0, 16),
+                    encrypted = Arrays.copyOfRange(decodedString, 16, decodedString.length);
+
             Cipher cipher = Cipher.getInstance(ENCRYPTION_ALGORITHM);
             cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
 
@@ -94,11 +117,54 @@ public class Encryptor {
     }
 
     /**
-     * Generates the SecretKeySpec based on locker and salt.
+     * Custom encryption to use only on first time and when re-encrypting the uKey using a new locker.
+     * This only happens on the {@link app.Setup} and {@link app.NewPin} classes.
+     * <br>
+     * <strong>Otherwise</strong>, this method should <strong>NOT</strong> be used.
+     * Instead, always use an instance of {@link Encryptor} with the methods available.
+     *
+     * @param string string to encrypt.
+     * @param key custom key.
+     * @return Encrypted string as base64.
+     */
+    public static String customEncrypt(String string, SecretKeySpec key) {
+        return new Encryptor("").encrypt(string, key);
+    }
+
+    /**
+     * Custom key generation to use only on first time and when re-encrypting the uKey using a new locker.
+     * This only happens on the {@link app.Setup} and {@link app.NewPin} classes.
+     * <br>
+     * <strong>Otherwise</strong>, this method should <strong>NOT</strong> be used.
+     * Instead, always use an instance of {@link Encryptor} with the methods available.
+     *
+     * @param locker key locker.
+     * @param salt key locker salt.
+     * @return SecretKeySpec - Generated Key.
+     */
+    public static SecretKeySpec generateCustomKey(String locker, String salt) {
+        return new Encryptor("").generateKey(locker, salt);
+    }
+
+    /**
+     * Generates the encryption/decryption secret key.
+     *
+     * @param locker - key locker.
+     * @return SecretKeySpec - Generated key.
+     */
+    private SecretKeySpec generateKey(String locker) {
+        SecretKeySpec uKeyLockerKey = this.generateKey(locker, this.salt);
+        String decryptedKeyString = decrypt(encryptedKeyString, uKeyLockerKey);
+
+        return generateKeyFromString(decryptedKeyString);
+    }
+
+    /**
+     * Generates a SecretKeySpec based on locker (pin) and uKeySalt.
      *
      * @return SecretKeySpec - Generated key.
      */
-    private SecretKeySpec generateKey() {
+    private SecretKeySpec generateKey(String locker, String salt) {
         try {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(SECRET_KEY_FACTORY_ALGORITHM);
             PBEKeySpec keySpec = new PBEKeySpec(locker.toCharArray(), salt.getBytes(), ITERATIONS, KEY_SIZE);
@@ -111,16 +177,30 @@ public class Encryptor {
     }
 
     /**
-     * Loads the data neeeded for encryption/decryption.
+     * Generates a SecretKeySpec from a base64 key string.
+     *
+     * @param keyString Base64 key string.
+     * @return SecretKeySpec - Generated key.
+     */
+    private SecretKeySpec generateKeyFromString(String keyString) {
+        return new SecretKeySpec(Base64Utils.fromBase64(Objects.requireNonNull(keyString)), KEY_ALGORITHM);
+    }
+
+    /**
+     * Loads the encryptedKeyString and salt from database.
+     * This is needed to generate the key.
      */
     private void load() {
         Connection connection = DatabaseHandler.getConnection();
+
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM Locker");
+            ResultSet resultSet = statement.executeQuery("SELECT uKey, uKeySalt FROM User");
+
             resultSet.next();
-            this.locker = resultSet.getString("locker");
-            this.salt = resultSet.getString("salt");
+            this.encryptedKeyString = resultSet.getString("uKey");
+            this.salt = resultSet.getString("uKeySalt");
+
             resultSet.close();
             statement.close();
             connection.close();

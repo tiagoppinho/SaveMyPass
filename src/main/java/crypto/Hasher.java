@@ -1,5 +1,7 @@
 package crypto;
 
+import utils.Base64Utils;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -7,7 +9,6 @@ import java.security.spec.InvalidKeySpecException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.util.Base64;
 
 /**
  * Class responsible for hashing, uses PBKDF2 for pins and SHA-256 for security answers.
@@ -33,8 +34,9 @@ public class Hasher {
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(PIN_ALGORITHM);
             PBEKeySpec keySpec = new PBEKeySpec(pin.toCharArray(), salt.getBytes(), ITERATIONS, KEY_LENGTH);
             SecretKey key = secretKeyFactory.generateSecret(keySpec);
-            byte[] hashedPassword = key.getEncoded();
-            return Base64.getEncoder().encodeToString(hashedPassword);
+            byte[] hashedPin = key.getEncoded();
+
+            return Base64Utils.toBase64(hashedPin);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             ex.printStackTrace();
         }
@@ -51,7 +53,8 @@ public class Hasher {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(SECURITY_ANSWER_ALGORITHM);
             messageDigest.update(securityAnswer.getBytes());
-            return Base64.getEncoder().encodeToString(messageDigest.digest());
+
+            return Base64Utils.toBase64(messageDigest.digest());
         } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }
@@ -64,9 +67,21 @@ public class Hasher {
      * @return String
      */
     public static String generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[32];
-        random.nextBytes(bytes);
-        return Base64.getEncoder().encodeToString(bytes);
+        return Hasher.generateSecureRandom(32);
     }
+
+    /**
+     * Generates random secure (n) bytes.
+     *
+     * @param bytes Number of bytes.
+     * @return String
+     */
+    public static String generateSecureRandom(int bytes) {
+        SecureRandom random = new SecureRandom();
+        byte[] secureBytes = new byte[bytes];
+        random.nextBytes(secureBytes);
+
+        return Base64Utils.toBase64(secureBytes);
+    }
+
 }

@@ -1,5 +1,6 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.KeyboardHandler;
 import handlers.DatabaseHandler;
 import utils.Customization;
@@ -531,20 +532,25 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLoginMouseExited
 
     private void btnLoginMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMousePressed
-        String pin = getCurrentPin(), hashedPin = Hasher.hashPin(pin, salt);
+        String pin = getCurrentPin();
 
         if (pin.isEmpty()) {
             //Pin field is empty.
             Customization.displayWarningMessage("PIN field is empty.", "Empty PIN!");
-        } else if (!hashedPin.equals(masterPin)) {
-            //Wrong PIN.
-            Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
-            txtPin.setText(null);
         } else {
-            //Session started, user is logged in.
-            Dashboard dashboard = new Dashboard();
-            dashboard.setVisible(true);
-            this.dispose();
+            String hashedPin = Hasher.hashPin(pin, salt);
+            String decryptedHashedPin = new Encryptor(pin).decrypt(masterPin);
+
+            if (!hashedPin.equals(decryptedHashedPin)) {
+                //Wrong PIN.
+                Customization.displayWarningMessage("Wrong PIN. Try again!", "Invalid PIN!");
+                txtPin.setText(null);
+            } else {
+                //Session started, user is logged in.
+                Dashboard dashboard = new Dashboard(pin);
+                dashboard.setVisible(true);
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_btnLoginMousePressed
 

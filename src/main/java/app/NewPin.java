@@ -1,5 +1,6 @@
 package app;
 
+import crypto.Encryptor;
 import handlers.KeyboardHandler;
 import handlers.DatabaseHandler;
 import utils.Customization;
@@ -692,23 +693,11 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNextOrFinishMouseExited
 
     private void btnMainCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnMainCloseMousePressed
-        try {
-            if (!connection.isClosed())
-                connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        System.exit(0);
+        closeSession();
     }//GEN-LAST:event_btnMainCloseMousePressed
 
     private void btnSecondaryCloseMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSecondaryCloseMousePressed
-        try {
-            if (!connection.isClosed())
-                connection.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        System.exit(0);
+        closeSession();
     }//GEN-LAST:event_btnSecondaryCloseMousePressed
 
     private void mainPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainPanelMousePressed
@@ -733,8 +722,7 @@ public class NewPin extends javax.swing.JFrame {
     }//GEN-LAST:event_txtConfirmationMasterPinMousePressed
 
     private void btnNextOrFinishMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNextOrFinishMousePressed
-        String pin = getCurrentPin(txtMasterPin).trim(), confirmationPin = getCurrentPin(txtConfirmationMasterPin).trim(),
-                salt = Hasher.generateSalt(), hashedPin = Hasher.hashPin(pin, salt);
+        String pin = getCurrentPin(txtMasterPin).trim(), confirmationPin = getCurrentPin(txtConfirmationMasterPin).trim();
 
         if (pin.isEmpty() || confirmationPin.isEmpty())
             Customization.displayWarningMessage("Please fill both PIN fields.", "Empty PIN field(s)!");
@@ -742,16 +730,25 @@ public class NewPin extends javax.swing.JFrame {
             //If pin and confirmationPin don't match.
             Customization.displayWarningMessage("The PINs don't match.", "Invalid!");
             clearPinFields();
-        } else if (index == 0) {
-            //If user forgot his pin.
-            updatePinOnDatabase(hashedPin, salt);
-            //Proceed to login.
-            goToLogin();
         } else {
-            //If it's the first time setup.
-            Setup firstTimeSetup = new Setup(hashedPin, salt);
-            firstTimeSetup.setVisible(true);
-            this.dispose();
+            String salt = Hasher.generateSalt(), hashedPin = Hasher.hashPin(pin, salt);
+
+            if (index == 0) {
+                //If user forgot his pin.
+
+                //Re-encrypt data.
+                updateEncryptionOnKey(pin);
+                //Update pin.
+                updatePinOnDatabase(hashedPin, salt);
+
+                //Proceed to login.
+                goToLogin();
+            } else {
+                //If it's the first time setup.
+                Setup firstTimeSetup = new Setup(pin, salt);
+                firstTimeSetup.setVisible(true);
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_btnNextOrFinishMousePressed
 
@@ -788,12 +785,13 @@ public class NewPin extends javax.swing.JFrame {
     private void btnFinishNewPinMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFinishNewPinMousePressed
         String currentPin = getCurrentPin(txtCurrentPin).trim(), newMasterPin = getCurrentPin(txtNewMasterPin).trim(),
                 confirmationNewMasterPin = getCurrentPin(txtConfirmationNewMasterPin).trim(),
-                hashedCurrentPin = Hasher.hashPin(currentPin, currentSalt), newSalt = Hasher.generateSalt(),
-                hashedNewPin = Hasher.hashPin(newMasterPin, newSalt);
+                hashedCurrentPin = Hasher.hashPin(currentPin, currentSalt);
+
+        Encryptor encryptor = new Encryptor(currentPin);
 
         if (currentPin.isEmpty() || newMasterPin.isEmpty() || confirmationNewMasterPin.isEmpty())
             Customization.displayWarningMessage("Please fill all PIN fields.", "Empty PIN field(s)!");
-        else if (!hashedCurrentPin.equals(currentMasterPin)) {
+        else if (!hashedCurrentPin.equals(encryptor.decrypt(currentMasterPin))) {
             //If the current pin doesn't match the database.
             Customization.displayWarningMessage("The current pin is wrong.", "Invalid!");
             clearPinFields();
@@ -802,8 +800,13 @@ public class NewPin extends javax.swing.JFrame {
             Customization.displayWarningMessage("The new pins don't match.", "Invalid!");
             clearPinFields();
         } else {
-            //Send data to database.
+            String newSalt = Hasher.generateSalt(), hashedNewPin = Hasher.hashPin(newMasterPin, newSalt);
+
+            //Re-encrypt data.
+            updateEncryptionOnKey(currentPin);
+            //Update pin.
             updatePinOnDatabase(hashedNewPin, newSalt);
+
             //Proceed to login.
             goToLogin();
         }
@@ -965,6 +968,34 @@ public class NewPin extends javax.swing.JFrame {
     }
 
     /**
+     * Re-encrypts the uKey to match the changed locker.
+     */
+    private void updateEncryptionOnKey(String newLocker) {
+        this.updateEncryptionOnKey(new Encryptor(newLocker));
+    }
+
+    /**
+     * Re-encrypts the uKey to match the changed locker.
+     */
+    private void updateEncryptionOnKey(Encryptor encryptor) {
+        String newSalt = Hasher.generateSalt();
+        String updatedEncryptedUKey = "";
+
+        //Find a way to re-encrypt uKey
+
+        try {
+            PreparedStatement statement = connection.prepareStatement("UPDATE User SET uKey = ?, uKeySalt = ?");
+
+            statement.setString(1, updatedEncryptedUKey);
+            statement.setString(2, newSalt);
+            statement.executeUpdate();
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
      * Updates the master pin and salt on database.
      *
      * @param pin  New master pin.
@@ -998,6 +1029,20 @@ public class NewPin extends javax.swing.JFrame {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    /**
+     * Closes the current connection to database.
+     * Exits.
+     */
+    private void closeSession() {
+        try {
+            if (!connection.isClosed())
+                connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        System.exit(0);
     }
 
     public static void main(String args[]) {

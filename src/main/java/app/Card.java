@@ -22,7 +22,7 @@ public class Card extends javax.swing.JFrame {
 
     private Dashboard dashboard;
     private int cardIdentifier = -1, index;
-    private final Encryptor encryptor = new Encryptor();
+    private Encryptor encryptor;
 
     private ArrayList<String> cardTitles = new ArrayList<>(), cardUsernames = new ArrayList<>();
 
@@ -32,7 +32,14 @@ public class Card extends javax.swing.JFrame {
     private String[] oldValues = new String[3];
     private boolean isFavorite = false;
 
-    public Card(Dashboard dashboard, int cardIdentifier) {
+    public Card(Dashboard dashboard, int cardIdentifier, String locker) {
+        this(dashboard, cardIdentifier);
+        this.encryptor = new Encryptor(locker);
+        load();
+        this.setVisible(true);
+    }
+
+    private Card(Dashboard dashboard, int cardIdentifier) {
         if (dashboard != null) {
             this.dashboard = dashboard;
             dashboard.autoLogoutTimer.stop();
@@ -48,8 +55,6 @@ public class Card extends javax.swing.JFrame {
             Customization.applyCustomIcons(this);
             initComponents();
             txtPassword.putClientProperty("JPasswordField.cutCopyAllowed", true);
-            load();
-            this.setVisible(true);
         } else {
             throw new IllegalArgumentException("Dashboard instance is required.");
         }

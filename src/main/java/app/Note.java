@@ -22,7 +22,7 @@ public class Note extends javax.swing.JFrame {
 
     private Dashboard dashboard;
     private int noteIdentifier = -1, index;
-    private final Encryptor encryptor = new Encryptor();
+    private Encryptor encryptor;
 
     private ArrayList<String> noteTitles = new ArrayList<>();
 
@@ -31,7 +31,14 @@ public class Note extends javax.swing.JFrame {
     //View mode only.
     private String[] oldValues = new String[2];
 
-    public Note(Dashboard dashboard, int noteIdentifier) {
+    public Note(Dashboard dashboard, int noteIdentifier, String locker) {
+        this(dashboard, noteIdentifier);
+        this.encryptor = new Encryptor(locker);
+        load();
+        this.setVisible(true);
+    }
+
+    private Note(Dashboard dashboard, int noteIdentifier) {
         if (dashboard != null) {
             this.dashboard = dashboard;
             dashboard.autoLogoutTimer.stop();
@@ -46,8 +53,6 @@ public class Note extends javax.swing.JFrame {
             dashboard.setEnabled(false);
             Customization.applyCustomIcons(this);
             initComponents();
-            load();
-            this.setVisible(true);
         } else {
             throw new IllegalArgumentException("Dashboard instance is required.");
         }
