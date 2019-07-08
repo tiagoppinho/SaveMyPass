@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tiagoppinho/SaveMyPass.svg?branch=master)](https://travis-ci.org/tiagoppinho/SaveMyPass)
+
 # Password Manager - SaveMyPass
 
 Simple offline password manager initially made for my own use and as an academic project. Developed with Java and NetBeans/Intellij IDEA.
