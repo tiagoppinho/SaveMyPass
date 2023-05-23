@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tiagoppinho/SaveMyPass.svg?branch=master)](https://travis-ci.org/tiagoppinho/SaveMyPass)
+<!-- [![Build Status](https://travis-ci.org/tiagoppinho/SaveMyPass.svg?branch=master)](https://travis-ci.org/tiagoppinho/SaveMyPass) -->
 
 # Password Manager - SaveMyPass
 
